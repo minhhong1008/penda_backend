@@ -12,6 +12,8 @@ import { userSignupValidator } from '../validator/index';
 router.post('/signup', userSignupValidator , signup);
 router.post('/signin', signin)
 router.get('/signout', signout);
+// router.get('/disconnect', signout);
+
 
 
 module.exports = router;

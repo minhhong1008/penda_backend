@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import expressValidator from 'express-validator';
+// import expressValidator from 'express-validator';
 
 import productRouter from './routes/product.js';
 import categoryRouter from './routes/category.js';
@@ -12,6 +12,8 @@ import authRouter from './routes/auth.js';
 import userRouter from './routes/user.js';
 import contactRouter from './routes/contact.js';
 import departmentRouter from './routes/department.js';
+// Thêm router ebay
+import ebayRouter from './routes/ebay.js';
 
 
 
@@ -29,7 +31,7 @@ app.use(cors());
 
 //Middleware
 
-app.use(expressValidator());
+// app.use(expressValidator());
 
 //Routes
 
@@ -39,6 +41,12 @@ app.use('/api', authRouter);        // Router Auth
 app.use('/api', userRouter);    // Router User
 app.use('/api', contactRouter);  // Router Contact
 app.use('/api', departmentRouter);  // Router department
+
+// Lắng nghe router ebay
+
+app.use('/api', ebayRouter);  // Router ebay
+
+
 
 
 //MongoDB

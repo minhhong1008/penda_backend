@@ -14,6 +14,8 @@ import contactRouter from './routes/contact.js';
 import departmentRouter from './routes/department.js';
 // Thêm router ebay
 import ebayRouter from './routes/ebay.js';
+import estyRouter from './routes/esty.js';
+
 
 
 
@@ -45,6 +47,7 @@ app.use('/api', departmentRouter);  // Router department
 // Lắng nghe router ebay
 
 app.use('/api', ebayRouter);  // Router ebay
+app.use('/api', estyRouter);  // Router esty
 
 
 

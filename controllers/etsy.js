@@ -43,7 +43,7 @@ export const listetsy = (req, res) => {
 };
 
 export const etsyByID = (req, res, next, id) => {
-  Etsy.findOne({ etsy_user: id }, (err, etsy) => {
+  Etsy.findOne({ etsy_id: id }, (err, etsy) => {
     if (err || !etsy) {
       res.status(400).json({
         message: "Không tìm thấy etsy",
@@ -56,10 +56,9 @@ export const etsyByID = (req, res, next, id) => {
 };
 
 export const update = (req, res) => {
-  var etsy_user = req.query.id;
-  console.log(req.body);
+  var etsy_id = req.query.id;
   Etsy.findOneAndUpdate(
-    { etsy_user: etsy_user },
+    { etsy_id: etsy_id },
     { $set: req.body },
     { useFindAndModify: false },
     (err, etsy) => {

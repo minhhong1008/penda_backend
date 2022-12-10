@@ -16,6 +16,10 @@ import ebayRouter from './routes/ebay.js';
 import estyRouter from './routes/esty.js';
 import bankRouter from './routes/bank.js';
 
+// ********* ROute create *****************************
+
+import createRouter from './routes/create.js';
+
 //********************************************************
 //Config
 const app = express();
@@ -48,7 +52,7 @@ app.use('/api', bankRouter);
 
 //********************************************************
 
-
+app.use('/api', createRouter);
 
 //MongoDB
 mongoose.connect(process.env.MONGO_URL, {

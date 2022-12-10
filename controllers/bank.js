@@ -43,7 +43,7 @@ export const listbank = (req, res) => {
 };
 
 export const bankByID = (req, res, next, id) => {
-  bank.findOne({ bank_user: id }, (err, bank) => {
+  bank.findOne({ bank_id: id }, (err, bank) => {
     if (err || !bank) {
       res.status(400).json({
         message: "Không tìm thấy bank",
@@ -56,10 +56,10 @@ export const bankByID = (req, res, next, id) => {
 };
 
 export const update = (req, res) => {
-  var bank_user = req.query.id;
+  var bank_id = req.query.id;
   console.log(req.body);
   bank.findOneAndUpdate(
-    { bank_user: bank_user },
+    { bank_id: bank_id },
     { $set: req.body },
     { useFindAndModify: false },
     (err, bank) => {

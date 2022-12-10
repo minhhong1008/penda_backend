@@ -5,6 +5,7 @@ const etsySchema = mongoose.Schema(
     etsy_id: { type: String, required: true },
     etsy_user: { type: String },
     etsy_password: { type: String },
+    etsy_detail: { type: String },
     etsy_processing: { type: String },
     etsy_type: { type: String },
     etsy_sell_status: { type: String },

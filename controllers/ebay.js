@@ -43,7 +43,7 @@ export const listEbay = (req, res) => {
 };
 
 export const ebayByID = (req, res, next, id) => {
-  Ebay.findOne({ ebay_user: id }, (err, ebay) => {
+  Ebay.findOne({ ebay_id: id }, (err, ebay) => {
     if (err || !ebay) {
       res.status(400).json({
         message: "Không tìm thấy ebay",
@@ -56,10 +56,9 @@ export const ebayByID = (req, res, next, id) => {
 };
 
 export const update = (req, res) => {
-  var ebay_user = req.query.id;
-  console.log(req.body);
+  var ebay_id = req.query.id;
   Ebay.findOneAndUpdate(
-    { ebay_user: ebay_user },
+    { ebay_id: ebay_id },
     { $set: req.body },
     { useFindAndModify: false },
     (err, ebay) => {

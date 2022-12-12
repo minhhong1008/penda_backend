@@ -21,7 +21,7 @@ const bankSchema = mongoose.Schema(
     mail_id: { type: String },
     sim_id: { type: String },
     card_id: { type: String },
-    etsy_id: { type: String },
+    bank_id: { type: String },
     ebay_id: { type: String },
     amazon_id: { type: String },
     shopee_id: { type: String },

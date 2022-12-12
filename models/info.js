@@ -19,7 +19,17 @@ const infoSchema = mongoose.Schema(
     info_status: { type: String },
     info_class: { type: String },
     info_note: { type: String },
+    etsy_id: { type: String },
+    mail_id: { type: String },
+    sim_id: { type: String },
+    card_id: { type: String },
+    bank_id: { type: String },
+    ebay_id: { type: String },
+    amazon_id: { type: String },
+    shopee_id: { type: String },
+    device_id: { type: String },
+    list_view: { type: String },
   },
   { timeStamps: true }
 );
-module.exports = mongoose.model("info", infoSchema);
+module.exports = mongoose.model("Info", infoSchema);

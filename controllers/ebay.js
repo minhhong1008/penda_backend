@@ -13,11 +13,11 @@ export const create = (req, res) => {
   });
 };
 
-export const getEbay = (req, res) => {
+export const getebay = (req, res) => {
   return res.json(req.ebay);
 };
 
-export const listEbay = (req, res) => {
+export const listebay = (req, res) => {
   var class_name = req.query.ebay_class;
   var ebay_employee = req.query.ebay_employee;
   if (class_name) {

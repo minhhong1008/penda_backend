@@ -11,11 +11,21 @@ import authRouter from './routes/auth.js';
 import userRouter from './routes/user.js';
 import contactRouter from './routes/contact.js';
 import departmentRouter from './routes/department.js';
-//******* Thêm router ebay,etsy **********************
+
+//******* Thêm router **********************
 import ebayRouter from './routes/ebay.js';
 import estyRouter from './routes/esty.js';
+import shopeeRouter from './routes/shopee.js';
+import amazonRouter from './routes/amazon.js';
+import payoneerRouter from './routes/payoneer.js';
+import paypalRouter from './routes/paypal.js';
 import bankRouter from './routes/bank.js';
-
+import infoRouter from './routes/info.js';
+import mailRouter from './routes/mail.js';
+import simRouter from './routes/sim.js';
+import deviceRouter from './routes/device.js';
+import facebookRouter from './routes/facebook.js';
+import tiktokRouter from './routes/tiktok.js';
 // ********* ROute create *****************************
 
 import createRouter from './routes/create.js';
@@ -43,13 +53,20 @@ app.use('/api', contactRouter);  // Router Contact
 app.use('/api', departmentRouter);  // Router department
 
 
-//************ Lắng nghe router ebay ********************
+//************ Lắng nghe router ********************
 app.use('/api', ebayRouter); 
 app.use('/api', estyRouter);
+app.use('/api', shopeeRouter);
+app.use('/api', amazonRouter);
+app.use('/api', payoneerRouter);
+app.use('/api', paypalRouter);
 app.use('/api', bankRouter);
-
-
-
+app.use('/api', infoRouter);
+app.use('/api', mailRouter);
+app.use('/api', simRouter);
+app.use('/api', deviceRouter);
+app.use('/api', facebookRouter);
+app.use('/api', tiktokRouter);
 //********************************************************
 
 app.use('/api', createRouter);

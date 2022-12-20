@@ -1,0 +1,35 @@
+import mongoose from "mongoose";
+const usersSchema = mongoose.Schema(
+  {
+    users_id: { type: String},
+    users_sex: { type: String },
+    usersdate_birthday: { type: String },
+    users_fullname: { type: String },
+    users_passport: { type: String },
+    users_ssn: { type: String },
+    users_origin: { type: String },
+    users_code: { type: String },
+    users_residence: { type: String },
+    usersdate_expiry: { type: String },
+    usersdate_start: { type: String },
+    usersdate_begin: { type: String },
+    users_name: { type: String },
+    users_passwords: { type: String },
+    users_aliases: { type: String },
+    users_phone: { type: String },
+    users_fb: { type: String },
+    users_mail: { type: String },
+    users_bank: { type: String },
+    users_banknumber: { type: String },
+    users_other: { type: String },
+    users_level: { type: String },
+    users_major: { type: String },
+    users_function: { type: String },
+    users_owner: { type: String },
+    manage_view: { type: String },
+    users_status: { type: String },
+    users_class: { type: String },
+  },
+  { timeStamps: true }
+);
+module.exports = mongoose.model("Users", usersSchema);

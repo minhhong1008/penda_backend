@@ -1,4 +1,5 @@
 import User from '../models/user';
+import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 
 export const userbyId = (req, res, next, id) => {
     User.findById(id).exec((error, user) => {
@@ -60,3 +61,33 @@ export const remove = (req, res) => {
         })
     })
 }
+
+// hàm phân quyền trong user
+export const canViewUser = (req, res, next) => {
+    const data = req.headers["x-access-token"] || req.headers["authorization"];
+    const token = data.split(" ");
+    if (!token) {
+      return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");
+    }
+    try {
+      const decoded = jwt.verify(token[1], "duy");
+      User.findOne({ _id: decoded._id }).exec((err, user) => {
+        if (!user) {
+          return res.status(403).json({
+            error: "Bạn chưa đăng nhập",
+          });
+        }
+        if (
+        user.users_owner.indexOf("Phòng hành chính nhân sự") != -1
+        ) {
+          next();
+        } else {
+          res.status(403).json({
+            error: "Không có quyền truy cập user",
+          });
+        }
+      });
+    } catch (ex) {
+      res.status(400).send("Token không chính xác");
+    }
+  };

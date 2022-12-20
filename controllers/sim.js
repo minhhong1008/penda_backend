@@ -1,6 +1,7 @@
 // Import model
 import Sim from "../models/sim";
-
+import jwt from "jsonwebtoken"; // Tạo ra mã JWT
+import Users from "../models/user";
 export const create = (req, res) => {
   const sim = new Sim(req.body);
   sim.save((err, acc) => {
@@ -71,4 +72,34 @@ export const listsim = (req, res) => {
   }
 };
 
+// hàm phân quyền trong Sim
+export const canViewSim = (req, res, next) => {
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  const token = data.split(" ");
+  if (!token) {
+    return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");
+  }
+  try {
+    const decoded = jwt.verify(token[1], "duy");
+    Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (!user) {
+        return res.status(403).json({
+          error: "Bạn chưa đăng nhập",
+        });
+      }
+      if (
+        user.manage_view.indexOf("sim_id") != -1 &&
+        user.users_owner.indexOf("Phòng sản xuất") != -1
+      ) {
+        next();
+      } else {
+        res.status(403).json({
+          error: "Không có quyền truy cập sim",
+        });
+      }
+    });
+  } catch (ex) {
+    res.status(400).send("Token không chính xác");
+  }
+};
 

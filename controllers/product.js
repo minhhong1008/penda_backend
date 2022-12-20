@@ -19,7 +19,6 @@ export const create = (req, res) => {
                 message: "Hãy nhập đầy đủ thông tin"
             })
         }
-        console.log(fields);
         let product = new Product(fields);
         if (files.photo) {
             if (files.photo.size > 10000000) {
@@ -30,10 +29,8 @@ export const create = (req, res) => {
             product.photo.data = fs.readFileSync(files.photo.path);
             product.photo.contentType = files.photo.type;
         }
-
         product.save((err, data) => {
             if (err) {
-                
                 return res.status(400).json({
                     message: "Không thể thêm sản phẩm"
                 })
@@ -98,7 +95,6 @@ export const update = (req, res) => {
                 message: "Hãy nhập đầy đủ thông tin"
             })
         }
-        console.log(fields);
         let product = req.product;
             product = _.assignIn(product, fields);
 

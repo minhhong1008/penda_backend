@@ -1,104 +1,80 @@
-import mongoose from 'mongoose';
-import crypto from 'crypto';
+import mongoose from "mongoose";
+import crypto from "crypto";
 
-const { v1: uuidv1 } = require('uuid');
+const { v1: uuidv1 } = require("uuid");
 
 const { ObjectId } = mongoose.Schema;
 
-const userSchema = mongoose.Schema({
-    name: {
-        type: String,
-        trim: true,
-        required: true,
-        maxlength: 32
-    },
-    email: {
-        type: String,
-        trim: true,
-        required: true,
-        unique: 32
-    },
+const userSchema = mongoose.Schema(
+  {
     hashed_password: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     salt: {
-        type: String
+      type: String,
     },
-    birth_date: {
-        type: String,
-        default: ''
-    },
-    about: {
-        type: String,
-        default: ''
-    },
-    role: {
-        type: Number,
-        default: 0
-    },
-    location: {
-        type: String,
-        default: ''
-    },
-    phone: {
-        type: String,
-        default: ''
-    },
-    identity_card_number: {
-        type: String,
-        default: ''
-    },
-    bank_name: {
-        type: String,
-        default: ''
-    },
-    bank_number: {
-        type: String,
-        default: ''
-    },
-    salary: {
-        type: Number,
-        default: 0
-    },
-    actived: {
-        type: Boolean,
-        default: false
-    },
-    department: {
-        type: ObjectId,
-        ref: 'Department'
-    }
+    users_id: { type: String },
+    users_sex: { type: String },
+    usersdate_birthday: { type: String },
+    users_fullname: { type: String },
+    users_passport: { type: String },
+    users_ssn: { type: String },
+    users_origin: { type: String },
+    users_code: { type: String },
+    users_residence: { type: String },
+    usersdate_expiry: { type: String },
+    usersdate_start: { type: String },
+    usersdate_begin: { type: String },
+    users_name: { type: String },
+    users_passwords: { type: String },
+    users_name: { type: String },
+    users_aliases: { type: String },
+    users_phone: { type: String },
+    users_fb: { type: String },
+    users_mail: { type: String },
+    users_bank: { type: String },
+    users_banknumber: { type: String },
+    users_other: { type: String },
+    users_level: { type: String },
+    users_major: { type: String },
+    users_function: { type: String },
+    users_owner: { type: String },
+    manage_view: { type: String },
+    users_status: { type: String, default: "New" },
+    users_class: { type: String },
+    email: { type: String }
+  },
+  { timestamps: true }
+);
 
-}, { timestamps: true });
-
-
-userSchema.virtual('password')
-    .set(function (password) {
-        this._password = password
-        this.salt = uuidv1()
-        this.hashed_password = this.encrytPassword(password)
-    })
-    .get(function () {
-        return this._password
-    })
+userSchema
+  .virtual("users_password")
+  .set(function (users_password) {
+    this._password = users_password;
+    this.salt = uuidv1();
+    this.hashed_password = this.encrytPassword(users_password);
+  })
+  .get(function () {
+    return this._password;
+  });
 userSchema.methods = {
-    authenticate: function (plainText) {
-        return this.encrytPassword(plainText) === this.hashed_password;
-    },
-    encrytPassword: function (password) {
-        if (!password) {
-            return '';
-        }
-        try {
-            return crypto
-                .createHmac('sha1', this.salt)
-                .update(password)
-                .digest('hex')
-        } catch (error) {
-            return '';
-        }
+  authenticate: function (plainText) {
+    return this.encrytPassword(plainText) === this.hashed_password;
+  },
+  encrytPassword: function (users_password) {
+    if (!users_password) {
+      return "";
     }
-}
+    try {
+      return crypto
+        .createHmac("sha1", this.salt)
+        .update(users_password)
+        .digest("hex");
+    } catch (error) {
+      return "";
+    }
+  },
+};
 
 module.exports = mongoose.model("User", userSchema);

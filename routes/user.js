@@ -12,7 +12,7 @@ router.get('/secret/:userId', requireSignin, isAuth, isAdmin, (req, res) => {
 
 // Danh sách người dùng
 
-router.get('/users/:userId' ,requireSignin, isAuth, isAdmin, list)
+// router.get('/users/:userId' ,requireSignin, isAuth, isAdmin, list)
 
 // Thông tin người dùng
 

@@ -14,18 +14,27 @@ import departmentRouter from './routes/department.js';
 
 //******* Thêm router **********************
 import ebayRouter from './routes/ebay.js';
-import estyRouter from './routes/esty.js';
+import etsyRouter from './routes/etsy.js';
 import shopeeRouter from './routes/shopee.js';
 import amazonRouter from './routes/amazon.js';
 import payoneerRouter from './routes/payoneer.js';
 import paypalRouter from './routes/paypal.js';
+import pingpongRouter from './routes/pingpong.js';
 import bankRouter from './routes/bank.js';
 import infoRouter from './routes/info.js';
 import mailRouter from './routes/mail.js';
 import simRouter from './routes/sim.js';
 import deviceRouter from './routes/device.js';
+import proxyRouter from './routes/proxy.js';
 import facebookRouter from './routes/facebook.js';
 import tiktokRouter from './routes/tiktok.js';
+import fileRouter from './routes/file.js';
+import usersRouter from './routes/users.js';
+
+import ebayorderRouter from './routes/ebayorder.js';
+import etsyorderRouter from './routes/etsyorder.js';
+import ebayitemRouter from './routes/ebayitem.js';
+import etsyitemRouter from './routes/etsyitem.js';
 // ********* ROute create *****************************
 
 import createRouter from './routes/create.js';
@@ -55,18 +64,29 @@ app.use('/api', departmentRouter);  // Router department
 
 //************ Lắng nghe router ********************
 app.use('/api', ebayRouter); 
-app.use('/api', estyRouter);
+app.use('/api', etsyRouter);
 app.use('/api', shopeeRouter);
 app.use('/api', amazonRouter);
 app.use('/api', payoneerRouter);
 app.use('/api', paypalRouter);
+app.use('/api', pingpongRouter);
 app.use('/api', bankRouter);
 app.use('/api', infoRouter);
 app.use('/api', mailRouter);
 app.use('/api', simRouter);
 app.use('/api', deviceRouter);
+app.use('/api', proxyRouter);
 app.use('/api', facebookRouter);
 app.use('/api', tiktokRouter);
+app.use('/api', ebayorderRouter); 
+app.use('/api', etsyorderRouter);
+app.use('/api', ebayitemRouter); 
+app.use('/api', etsyitemRouter);
+app.use('/api', usersRouter);
+app.use('/api', fileRouter);
+
+
+
 //********************************************************
 
 app.use('/api', createRouter);

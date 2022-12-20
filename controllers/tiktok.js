@@ -1,8 +1,9 @@
 // Import model
-import Etsy from "../models/tiktok";
-
+import Tiktok from "../models/tiktok";
+import jwt from "jsonwebtoken"; // Tạo ra mã JWT
+import Users from "../models/user";
 export const create = (req, res) => {
-  const tiktok = new Etsy(req.body);
+  const tiktok = new Tiktok(req.body);
   tiktok.save((err, acc) => {
     if (err) {
       return res.status(400).json({
@@ -13,7 +14,7 @@ export const create = (req, res) => {
   });
 };
 export const tiktokByID = (req, res, next, id) => {
-  Etsy.findOne({ tiktok_id: id }, (err, tiktok) => {
+  Tiktok.findOne({ tiktok_id: id }, (err, tiktok) => {
     if (err || !tiktok) {
       res.status(400).json({
         message: "Không tìm thấy tiktok",
@@ -27,7 +28,7 @@ export const tiktokByID = (req, res, next, id) => {
 
 export const update = (req, res) => {
   var tiktok_id = req.query.id;
-  Etsy.findOneAndUpdate(
+  Tiktok.findOneAndUpdate(
     { tiktok_id: tiktok_id },
     { $set: req.body },
     { useFindAndModify: false },
@@ -50,7 +51,7 @@ export const listtiktok = (req, res) => {
   var class_name = req.query.tiktok_class;
   var tiktok_employee = req.query.tiktok_employee;
   if (class_name) {
-    Etsy.find({ tiktok_class: class_name }, (err, tiktok) => {
+    Tiktok.find({ tiktok_class: class_name }, (err, tiktok) => {
       if (err || !tiktok) {
         res.status(400).json({
           message: "Không tìm thấy tiktok",
@@ -60,7 +61,7 @@ export const listtiktok = (req, res) => {
     });
   }
   if (tiktok_employee) {
-    Etsy.find({ tiktok_employee: tiktok_employee }, (err, tiktok) => {
+    Tiktok.find({ tiktok_employee: tiktok_employee }, (err, tiktok) => {
       if (err || !tiktok) {
         res.status(400).json({
           message: "Không tìm thấy tiktok",
@@ -71,4 +72,34 @@ export const listtiktok = (req, res) => {
   }
 };
 
+// hàm phân quyền trong Tiktok
+export const canViewTiktok = (req, res, next) => {
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  const token = data.split(" ");
+  if (!token) {
+    return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");
+  }
+  try {
+    const decoded = jwt.verify(token[1], "duy");
+    Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (!user) {
+        return res.status(403).json({
+          error: "Bạn chưa đăng nhập",
+        });
+      }
+      if (
+        user.manage_view.indexOf("tiktok_id") != -1 &&
+        user.users_owner.indexOf("Phòng sản xuất") != -1
+      ) {
+        next();
+      } else {
+        res.status(403).json({
+          error: "Không có quyền truy cập tiktok",
+        });
+      }
+    });
+  } catch (ex) {
+    res.status(400).send("Token không chính xác");
+  }
+};
 

@@ -82,6 +82,54 @@ export const Create_newdata = (req, res) => {
     }
   }
 
+  if (type == "info") {
+    Info.countDocuments().exec((err, info) => {
+      if (err || !info) {
+        res.status(400).json({
+          message: "Không tìm thấy info",
+        });
+      }
+      let first_id = info;
+
+      data.forEach((item, index) => {
+        let value = item.split("|");
+
+        var info_data = {
+          info_id: "I_" + (parseInt(first_id) + index + 1),
+          info_sex: value[0],
+          infodate_birthday: value[1],
+          info_fullname: value[2],
+          info_passport: value[3],
+          info_ssn: value[4],
+          info_origin: value[5],
+          info_code: value[6],
+          info_residence: value[7],
+          info_identifying: value[8],
+          infodate_expiry: value[9],
+          infodate_start: value[10],
+          infodate_import: value[11],
+          info_plan: body.plan,
+          info_block: body.block,
+          list_view: body.view,
+          info_class: body.class,
+          info_employee: body.employee,
+          info_owner: body.owner,
+          info_status: body.status,
+          info_type: body.type,
+        };
+
+        var info = new Info(info_data);
+        info.save((err, acc) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Thêm info không thành công",
+            });
+          }
+        });
+      });
+    });
+  }
+  
   return;
 
   if (type == "info") {

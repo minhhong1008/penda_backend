@@ -20,19 +20,18 @@ export const upload = (req, res) => {
       }
       let fileData = fs.readFileSync(files.file.path);
       let fileName = files.file.name;
+      console.log(fileName);
       fs.writeFile("../Image/" + fileName, fileData, function (err) {
         if (err) {
           return console.log(err);
         }
         res.json({
-            status: "success",
-            url: "C:/Users/ADMIN/Desktop/penda_nodejs/Image/" + fileName
-        })
+          status: "success",
+          url: "http://files.penda.vn/" + fileName,
+        });
       });
     }
   });
 };
 
-export const read = (req, res) => {
-
-}
+export const read = (req, res) => {};

@@ -22,6 +22,7 @@ import paypalRouter from './routes/paypal.js';
 import pingpongRouter from './routes/pingpong.js';
 import bankRouter from './routes/bank.js';
 import infoRouter from './routes/info.js';
+import personRouter from './routes/person.js';
 import mailRouter from './routes/mail.js';
 import simRouter from './routes/sim.js';
 import deviceRouter from './routes/device.js';
@@ -38,7 +39,7 @@ import etsyitemRouter from './routes/etsyitem.js';
 // ********* ROute create *****************************
 
 import createRouter from './routes/create.js';
-
+import tooldataRouter from './routes/tooldata.js';
 //********************************************************
 //Config
 const app = express();
@@ -72,6 +73,7 @@ app.use('/api', paypalRouter);
 app.use('/api', pingpongRouter);
 app.use('/api', bankRouter);
 app.use('/api', infoRouter);
+app.use('/api', personRouter);
 app.use('/api', mailRouter);
 app.use('/api', simRouter);
 app.use('/api', deviceRouter);
@@ -87,9 +89,12 @@ app.use('/api', fileRouter);
 
 
 
-//********************************************************
+//*************tooldata************************
 
 app.use('/api', createRouter);
+app.use('/api', tooldataRouter);
+
+
 
 //MongoDB
 mongoose.connect(process.env.MONGO_URL, {

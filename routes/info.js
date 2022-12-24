@@ -1,12 +1,26 @@
-import express from 'express';
-import { create, infoByID, getinfo, listinfo, update } from '../controllers/info';
+import express from "express";
+import {
+  create,
+  infoByID,
+  getCountInfo_class,
+  getinfo,
+  listinfo,
+  update,
+} from "../controllers/info";
 import { canViewInfo } from "../controllers/info";
-const router = express.Router();
 
+const router = express.Router();
+// Lấy info_id từ url
 router.param("infoId", infoByID);
-router.post('/info/create', create);
-router.put('/info/update', update)
-router.get('/info/list',canViewInfo, listinfo)
-router.get('/info/get/:infoId',canViewInfo, getinfo)
+// Chưa dùng
+router.post("/info/create", create);
+// Update info_info
+router.put("/info/update", update);
+// View info_table, và phân quyền view
+router.get("/info/list", canViewInfo, listinfo);
+// View info_info, và phân quyền view
+router.get("/info/get/:infoId",canViewInfo, getinfo);
+// View count trong info_class
+router.get("/getinfo/count", getCountInfo_class);
 
 module.exports = router;

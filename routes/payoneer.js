@@ -1,12 +1,26 @@
-import express from 'express';
-import { create, payoneerByID, getpayoneer, listpayoneer, update } from '../controllers/payoneer';
+import express from "express";
+import {
+  create,
+  payoneerByID,
+  getCountPayoneer_class,
+  getpayoneer,
+  listpayoneer,
+  update,
+} from "../controllers/payoneer";
 import { canViewPayoneer } from "../controllers/payoneer";
-const router = express.Router();
 
+const router = express.Router();
+// Lấy payoneer_id từ url
 router.param("payoneerId", payoneerByID);
-router.post('/payoneer/create', create);
-router.put('/payoneer/update', update)
-router.get('/payoneer/list',canViewPayoneer, listpayoneer)
-router.get('/payoneer/get/:payoneerId',canViewPayoneer, getpayoneer)
+// Chưa dùng
+router.post("/payoneer/create", create);
+// Update payoneer_info
+router.put("/payoneer/update", update);
+// View payoneer_table, và phân quyền view
+router.get("/payoneer/list", canViewPayoneer, listpayoneer);
+// View payoneer_info, và phân quyền view
+router.get("/payoneer/get/:payoneerId",canViewPayoneer, getpayoneer);
+// View count trong payoneer_class
+router.get("/getpayoneer/count", getCountPayoneer_class);
 
 module.exports = router;

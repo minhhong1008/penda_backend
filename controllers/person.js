@@ -1,28 +1,29 @@
 // Import model
-import Bank from "../models/bank";
+import Person from "../models/person";
+import Info from "../models/info";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
 import moment, { now } from "moment";
 
 export const create = (req, res) => {
-  const bank = new Bank(req.body);
-  bank.save((err, acc) => {
+  const person = new Person(req.body);
+  person.save((err, acc) => {
     if (err) {
       return res.status(400).json({
-        error: "Thêm bank không thành công",
+        error: "Thêm person không thành công",
       });
     }
     res.json(acc);
   });
 };
 
-export const getbank = (req, res) => {
-  return res.json(req.bank);
+export const getperson = (req, res) => {
+  return res.json(req.person);
 };
 
-// View bảng bank_table
-export const listbank = (req, res) => {
-  var class_name = req.query.bank_class;
+// View bảng person_table
+export const listperson = (req, res) => {
+  var class_name = req.query.person_class;
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -36,7 +37,7 @@ export const listbank = (req, res) => {
     }
 
     users_name = user.users_name;
-    let filter_bank = "";
+    let filter_person = "";
     if (class_name) {
       // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
       if (
@@ -44,35 +45,36 @@ export const listbank = (req, res) => {
           user.users_function
         ) != -1
       ) {
-        filter_bank = {
-          bank_class: class_name,
+        filter_person = {
+          person_class: class_name,
         };
       } else {
         // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
         var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
-        filter_bank = {
-          bank_class: class_name,
-          bank_employee: users_name_re,
-          //bank_status: "Live"
+        filter_person = {
+          person_class: class_name,
+          person_employee: users_name_re,
+          //person_status: "Live"
         };
       }
 
-      Bank.find(filter_bank).exec((err, bank) => {
-        if (err || !bank) {
+      Person.find(filter_person).exec((err, person) => {
+        if (err || !person) {
           res.status(400).json({
-            message: "Không tìm thấy bank",
+            message: "Không tìm thấy person",
           });
         }
-        // Reverse sắp xếp các bank theo thứ tự tạo mới nhất
-        res.json(bank.reverse());
+        // Reverse sắp xếp các person theo thứ tự tạo mới nhất
+        res.json(person.reverse());
       });
     }
   });
 };
 
-// View bảng bank_info
-export const bankByID = (req, res, next, id) => {
+// View bảng person_info
+export const personByID = (req, res, next, id) => {
   let userData = [];
+ 
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -85,14 +87,29 @@ export const bankByID = (req, res, next, id) => {
       users_name = "";
     }
     users_name = user.users_name;
-    let filter_bank = "";
+    let filter_person = "";
     // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
     if (
       ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
         user.users_function
       ) != -1
     ) {
-      Bank.findOne({ bank_id: id })
+      console.log(user.users_function)
+
+  /* 
+      Person.findOne({ _id: decoded._id }).exec((err, sss) => {
+        
+        if (err || !sss) {
+          console.log("Lỗi không truy vấn được Person, kiểm tra populate")
+          return res.status(500);
+        }
+        
+      });
+      return
+ */
+
+
+      Person.findOne({ person_id: id })
         .populate("device_id", [
           "device_id",
           "device_status",
@@ -106,13 +123,6 @@ export const bankByID = (req, res, next, id) => {
           "proxy_class",
           "proxy_user",
           "proxy_password",
-        ])
-        .populate("info_id", [
-          "info_id",
-          "info_status",
-          "info_class",
-          "info_fullname",
-          "infodate_birthday",
         ])
         .populate("mail_id", [
           "mail_id",
@@ -128,12 +138,12 @@ export const bankByID = (req, res, next, id) => {
           "sim_user",
           "sim_password",
         ])
-        .populate("ebay_id", [
-          "ebay_id",
-          "ebay_status",
-          "ebay_class",
-          "ebay_user",
-          "ebay_password",
+        .populate("bank_id", [
+          "bank_id",
+          "bank_status",
+          "bank_class",
+          "bank_user",
+          "bank_password",
         ])
         .populate("payoneer_id", [
           "payoneer_id",
@@ -156,12 +166,12 @@ export const bankByID = (req, res, next, id) => {
           "pingpong_user",
           "pingpong_password",
         ])
-        .populate("etsy_id", [
-          "etsy_id",
-          "etsy_status",
-          "etsy_class",
-          "etsy_user",
-          "etsy_password",
+        .populate("ebay_id", [
+          "ebay_id",
+          "ebay_status",
+          "ebay_class",
+          "ebay_user",
+          "ebay_password",
         ])
         .populate("amazon_id", [
           "amazon_id",
@@ -191,35 +201,35 @@ export const bankByID = (req, res, next, id) => {
           "tiktok_user",
           "tiktok_password",
         ])
-        .exec((err, bank) => {
-          
-          if (err || !bank) {
-          
+        .exec((err, person) => {
+          console.log("person")
+          if (err || !person) {
+            console.log("Lỗi không truy vấn được Person, kiểm tra populate")
             return res.status(500);
           }
 
-          // get list users_name từ db vào bank_employee
+          // get list users_name từ db vào person_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
             users.forEach((user) => {
               userData.push(user.users_name);
             });
           });
 
-          let newData = JSON.parse(JSON.stringify(bank));
-          newData.listselect_bank_employee = userData;
-          req.bank = newData;
+          let newData = JSON.parse(JSON.stringify(person));
+          newData.listselect_person_employee = userData;
+          req.person = newData;
           next();
         });
     } else {
       // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
       var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
-      filter_bank = {
-        bank_id: id,
-        bank_employee: users_name_re,
-        //bank_status: "Live"
+      filter_person = {
+        person_id: id,
+        person_employee: users_name_re,
+        //person_status: "Live"
       };
 
-      Bank.findOne(filter_bank)
+      Person.findOne(filter_person)
       .populate("device_id", [
         "device_id",
         "device_status",
@@ -255,12 +265,12 @@ export const bankByID = (req, res, next, id) => {
         "sim_user",
         "sim_password",
       ])
-      .populate("ebay_id", [
-        "ebay_id",
-        "ebay_status",
-        "ebay_class",
-        "ebay_user",
-        "ebay_password",
+      .populate("bank_id", [
+        "bank_id",
+        "bank_status",
+        "bank_class",
+        "bank_user",
+        "bank_password",
       ])
       .populate("payoneer_id", [
         "payoneer_id",
@@ -283,12 +293,12 @@ export const bankByID = (req, res, next, id) => {
         "pingpong_user",
         "pingpong_password",
       ])
-      .populate("etsy_id", [
-        "etsy_id",
-        "etsy_status",
-        "etsy_class",
-        "etsy_user",
-        "etsy_password",
+      .populate("ebay_id", [
+        "ebay_id",
+        "ebay_status",
+        "ebay_class",
+        "ebay_user",
+        "ebay_password",
       ])
       .populate("amazon_id", [
         "amazon_id",
@@ -318,30 +328,28 @@ export const bankByID = (req, res, next, id) => {
         "tiktok_user",
         "tiktok_password",
       ])
-      .exec((err, bank) => {
-        if (err || !bank) {
-          res.status(400).json({
-            message: "Không tìm thấy bank",
-          });
-          return;
-        }
+      .exec((err, person) => {
+        console.log(person)
+          if (err || !person) {
+            console.log("Lỗi không truy vấn được Person, kiểm tra populate")
+            return res.status(500);
+          }
 
-        // get list users_name từ db vào bank_employee
+        // get list users_name từ db vào person_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
           users.forEach((user) => {
             userData.push(user.users_name);
           });
         });
-        let newData = JSON.parse(JSON.stringify(bank));
-        newData.listselect_bank_employee = userData;
-        req.bank = newData;
+        let newData = JSON.parse(JSON.stringify(person));
+        newData.listselect_person_employee = userData;
+        req.person = newData;
         next();
       });
     }
   });
-
 };
-// Update dữ liệu từ bank_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
+// Update dữ liệu từ person_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
@@ -355,40 +363,40 @@ export const update = (req, res) => {
       users_name = "";
     }
     users_name = user.users_name;
-    var bank_id = req.query.id;
-    var dataBank = req.body;
-    dataBank.bank_history =
+    var person_id = req.query.id;
+    var dataPerson = req.body;
+    dataPerson.person_history =
       users_name +
       "|" +
       moment(now()).format("MM-DD-YYYY HH:mm") +
       "|" +
-      dataBank.bank_class +
+      dataPerson.person_class +
       "," +
-      dataBank.bank_history;
+      dataPerson.person_history;
 
-    for (const key in dataBank) {
-      if (dataBank[key] == "") {
-        delete dataBank[key];
+    for (const key in dataPerson) {
+      if (dataPerson[key] == "") {
+        delete dataPerson[key];
       }
     }
-    Bank.findOneAndUpdate(
-      { bank_id: bank_id },
-      { $set: dataBank },
+    Person.findOneAndUpdate(
+      { person_id: person_id },
+      { $set: dataPerson },
       { useFindAndModify: false },
-      (err, bank) => {
+      (err, person) => {
         if (err) {
           console.log(err);
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });
         }
-        res.json(bank);
+        res.json(person);
       }
     );
   });
 };
-// Get count ra bảng bank_class
-export const getCountBank_class = (req, res) => {
+// Get count ra bảng person_class
+export const getCountPerson_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -409,10 +417,10 @@ export const getCountBank_class = (req, res) => {
         user.users_function
       ) != -1
     ) {
-      Bank.aggregate([
+      Person.aggregate([
         {
           $group: {
-            _id: "$bank_class",
+            _id: "$person_class",
             count: {
               $count: {},
             },
@@ -426,15 +434,15 @@ export const getCountBank_class = (req, res) => {
       });
     } else {
       // Nhân viên chỉ xem được tổng tài khoản nhân viên đó quản lý
-      Bank.aggregate([
+      Person.aggregate([
         {
           $match: {
-            bank_employee: users_name_re,
+            person_employee: users_name_re,
           },
         },
         {
           $group: {
-            _id: "$bank_class",
+            _id: "$person_class",
             count: {
               $count: {},
             },
@@ -451,9 +459,9 @@ export const getCountBank_class = (req, res) => {
 };
 
 // ================ Middle ware====================
-// hàm phân quyền trong Bank, user phải trong phòng sản xuất và quản lý Bank mới view đc Bank
+// hàm phân quyền trong Person, user phải trong phòng sản xuất và quản lý Person mới view đc Person
 
-export const canViewBank = (req, res, next) => {
+export const canViewPerson = (req, res, next) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   const token = data.split(" ");
   if (!token) {
@@ -468,14 +476,14 @@ export const canViewBank = (req, res, next) => {
         });
       }
       if (
-        user.manage_view.indexOf("bank_id") != -1 &&
+        user.manage_view.indexOf("person_id") != -1 &&
         user.users_owner.indexOf("Phòng sản xuất") != -1 &&
         user.users_status.indexOf("Active") != -1
       ) {
         next();
       } else {
         res.status(403).json({
-          error: "Không có quyền truy cập bank",
+          error: "Không có quyền truy cập person",
         });
       }
     });

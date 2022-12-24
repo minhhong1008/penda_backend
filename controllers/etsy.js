@@ -2,7 +2,7 @@
 import Etsy from "../models/etsy";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
-
+import moment, { now } from "moment";
 
 export const create = (req, res) => {
   const etsy = new Etsy(req.body);
@@ -15,86 +15,443 @@ export const create = (req, res) => {
     res.json(acc);
   });
 };
-export const etsyByID = (req, res, next, id) => {
-  Etsy.findOne({ etsy_id: id }, (err, etsy) => {
-    if (err || !etsy) {
-      res.status(400).json({
-        message: "Không tìm thấy etsy",
-      });
-      return;
-    }
-    req.etsy = etsy;
-    next();
-  });
-};
 
-export const update = (req, res) => {
-  var etsy_id = req.query.id;
-  Etsy.findOneAndUpdate(
-    { etsy_id: etsy_id },
-    { $set: req.body },
-    { useFindAndModify: false },
-    (err, etsy) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).json({
-          error: "Bạn không được phép thực hiện hành động này",
-        });
-      }
-      res.json(etsy);
-    }
-  );
-};
 export const getetsy = (req, res) => {
   return res.json(req.etsy);
 };
 
+// View bảng etsy_table
 export const listetsy = (req, res) => {
   var class_name = req.query.etsy_class;
-  var etsy_employee = req.query.etsy_employee;
-  if (class_name) {
-    Etsy.find({ etsy_class: class_name }, (err, etsy) => {
-      if (err || !etsy) {
-        res.status(400).json({
-          message: "Không tìm thấy etsy",
-        });
-      }
-      // Reverse sắp xếp các ebay theo thứ tự tạo mới nhất
-      res.json(etsy.reverse());
-    });
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
   }
-  if (etsy_employee) {
-    Etsy.find({ etsy_employee: etsy_employee }, (err, etsy) => {
-      if (err || !etsy) {
-        res.status(400).json({
-          message: "Không tìm thấy etsy",
-        });
-      }
-      res.json(etsy.reverse());
-    });
-  }
-};
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (!user) {
+      users_name = "";
+    }
 
-export const getCountEtsy_class = (req, res) => {
-  Etsy.aggregate([
-    {
-      $group: {
-        _id: "$etsy_class",
-        count: {
-          $count: {},
-        },
-      },
-    },
-  ]).exec((err, data) => {
-    
-    res.json({
-      status: "success",
-      data: data
-    })
+    users_name = user.users_name;
+    let filter_etsy = "";
+    if (class_name) {
+      // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
+      if (
+        ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+          user.users_function
+        ) != -1
+      ) {
+        filter_etsy = {
+          etsy_class: class_name,
+        };
+      } else {
+        // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
+        var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+        filter_etsy = {
+          etsy_class: class_name,
+          etsy_employee: users_name_re,
+          //etsy_status: "Live"
+        };
+      }
+
+      Etsy.find(filter_etsy).exec((err, etsy) => {
+        if (err || !etsy) {
+          res.status(400).json({
+            message: "Không tìm thấy etsy",
+          });
+        }
+        // Reverse sắp xếp các etsy theo thứ tự tạo mới nhất
+        res.json(etsy.reverse());
+      });
+    }
   });
 };
 
-// hàm phân quyền trong Etsy
+// View bảng etsy_info
+export const etsyByID = (req, res, next, id) => {
+  let userData = [];
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    let filter_etsy = "";
+    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
+    if (
+      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+        user.users_function
+      ) != -1
+    ) {
+      console.log(user.users_function)
+      Etsy.findOne({ etsy_id: id })
+        .populate("device_id", [
+          "device_id",
+          "device_status",
+          "device_class",
+          "device_user",
+          "device_password",
+        ])
+        .populate("proxy_id", [
+          "proxy_id",
+          "proxy_status",
+          "proxy_class",
+          "proxy_user",
+          "proxy_password",
+        ])
+        .populate("info_id", [
+          "info_id",
+          "info_status",
+          "info_class",
+          "info_fullname",
+          "infodate_birthday",
+        ])
+        .populate("mail_id", [
+          "mail_id",
+          "mail_status",
+          "mail_class",
+          "mail_user",
+          "mail_password",
+        ])
+        .populate("sim_id", [
+          "sim_id",
+          "sim_status",
+          "sim_class",
+          "sim_user",
+          "sim_password",
+        ])
+        .populate("bank_id", [
+          "bank_id",
+          "bank_status",
+          "bank_class",
+          "bank_user",
+          "bank_password",
+        ])
+        .populate("payoneer_id", [
+          "payoneer_id",
+          "payoneer_status",
+          "payoneer_class",
+          "payoneer_user",
+          "payoneer_password",
+        ])
+        .populate("paypal_id", [
+          "paypal_id",
+          "paypal_status",
+          "paypal_class",
+          "paypal_user",
+          "paypal_password",
+        ])
+        .populate("pingpong_id", [
+          "pingpong_id",
+          "pingpong_status",
+          "pingpong_class",
+          "pingpong_user",
+          "pingpong_password",
+        ])
+        .populate("ebay_id", [
+          "ebay_id",
+          "ebay_status",
+          "ebay_class",
+          "ebay_user",
+          "ebay_password",
+        ])
+        .populate("amazon_id", [
+          "amazon_id",
+          "amazon_status",
+          "amazon_class",
+          "amazon_user",
+          "amazon_password",
+        ])
+        .populate("shopee_id", [
+          "shopee_id",
+          "shopee_status",
+          "shopee_class",
+          "shopee_user",
+          "shopee_password",
+        ])
+        .populate("facebook_id", [
+          "facebook_id",
+          "facebook_status",
+          "facebook_class",
+          "facebook_user",
+          "facebook_password",
+        ])
+        .populate("tiktok_id", [
+          "tiktok_id",
+          "tiktok_status",
+          "tiktok_class",
+          "tiktok_user",
+          "tiktok_password",
+        ])
+        .exec((err, etsy) => {
+          console.log("etsy")
+          if (err || !etsy) {
+            console.log("Lỗi không truy vấn được Etsy, kiểm tra populate")
+            return res.status(500);
+          }
+
+          // get list users_name từ db vào etsy_employee
+          Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            users.forEach((user) => {
+              userData.push(user.users_name);
+            });
+          });
+
+          let newData = JSON.parse(JSON.stringify(etsy));
+          newData.listselect_etsy_employee = userData;
+          req.etsy = newData;
+          next();
+        });
+    } else {
+      // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
+      var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+      filter_etsy = {
+        etsy_id: id,
+        etsy_employee: users_name_re,
+        //etsy_status: "Live"
+      };
+
+      Etsy.findOne(filter_etsy)
+      .populate("device_id", [
+        "device_id",
+        "device_status",
+        "device_class",
+        "device_user",
+        "device_password",
+      ])
+      .populate("proxy_id", [
+        "proxy_id",
+        "proxy_status",
+        "proxy_class",
+        "proxy_user",
+        "proxy_password",
+      ])
+      .populate("info_id", [
+        "info_id",
+        "info_status",
+        "info_class",
+        "info_fullname",
+        "infodate_birthday",
+      ])
+      .populate("mail_id", [
+        "mail_id",
+        "mail_status",
+        "mail_class",
+        "mail_user",
+        "mail_password",
+      ])
+      .populate("sim_id", [
+        "sim_id",
+        "sim_status",
+        "sim_class",
+        "sim_user",
+        "sim_password",
+      ])
+      .populate("bank_id", [
+        "bank_id",
+        "bank_status",
+        "bank_class",
+        "bank_user",
+        "bank_password",
+      ])
+      .populate("payoneer_id", [
+        "payoneer_id",
+        "payoneer_status",
+        "payoneer_class",
+        "payoneer_user",
+        "payoneer_password",
+      ])
+      .populate("paypal_id", [
+        "paypal_id",
+        "paypal_status",
+        "paypal_class",
+        "paypal_user",
+        "paypal_password",
+      ])
+      .populate("pingpong_id", [
+        "pingpong_id",
+        "pingpong_status",
+        "pingpong_class",
+        "pingpong_user",
+        "pingpong_password",
+      ])
+      .populate("ebay_id", [
+        "ebay_id",
+        "ebay_status",
+        "ebay_class",
+        "ebay_user",
+        "ebay_password",
+      ])
+      .populate("amazon_id", [
+        "amazon_id",
+        "amazon_status",
+        "amazon_class",
+        "amazon_user",
+        "amazon_password",
+      ])
+      .populate("shopee_id", [
+        "shopee_id",
+        "shopee_status",
+        "shopee_class",
+        "shopee_user",
+        "shopee_password",
+      ])
+      .populate("facebook_id", [
+        "facebook_id",
+        "facebook_status",
+        "facebook_class",
+        "facebook_user",
+        "facebook_password",
+      ])
+      .populate("tiktok_id", [
+        "tiktok_id",
+        "tiktok_status",
+        "tiktok_class",
+        "tiktok_user",
+        "tiktok_password",
+      ])
+      .exec((err, etsy) => {
+        console.log(etsy)
+          if (err || !etsy) {
+            console.log("Lỗi không truy vấn được Etsy, kiểm tra populate")
+            return res.status(500);
+          }
+
+        // get list users_name từ db vào etsy_employee
+        Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+          users.forEach((user) => {
+            userData.push(user.users_name);
+          });
+        });
+        let newData = JSON.parse(JSON.stringify(etsy));
+        newData.listselect_etsy_employee = userData;
+        req.etsy = newData;
+        next();
+      });
+    }
+  });
+};
+// Update dữ liệu từ etsy_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
+export const update = (req, res) => {
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    var etsy_id = req.query.id;
+    var dataEtsy = req.body;
+    dataEtsy.etsy_history =
+      users_name +
+      "|" +
+      moment(now()).format("MM-DD-YYYY HH:mm") +
+      "|" +
+      dataEtsy.etsy_class +
+      "," +
+      dataEtsy.etsy_history;
+
+    for (const key in dataEtsy) {
+      if (dataEtsy[key] == "") {
+        delete dataEtsy[key];
+      }
+    }
+    Etsy.findOneAndUpdate(
+      { etsy_id: etsy_id },
+      { $set: dataEtsy },
+      { useFindAndModify: false },
+      (err, etsy) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).json({
+            error: "Bạn không được phép thực hiện hành động này",
+          });
+        }
+        res.json(etsy);
+      }
+    );
+  });
+};
+// Get count ra bảng etsy_class
+export const getCountEtsy_class = (req, res) => {
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+
+    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
+    if (
+      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+        user.users_function
+      ) != -1
+    ) {
+      Etsy.aggregate([
+        {
+          $group: {
+            _id: "$etsy_class",
+            count: {
+              $count: {},
+            },
+          },
+        },
+      ]).exec((err, data) => {
+        res.json({
+          status: "success",
+          data: data,
+        });
+      });
+    } else {
+      // Nhân viên chỉ xem được tổng tài khoản nhân viên đó quản lý
+      Etsy.aggregate([
+        {
+          $match: {
+            etsy_employee: users_name_re,
+          },
+        },
+        {
+          $group: {
+            _id: "$etsy_class",
+            count: {
+              $count: {},
+            },
+          },
+        },
+      ]).exec((err, data) => {
+        res.json({
+          status: "success",
+          data: data,
+        });
+      });
+    }
+  });
+};
+
+// ================ Middle ware====================
+// hàm phân quyền trong Etsy, user phải trong phòng sản xuất và quản lý Etsy mới view đc Etsy
+
 export const canViewEtsy = (req, res, next) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   const token = data.split(" ");
@@ -111,7 +468,8 @@ export const canViewEtsy = (req, res, next) => {
       }
       if (
         user.manage_view.indexOf("etsy_id") != -1 &&
-        user.users_owner.indexOf("Phòng sản xuất") != -1
+        user.users_owner.indexOf("Phòng sản xuất") != -1 &&
+        user.users_status.indexOf("Active") != -1
       ) {
         next();
       } else {

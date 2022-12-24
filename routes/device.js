@@ -1,12 +1,27 @@
-import express from 'express';
-import { create, deviceByID, getdevice, listdevice, update } from '../controllers/device';
+import express from "express";
+import {
+  create,
+  deviceByID,
+  getCountDevice_class,
+  getdevice,
+  listdevice,
+  update,
+} from "../controllers/device";
 import { canViewDevice } from "../controllers/device";
-const router = express.Router();
 
+const router = express.Router();
+// Lấy device_id từ url
 router.param("deviceId", deviceByID);
-router.post('/device/create', create);
-router.put('/device/update', update)
-router.get('/device/list',canViewDevice, listdevice)
-router.get('/device/get/:deviceId',canViewDevice, getdevice)
+// Chưa dùng
+router.post("/device/create", create);
+// Update device_info
+router.put("/device/update", update);
+// View device_table, và phân quyền view
+router.get("/device/list", canViewDevice, listdevice);
+// View device_info, và phân quyền view
+router.get("/device/get/:deviceId",canViewDevice, getdevice);
+// View count trong device_class
+router.get("/getdevice/count", getCountDevice_class);
 
 module.exports = router;
+

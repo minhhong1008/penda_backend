@@ -55,8 +55,8 @@ const infoSchema = mongoose.Schema(
     tiktok_id: { type: ObjectId, ref: "Tiktok"},
 
 
-    facebook_image_url: { type: String },
-    facebook_history: { type: String },
+    info_image_url: { type: String },
+    info_history: { type: String },
 
     infodate_delivery: { type: String },
     infodate_nextclass: { type: String },

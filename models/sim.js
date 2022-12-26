@@ -43,7 +43,6 @@ const simSchema = mongoose.Schema(
     facebook_id: { type: ObjectId, ref: "Facebook"},
     tiktok_id: { type: ObjectId, ref: "Tiktok"},
 
-
     sim_image_url: { type: String },
     sim_history: { type: String },
     // List date

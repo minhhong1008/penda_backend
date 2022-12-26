@@ -340,7 +340,7 @@ export const ebayByID = (req, res, next, id) => {
   });
 
 };
-// Update dữ liệu từ ebay_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
+// Update dữ liệu từ ebay_info ( đang gặp vấn đề quyền nhân viên update thì nhiều field bị rỗng)
 export const update = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";

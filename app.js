@@ -36,6 +36,8 @@ import ebayorderRouter from './routes/ebayorder.js';
 import etsyorderRouter from './routes/etsyorder.js';
 import ebayitemRouter from './routes/ebayitem.js';
 import etsyitemRouter from './routes/etsyitem.js';
+import customerRouter from './routes/customer.js';
+//import reportRouter from './routes/report.js';
 // ********* ROute create *****************************
 
 import createRouter from './routes/create.js';
@@ -84,8 +86,10 @@ app.use('/api', ebayorderRouter);
 app.use('/api', etsyorderRouter);
 app.use('/api', ebayitemRouter); 
 app.use('/api', etsyitemRouter);
+app.use('/api', customerRouter);
 app.use('/api', usersRouter);
 app.use('/api', fileRouter);
+
 
 
 
@@ -93,6 +97,8 @@ app.use('/api', fileRouter);
 
 app.use('/api', createRouter);
 app.use('/api', tooldataRouter);
+
+//app.use('/api', reportRouter);
 
 
 

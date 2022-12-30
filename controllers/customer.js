@@ -1,28 +1,28 @@
 // Import model
-import Ebay from "../models/ebay";
+import Customer from "../models/customer";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
 import moment, { now } from "moment";
 
 export const create = (req, res) => {
-  const ebay = new Ebay(req.body);
-  ebay.save((err, acc) => {
+  const customer = new Customer(req.body);
+  customer.save((err, acc) => {
     if (err) {
       return res.status(400).json({
-        error: "Thêm ebay không thành công",
+        error: "Thêm customer không thành công",
       });
     }
     res.json(acc);
   });
 };
 
-export const getebay = (req, res) => {
-  return res.json(req.ebay);
+export const getcustomer = (req, res) => {
+  return res.json(req.customer);
 };
 
-// View bảng ebay_table
-export const listebay = (req, res) => {
-  var class_name = req.query.ebay_class;
+// View bảng customer_table
+export const listcustomer = (req, res) => {
+  var class_name = req.query.customer_class;
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -36,7 +36,7 @@ export const listebay = (req, res) => {
     }
 
     users_name = user.users_name;
-    let filter_ebay = "";
+    let filter_customer = "";
     if (class_name) {
       // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
       if (
@@ -44,33 +44,34 @@ export const listebay = (req, res) => {
           user.users_function
         ) != -1
       ) {
-        filter_ebay = {
-          ebay_class: class_name,
+        filter_customer = {
+          customer_class: class_name,
         };
       } else {
         // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
-        var users_name_filter = new RegExp("(.*)" + users_name + "(.*)");
-        filter_ebay = {
-          ebay_class: class_name,
-          ebay_employee: users_name_filter,
-          //ebay_status: "Live"
+        var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+        filter_customer = {
+          customer_class: class_name,
+          customer_employee: users_name_re,
+          //customer_status: "Live"
         };
       }
-      Ebay.find(filter_ebay).exec((err, ebay) => {
-        if (err || !ebay) {
+
+      Customer.find(filter_customer).exec((err, customer) => {
+        if (err || !customer) {
           res.status(400).json({
-            message: "Không tìm thấy ebay",
+            message: "Không tìm thấy customer",
           });
         }
-        // Reverse sắp xếp các ebay theo thứ tự tạo mới nhất
-        res.json(ebay.reverse());
+        // Reverse sắp xếp các customer theo thứ tự tạo mới nhất
+        res.json(customer.reverse());
       });
     }
   });
 };
 
-// View bảng ebay_info
-export const ebayByID = (req, res, next, id) => {
+// View bảng customer_info
+export const customerByID = (req, res, next, id) => {
   let userData = [];
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
@@ -84,14 +85,14 @@ export const ebayByID = (req, res, next, id) => {
       users_name = "";
     }
     users_name = user.users_name;
-    let filter_ebay = "";
+    let filter_customer = "";
     // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
     if (
       ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
         user.users_function
       ) != -1
     ) {
-      Ebay.findOne({ ebay_id: id })
+      Customer.findOne({ customer_id: id })
         .populate("device_id", [
           "device_id",
           "device_status",
@@ -127,12 +128,12 @@ export const ebayByID = (req, res, next, id) => {
           "sim_user",
           "sim_password",
         ])
-        .populate("bank_id", [
-          "bank_id",
-          "bank_status",
-          "bank_class",
-          "bank_user",
-          "bank_password",
+        .populate("ebay_id", [
+          "ebay_id",
+          "ebay_status",
+          "ebay_class",
+          "ebay_user",
+          "ebay_password",
         ])
         .populate("payoneer_id", [
           "payoneer_id",
@@ -190,42 +191,35 @@ export const ebayByID = (req, res, next, id) => {
           "tiktok_user",
           "tiktok_password",
         ])
-        .populate("customer_id", [
-          "customer_id",
-          "customer_status",
-          "customer_class",
-          "customer_user",
-          "customer_phone1",
-        ])
-        .exec((err, ebay) => {
+        .exec((err, customer) => {
           
-          if (err || !ebay) {
+          if (err || !customer) {
           
             return res.status(500);
           }
 
-          // get list users_name từ db vào ebay_employee
+          // get list users_name từ db vào customer_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
             users.forEach((user) => {
               userData.push(user.users_name);
             });
           });
 
-          let newData = JSON.parse(JSON.stringify(ebay));
-          newData.listselect_ebay_employee = userData;
-          req.ebay = newData;
+          let newData = JSON.parse(JSON.stringify(customer));
+          newData.listselect_customer_employee = userData;
+          req.customer = newData;
           next();
         });
     } else {
       // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
       var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
-      filter_ebay = {
-        ebay_id: id,
-        ebay_employee: users_name_re,
-        //ebay_status: "Live"
+      filter_customer = {
+        customer_id: id,
+        customer_employee: users_name_re,
+        //customer_status: "Live"
       };
 
-      Ebay.findOne(filter_ebay)
+      Customer.findOne(filter_customer)
       .populate("device_id", [
         "device_id",
         "device_status",
@@ -261,12 +255,12 @@ export const ebayByID = (req, res, next, id) => {
         "sim_user",
         "sim_password",
       ])
-      .populate("bank_id", [
-        "bank_id",
-        "bank_status",
-        "bank_class",
-        "bank_user",
-        "bank_password",
+      .populate("ebay_id", [
+        "ebay_id",
+        "ebay_status",
+        "ebay_class",
+        "ebay_user",
+        "ebay_password",
       ])
       .populate("payoneer_id", [
         "payoneer_id",
@@ -324,37 +318,30 @@ export const ebayByID = (req, res, next, id) => {
         "tiktok_user",
         "tiktok_password",
       ])
-      .populate("customer_id", [
-        "customer_id",
-        "customer_status",
-        "customer_class",
-        "customer_user",
-        "customer_phone1",
-      ])
-      .exec((err, ebay) => {
-        if (err || !ebay) {
+      .exec((err, customer) => {
+        if (err || !customer) {
           res.status(400).json({
-            message: "Không tìm thấy ebay",
+            message: "Không tìm thấy customer",
           });
           return;
         }
 
-        // get list users_name từ db vào ebay_employee
+        // get list users_name từ db vào customer_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
           users.forEach((user) => {
             userData.push(user.users_name);
           });
         });
-        let newData = JSON.parse(JSON.stringify(ebay));
-        newData.listselect_ebay_employee = userData;
-        req.ebay = newData;
+        let newData = JSON.parse(JSON.stringify(customer));
+        newData.listselect_customer_employee = userData;
+        req.customer = newData;
         next();
       });
     }
   });
 
 };
-// Update dữ liệu từ ebay_info ( đang gặp vấn đề quyền nhân viên update thì nhiều field bị rỗng)
+// Update dữ liệu từ customer_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
@@ -368,93 +355,40 @@ export const update = (req, res) => {
       users_name = "";
     }
     users_name = user.users_name;
-    var ebay_id = req.query.id;
-    var dataEbay = req.body;
-    dataEbay.ebay_history =
+    var customer_id = req.query.id;
+    var dataCustomer = req.body;
+    dataCustomer.customer_history =
       users_name +
       "|" +
       moment(now()).format("MM-DD-YYYY HH:mm") +
       "|" +
-      dataEbay.ebay_class +
+      dataCustomer.customer_class +
       "," +
-      dataEbay.ebay_history;
+      dataCustomer.customer_history;
 
-    for (const key in dataEbay) {
-      if (dataEbay[key] == "") {
-        delete dataEbay[key];
+    for (const key in dataCustomer) {
+      if (dataCustomer[key] == "") {
+        delete dataCustomer[key];
       }
     }
-    Ebay.findOneAndUpdate(
-      { ebay_id: ebay_id },
-      { $set: dataEbay },
+    Customer.findOneAndUpdate(
+      { customer_id: customer_id },
+      { $set: dataCustomer },
       { useFindAndModify: false },
-      (err, ebay) => {
+      (err, customer) => {
         if (err) {
           console.log(err);
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });
         }
-        res.json(ebay);
+        res.json(customer);
       }
     );
   });
 };
-
-// Copy dữ liệu từ ebay_info 
-export const Copy_re = (req, res) => {
-  const data = req.headers["x-access-token"] || req.headers["authorization"];
-  let users_name = "";
-  const token = data.split(" ");
-  if (!token) {
-    users_name = "";
-  }
-  const decoded = jwt.verify(token[1], "duy");
-  Users.findOne({ _id: decoded._id }).exec((err, user) => {
-    if (!user) {
-      users_name = "";
-    }
-    users_name = user.users_name;
-    var ebay_id = req.query.id;
-    var dataEbay = req.body;
-    dataEbay.ebay_class =="Lớp 1";
-
-
-
-
-
-    
-    dataEbay.ebay_history =
-      users_name +
-      "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
-      "|" +
-      dataEbay.ebay_class;
-
-    for (const key in dataEbay) {
-      if (dataEbay[key] == "") {
-        delete dataEbay[key];
-      }
-    }
-    Ebay.findOneAndUpdate(
-      { ebay_id: ebay_id },
-      { $set: dataEbay },
-      { useFindAndModify: false },
-      (err, ebay) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).json({
-            error: "Bạn không được phép thực hiện hành động này",
-          });
-        }
-        res.json(ebay);
-      }
-    );
-  });
-};
-
-// Get count ra bảng ebay_class
-export const getCountEbay_class = (req, res) => {
+// Get count ra bảng customer_class
+export const getCountCustomer_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -475,10 +409,10 @@ export const getCountEbay_class = (req, res) => {
         user.users_function
       ) != -1
     ) {
-      Ebay.aggregate([
+      Customer.aggregate([
         {
           $group: {
-            _id: "$ebay_class",
+            _id: "$customer_class",
             count: {
               $count: {},
             },
@@ -492,15 +426,15 @@ export const getCountEbay_class = (req, res) => {
       });
     } else {
       // Nhân viên chỉ xem được tổng tài khoản nhân viên đó quản lý
-      Ebay.aggregate([
+      Customer.aggregate([
         {
           $match: {
-            ebay_employee: users_name_re,
+            customer_employee: users_name_re,
           },
         },
         {
           $group: {
-            _id: "$ebay_class",
+            _id: "$customer_class",
             count: {
               $count: {},
             },
@@ -517,9 +451,9 @@ export const getCountEbay_class = (req, res) => {
 };
 
 // ================ Middle ware====================
-// hàm phân quyền trong Ebay, user phải trong phòng sản xuất và quản lý Ebay mới view đc Ebay
+// hàm phân quyền trong Customer, user phải trong phòng sản xuất và quản lý Customer mới view đc Customer
 
-export const canViewEbay = (req, res, next) => {
+export const canViewCustomer = (req, res, next) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   const token = data.split(" ");
   if (!token) {
@@ -534,14 +468,14 @@ export const canViewEbay = (req, res, next) => {
         });
       }
       if (
-        user.manage_view.indexOf("ebay_id") != -1 &&
+        //user.manage_view.indexOf("customer_id") != -1 &&
         user.users_owner.indexOf("Phòng sản xuất") != -1 &&
         user.users_status.indexOf("Active") != -1
       ) {
         next();
       } else {
         res.status(403).json({
-          error: "Không có quyền truy cập ebay",
+          error: "Không có quyền truy cập customer",
         });
       }
     });

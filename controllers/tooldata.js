@@ -13,160 +13,280 @@ import Amazon from "../models/amazon";
 import Shopee from "../models/shopee";
 import Facebook from "../models/facebook";
 import Tiktok from "../models/tiktok";
+import Customer from "../models/customer";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
+
+// get list users_name từ db vào ebay_employee
+export const getEmployee = (req, res, next) => {
+  let userData = [];
+  Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+    users.forEach((user) => {
+      userData.push(user.users_name);
+    });
+    res.json(userData);
+  });
+};
 
 export const Create_newdata = (req, res) => {
   let type = req.query.type;
   let body = req.body;
   let data = req.body.data.split("\n");
-  /* if (data.length -1 == 0 ) {
+  if (data.length - 1 == 0) {
     console.log("Không có dữ liệu");
     return;
-  } */
-    if (type == "full") {
-      data.forEach((item, index) => {
-        let value = item.split("|");
-        let field_id = {};
-        let temp_id = value[0];
+  }
 
-        let device = new Device({
-          device_id: temp_id,
-          device_class: "PC 1",
-          list_view: body.view,
-        });
-        device.save((err, device) => {
-          field_id.device_id = device._id;
-        });
+  let types = type.split(",");
 
-        let proxy = new Proxy({
-          proxy_id: temp_id,
-          proxy_class: "Lớp 1",
-          list_view: body.view,
-        });
-        proxy.save((err, proxy) => {
-          field_id.proxy_id = proxy._id;
-        });
+  if (types.indexOf("create") !== -1) {
+    data.forEach((item, index) => {
+      let value = item.split("|");
+      let field_id = {};
+      let temp_id = value[0];
 
-        let info = new Info({
-          info_id: temp_id,
-          info_class: "Lớp 1",
-          list_view: body.view,
-        });
-        info.save((err, info) => {
-          field_id.info_id = info._id;
-        });
+      // Kiểm tra trùng id
 
-        let sim = new Sim({
-          sim_id: temp_id,
-          sim_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("device") !== -1) {
+        Device.findOne({ device_id: temp_id }).exec((err, device) => {
+          if (!device) {
+            let device = new Device({
+              device_id: temp_id,
+              device_class: "PC 1",
+              list_view: body.view,
+            });
+            device.save((err, device) => {
+              field_id.device_id = device._id;
+            });
+          }
         });
-        sim.save((err, sim) => {
-          field_id.sim_id = sim._id;
-        });
+      }
 
-        let mail = new Mail({
-          mail_id: temp_id,
-          mail_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("proxy") !== -1) {
+        Proxy.findOne({ proxy_id: temp_id }).exec((err, proxy) => {
+          if (!proxy) {
+            let proxy = new Proxy({
+              proxy_id: temp_id,
+              proxy_class: "Lớp 1",
+              list_view: body.view,
+            });
+            proxy.save((err, proxy) => {
+              field_id.proxy_id = proxy._id;
+            });
+          }
         });
-        mail.save((err, mail) => {
-          field_id.mail_id = mail._id;
-        });
+      }
 
-        let bank = new Bank({
-          bank_id: temp_id,
-          bank_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("info") !== -1) {
+        Info.findOne({ info_id: temp_id }).exec((err, info) => {
+          if (!info) {
+            let info = new Info({
+              info_id: temp_id,
+              info_class: "Lớp 1",
+              list_view: body.view,
+            });
+            info.save((err, info) => {
+              field_id.info_id = info._id;
+            });
+          }
         });
-        bank.save((err, bank) => {
-          field_id.bank_id = bank._id;
-        });
+      }
 
-        let payoneer = new Payoneer({
-          payoneer_id: temp_id,
-          payoneer_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("sim") !== -1) {
+        Sim.findOne({ sim_id: temp_id }).exec((err, sim) => {
+          if (!sim) {
+            let sim = new Sim({
+              sim_id: temp_id,
+              sim_class: "Lớp 1",
+              list_view: body.view,
+            });
+            sim.save((err, sim) => {
+              field_id.sim_id = sim._id;
+            });
+          }
         });
-        payoneer.save((err, payoneer) => {
-          field_id.payoneer_id = payoneer._id;
-        });
+      }
 
-        let paypal = new Paypal({
-          paypal_id: temp_id,
-          paypal_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("mail") !== -1) {
+        Mail.findOne({ mail_id: temp_id }).exec((err, mail) => {
+          if (!mail) {
+            let mail = new Mail({
+              mail_id: temp_id,
+              mail_class: "Lớp 1",
+              list_view: body.view,
+            });
+            mail.save((err, mail) => {
+              field_id.mail_id = mail._id;
+            });
+          }
         });
-        paypal.save((err, paypal) => {
-          field_id.paypal_id = paypal._id;
-        });
+      }
 
-        let pingpong = new Pingpong({
-          pingpong_id: temp_id,
-          pingpong_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("bank") !== -1) {
+        Bank.findOne({ bank_id: temp_id }).exec((err, bank) => {
+          if (!bank) {
+            let bank = new Bank({
+              bank_id: temp_id,
+              bank_class: "Lớp 1",
+              list_view: body.view,
+            });
+            bank.save((err, bank) => {
+              field_id.bank_id = bank._id;
+            });
+          }
         });
-        pingpong.save((err, pingpong) => {
-          field_id.pingpong_id = pingpong._id;
-        });
+      }
 
-        let ebay = new Ebay({
-          ebay_id: temp_id,
-          ebay_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("payoneer") !== -1) {
+        Payoneer.findOne({ payoneer_id: temp_id }).exec((err, payoneer) => {
+          if (!payoneer) {
+            let payoneer = new Payoneer({
+              payoneer_id: temp_id,
+              payoneer_class: "Lớp 1",
+              list_view: body.view,
+            });
+            payoneer.save((err, payoneer) => {
+              field_id.payoneer_id = payoneer._id;
+            });
+          }
         });
-        ebay.save((err, ebay) => {
-          field_id.ebay_id = ebay._id;
-        });
+      }
 
-        let etsy = new Etsy({
-          etsy_id: temp_id,
-          etsy_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("paypal") !== -1) {
+        Paypal.findOne({ paypal_id: temp_id }).exec((err, paypal) => {
+          if (!paypal) {
+            let paypal = new Paypal({
+              paypal_id: temp_id,
+              paypal_class: "Lớp 1",
+              list_view: body.view,
+            });
+            paypal.save((err, paypal) => {
+              field_id.paypal_id = paypal._id;
+            });
+          }
         });
-        etsy.save((err, etsy) => {
-          field_id.etsy_id = etsy._id;
-        });
+      }
 
-        let amazon = new Amazon({
-          amazon_id: temp_id,
-          amazon_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("pingpong") !== -1) {
+        Pingpong.findOne({ pingpong_id: temp_id }).exec((err, pingpong) => {
+          if (!pingpong) {
+            let pingpong = new Pingpong({
+              pingpong_id: temp_id,
+              pingpong_class: "Lớp 1",
+              list_view: body.view,
+            });
+            pingpong.save((err, pingpong) => {
+              field_id.pingpong_id = pingpong._id;
+            });
+          }
         });
-        amazon.save((err, amazon) => {
-          field_id.amazon_id = amazon._id;
-        });
+      }
 
-        let shopee = new Shopee({
-          shopee_id: temp_id,
-          shopee_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("ebay") !== -1) {
+        Ebay.findOne({ ebay_id: temp_id }).exec((err, ebay) => {
+          if (!ebay) {
+            let ebay = new Ebay({
+              ebay_id: temp_id,
+              ebay_class: "Lớp 1",
+              list_view: body.view,
+            });
+            ebay.save((err, ebay) => {
+              field_id.ebay_id = ebay._id;
+            });
+          }
         });
-        shopee.save((err, shopee) => {
-          field_id.shopee_id = shopee._id;
-        });
+      }
 
-        let facebook = new Facebook({
-          facebook_id: temp_id,
-          facebook_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("etsy") !== -1) {
+        Etsy.findOne({ etsy_id: temp_id }).exec((err, etsy) => {
+          if (!etsy) {
+            let etsy = new Etsy({
+              etsy_id: temp_id,
+              etsy_class: "Lớp 1",
+              list_view: body.view,
+            });
+            etsy.save((err, etsy) => {
+              field_id.etsy_id = etsy._id;
+            });
+          }
         });
-        facebook.save((err, facebook) => {
-          field_id.facebook_id = facebook._id;
-        });
+      }
 
-        let tiktok = new Tiktok({
-          tiktok_id: temp_id,
-          tiktok_class: "Lớp 1",
-          list_view: body.view,
+      if (types.indexOf("amazon") !== -1) {
+        Amazon.findOne({ amazon_id: temp_id }).exec((err, amazon) => {
+          if (!amazon) {
+            let amazon = new Amazon({
+              amazon_id: temp_id,
+              amazon_class: "Lớp 1",
+              list_view: body.view,
+            });
+            amazon.save((err, amazon) => {
+              field_id.amazon_id = amazon._id;
+            });
+          }
         });
-        tiktok.save((err, tiktok) => {
-          field_id.tiktok_id = tiktok._id;
-        });
+      }
 
-        // Update
-        setTimeout(() => {
+      if (types.indexOf("shopee") !== -1) {
+        Shopee.findOne({ shopee_id: temp_id }).exec((err, shopee) => {
+          if (!shopee) {
+            let shopee = new Shopee({
+              shopee_id: temp_id,
+              shopee_class: "Lớp 1",
+              list_view: body.view,
+            });
+            shopee.save((err, shopee) => {
+              field_id.shopee_id = shopee._id;
+            });
+          }
+        });
+      }
+
+      if (types.indexOf("facebook") !== -1) {
+        Facebook.findOne({ facebook_id: temp_id }).exec((err, facebook) => {
+          if (!facebook) {
+            let facebook = new Facebook({
+              facebook_id: temp_id,
+              facebook_class: "Lớp 1",
+              list_view: body.view,
+            });
+            facebook.save((err, facebook) => {
+              field_id.facebook_id = facebook._id;
+            });
+          }
+        });
+      }
+
+      if (types.indexOf("tiktok") !== -1) {
+        Tiktok.findOne({ tiktok_id: temp_id }).exec((err, tiktok) => {
+          if (!tiktok) {
+            let tiktok = new Tiktok({
+              tiktok_id: temp_id,
+              tiktok_class: "Lớp 1",
+              list_view: body.view,
+            });
+            tiktok.save((err, tiktok) => {
+              field_id.tiktok_id = tiktok._id;
+            });
+          }
+        });
+      }
+
+      if (types.indexOf("customer") !== -1) {
+        Customer.findOne({ customer_id: temp_id }).exec((err, customer) => {
+          if (!customer) {
+            let customer = new Customer({
+              customer_id: temp_id,
+              customer_class: "Lớp 1",
+            });
+            customer.save((err, customer) => {});
+          }
+        });
+      }
+
+      // Update
+      setTimeout(() => {
+        if (types.indexOf("device") !== -1) {
           let device_item = JSON.parse(JSON.stringify(field_id));
           device_item.device_id = temp_id;
           Device.findOneAndUpdate(
@@ -176,7 +296,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("proxy") !== -1) {
           let proxy_item = JSON.parse(JSON.stringify(field_id));
           proxy_item.proxy_id = temp_id;
           Proxy.findOneAndUpdate(
@@ -186,7 +308,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("info") !== -1) {
           let info_item = JSON.parse(JSON.stringify(field_id));
           info_item.info_id = temp_id;
           Info.findOneAndUpdate(
@@ -196,7 +320,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("mail") !== -1) {
           let mail_item = JSON.parse(JSON.stringify(field_id));
           mail_item.mail_id = temp_id;
           Mail.findOneAndUpdate(
@@ -206,7 +332,21 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("sim") !== -1) {
+          let sim_item = JSON.parse(JSON.stringify(field_id));
+          sim_item.sim_id = temp_id;
+          Sim.findOneAndUpdate(
+            { sim_id: temp_id },
+            { $set: sim_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("bank") !== -1) {
           let bank_item = JSON.parse(JSON.stringify(field_id));
           bank_item.bank_id = temp_id;
           Bank.findOneAndUpdate(
@@ -216,7 +356,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("payoneer") !== -1) {
           let payoneer_item = JSON.parse(JSON.stringify(field_id));
           payoneer_item.payoneer_id = temp_id;
           Payoneer.findOneAndUpdate(
@@ -226,7 +368,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("paypal") !== -1) {
           let paypal_item = JSON.parse(JSON.stringify(field_id));
           paypal_item.paypal_id = temp_id;
           Paypal.findOneAndUpdate(
@@ -236,7 +380,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("pingpong") !== -1) {
           let pingpong_item = JSON.parse(JSON.stringify(field_id));
           pingpong_item.pingpong_id = temp_id;
           Pingpong.findOneAndUpdate(
@@ -246,7 +392,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("ebay") !== -1) {
           let ebay_item = JSON.parse(JSON.stringify(field_id));
           ebay_item.ebay_id = temp_id;
           Ebay.findOneAndUpdate(
@@ -256,7 +404,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("etsy") !== -1) {
           let etsy_item = JSON.parse(JSON.stringify(field_id));
           etsy_item.etsy_id = temp_id;
           Etsy.findOneAndUpdate(
@@ -266,7 +416,8 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
-
+        }
+        if (types.indexOf("amazon") !== -1) {
           let amazon_item = JSON.parse(JSON.stringify(field_id));
           amazon_item.amazon_id = temp_id;
           Amazon.findOneAndUpdate(
@@ -276,7 +427,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("shopee") !== -1) {
           let shopee_item = JSON.parse(JSON.stringify(field_id));
           shopee_item.shopee_id = temp_id;
           Shopee.findOneAndUpdate(
@@ -286,7 +439,8 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
-
+        }
+        if (types.indexOf("facebook") !== -1) {
           let facebook_item = JSON.parse(JSON.stringify(field_id));
           facebook_item.facebook_id = temp_id;
           Facebook.findOneAndUpdate(
@@ -296,7 +450,9 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
+        }
 
+        if (types.indexOf("tiktok") !== -1) {
           let tiktok_item = JSON.parse(JSON.stringify(field_id));
           tiktok_item.tiktok_id = temp_id;
           Tiktok.findOneAndUpdate(
@@ -306,11 +462,13 @@ export const Create_newdata = (req, res) => {
           ).exec((err, item) => {
             console.log(item);
           });
-        }, 3000);
-      });
-    }
+        }
+      }, 15000);
+    });
+  }
 
-    if (type == "device") {
+  if (types.indexOf("update") !== -1) {
+    if (types.indexOf("device") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -336,7 +494,10 @@ export const Create_newdata = (req, res) => {
           device_type: body.type,
         };
         for (const key in device_data) {
-          if (device_data[key] == "" || typeof device_data[key] === "undefined") {
+          if (
+            device_data[key] == "" ||
+            typeof device_data[key] === "undefined"
+          ) {
             delete device_data[key];
           }
         }
@@ -350,7 +511,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "proxy") {
+    if (types.indexOf("proxy") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -390,7 +551,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "info") {
+    if (types.indexOf("info") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -436,7 +597,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "mail") {
+    if (types.indexOf("mail") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -476,11 +637,11 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "sim") {
+    if (types.indexOf("sim") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
-        console.log(temp_id)
+        console.log(temp_id);
         var sim_data = {
           sim_id: temp_id,
           sim_user: value[1],
@@ -517,7 +678,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "bank") {
+    if (types.indexOf("bank") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -557,7 +718,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "payoneer") {
+    if (types.indexOf("payoneer") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -583,7 +744,10 @@ export const Create_newdata = (req, res) => {
           payoneer_type: body.type,
         };
         for (const key in payoneer_data) {
-          if (payoneer_data[key] == "" || typeof payoneer_data[key] === "undefined") {
+          if (
+            payoneer_data[key] == "" ||
+            typeof payoneer_data[key] === "undefined"
+          ) {
             delete payoneer_data[key];
           }
         }
@@ -597,7 +761,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "paypal") {
+    if (types.indexOf("paypal") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -623,7 +787,10 @@ export const Create_newdata = (req, res) => {
           paypal_type: body.type,
         };
         for (const key in paypal_data) {
-          if (paypal_data[key] == "" || typeof paypal_data[key] === "undefined") {
+          if (
+            paypal_data[key] == "" ||
+            typeof paypal_data[key] === "undefined"
+          ) {
             delete paypal_data[key];
           }
         }
@@ -637,7 +804,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "pingpong") {
+    if (types.indexOf("pingpong") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -663,7 +830,10 @@ export const Create_newdata = (req, res) => {
           pingpong_type: body.type,
         };
         for (const key in pingpong_data) {
-          if (pingpong_data[key] == "" || typeof pingpong_data[key] === "undefined") {
+          if (
+            pingpong_data[key] == "" ||
+            typeof pingpong_data[key] === "undefined"
+          ) {
             delete pingpong_data[key];
           }
         }
@@ -677,7 +847,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "ebay") {
+    if (types.indexOf("ebay") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -717,7 +887,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "etsy") {
+    if (types.indexOf("etsy") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -757,7 +927,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "amazon") {
+    if (types.indexOf("amazon") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -783,7 +953,10 @@ export const Create_newdata = (req, res) => {
           amazon_type: body.type,
         };
         for (const key in amazon_data) {
-          if (amazon_data[key] == "" || typeof amazon_data[key] === "undefined") {
+          if (
+            amazon_data[key] == "" ||
+            typeof amazon_data[key] === "undefined"
+          ) {
             delete amazon_data[key];
           }
         }
@@ -797,7 +970,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "shopee") {
+    if (types.indexOf("shopee") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -823,7 +996,10 @@ export const Create_newdata = (req, res) => {
           shopee_type: body.type,
         };
         for (const key in shopee_data) {
-          if (shopee_data[key] == "" || typeof shopee_data[key] === "undefined") {
+          if (
+            shopee_data[key] == "" ||
+            typeof shopee_data[key] === "undefined"
+          ) {
             delete shopee_data[key];
           }
         }
@@ -837,7 +1013,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "facebook") {
+    if (types.indexOf("facebook") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -863,7 +1039,10 @@ export const Create_newdata = (req, res) => {
           facebook_type: body.type,
         };
         for (const key in facebook_data) {
-          if (facebook_data[key] == "" || typeof facebook_data[key] === "undefined") {
+          if (
+            facebook_data[key] == "" ||
+            typeof facebook_data[key] === "undefined"
+          ) {
             delete facebook_data[key];
           }
         }
@@ -877,7 +1056,7 @@ export const Create_newdata = (req, res) => {
       });
     }
 
-    if (type == "tiktok") {
+    if (types.indexOf("tiktok") !== -1) {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -903,7 +1082,10 @@ export const Create_newdata = (req, res) => {
           tiktok_type: body.type,
         };
         for (const key in tiktok_data) {
-          if (tiktok_data[key] == "" || typeof tiktok_data[key] === "undefined") {
+          if (
+            tiktok_data[key] == "" ||
+            typeof tiktok_data[key] === "undefined"
+          ) {
             delete tiktok_data[key];
           }
         }
@@ -916,5 +1098,284 @@ export const Create_newdata = (req, res) => {
         });
       });
     }
+  }
 
+  if (types.indexOf("link") !== -1) {
+    data.forEach((item, index) => {
+      let value = item.split("|");
+      let field_id = {};
+      let temp_id = value[0];
+
+      if (types.indexOf("device") !== -1) {
+        Device.findOne({ device_id: temp_id }).exec((err, device) => {
+          field_id.device_id = device._id;
+        });
+      }
+
+      if (types.indexOf("proxy") !== -1) {
+        Proxy.findOne({ proxy_id: temp_id }).exec((err, proxy) => {
+          field_id.proxy_id = proxy._id;
+        });
+      }
+
+      if (types.indexOf("info") !== -1) {
+        Info.findOne({ info_id: temp_id }).exec((err, info) => {
+          field_id.info_id = info._id;
+        });
+      }
+
+      if (types.indexOf("mail") !== -1) {
+        Mail.findOne({ mail_id: temp_id }).exec((err, mail) => {
+          field_id.mail_id = mail._id;
+        });
+      }
+
+      if (types.indexOf("sim") !== -1) {
+        Sim.findOne({ sim_id: temp_id }).exec((err, sim) => {
+          field_id.sim_id = sim._id;
+        });
+      }
+
+      if (types.indexOf("bank") !== -1) {
+        Bank.findOne({ bank_id: temp_id }).exec((err, bank) => {
+          field_id.bank_id = bank._id;
+        });
+      }
+
+      if (types.indexOf("payoneer") !== -1) {
+        Payoneer.findOne({ payoneer_id: temp_id }).exec((err, payoneer) => {
+          field_id.payoneer_id = payoneer._id;
+        });
+      }
+
+      if (types.indexOf("paypal") !== -1) {
+        Paypal.findOne({ paypal_id: temp_id }).exec((err, paypal) => {
+          field_id.paypal_id = paypal._id;
+        });
+      }
+
+      if (types.indexOf("pingpong") !== -1) {
+        Pingpong.findOne({ pingpong_id: temp_id }).exec((err, pingpong) => {
+          field_id.pingpong_id = pingpong._id;
+        });
+      }
+
+      if (types.indexOf("ebay") !== -1) {
+        Ebay.findOne({ ebay_id: temp_id }).exec((err, ebay) => {
+          field_id.ebay_id = ebay._id;
+        });
+      }
+
+      if (types.indexOf("etsy") !== -1) {
+        Etsy.findOne({ etsy_id: temp_id }).exec((err, etsy) => {
+          field_id.etsy_id = etsy._id;
+        });
+      }
+
+      if (types.indexOf("amazon") !== -1) {
+        Amazon.findOne({ amazon_id: temp_id }).exec((err, amazon) => {
+          field_id.amazon_id = amazon._id;
+        });
+      }
+
+      if (types.indexOf("shopee") !== -1) {
+        Shopee.findOne({ shopee_id: temp_id }).exec((err, shopee) => {
+          field_id.shopee_id = shopee._id;
+        });
+      }
+
+      if (types.indexOf("facebook") !== -1) {
+        Facebook.findOne({ facebook_id: temp_id }).exec((err, facebook) => {
+          field_id.facebook_id = facebook._id;
+        });
+      }
+
+      if (types.indexOf("tiktok") !== -1) {
+        Tiktok.findOne({ tiktok_id: temp_id }).exec((err, tiktok) => {
+          field_id.tiktok_id = tiktok._id;
+        });
+      }
+
+      // Update
+      setTimeout(() => {
+        if (types.indexOf("device") !== -1) {
+          let device_item = JSON.parse(JSON.stringify(field_id));
+          device_item.device_id = temp_id;
+          Device.findOneAndUpdate(
+            { device_id: temp_id },
+            { $set: device_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("proxy") !== -1) {
+          let proxy_item = JSON.parse(JSON.stringify(field_id));
+          proxy_item.proxy_id = temp_id;
+          Proxy.findOneAndUpdate(
+            { proxy_id: temp_id },
+            { $set: proxy_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("info") !== -1) {
+          let info_item = JSON.parse(JSON.stringify(field_id));
+          info_item.info_id = temp_id;
+          Info.findOneAndUpdate(
+            { info_id: temp_id },
+            { $set: info_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("mail") !== -1) {
+          let mail_item = JSON.parse(JSON.stringify(field_id));
+          mail_item.mail_id = temp_id;
+          Mail.findOneAndUpdate(
+            { mail_id: temp_id },
+            { $set: mail_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("sim") !== -1) {
+          let sim_item = JSON.parse(JSON.stringify(field_id));
+          sim_item.sim_id = temp_id;
+          Sim.findOneAndUpdate(
+            { sim_id: temp_id },
+            { $set: sim_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("bank") !== -1) {
+          let bank_item = JSON.parse(JSON.stringify(field_id));
+          bank_item.bank_id = temp_id;
+          Bank.findOneAndUpdate(
+            { bank_id: temp_id },
+            { $set: bank_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("payoneer") !== -1) {
+          let payoneer_item = JSON.parse(JSON.stringify(field_id));
+          payoneer_item.payoneer_id = temp_id;
+          Payoneer.findOneAndUpdate(
+            { payoneer_id: temp_id },
+            { $set: payoneer_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("paypal") !== -1) {
+          let paypal_item = JSON.parse(JSON.stringify(field_id));
+          paypal_item.paypal_id = temp_id;
+          Paypal.findOneAndUpdate(
+            { paypal_id: temp_id },
+            { $set: paypal_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("pingpong") !== -1) {
+          let pingpong_item = JSON.parse(JSON.stringify(field_id));
+          pingpong_item.pingpong_id = temp_id;
+          Pingpong.findOneAndUpdate(
+            { pingpong_id: temp_id },
+            { $set: pingpong_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("ebay") !== -1) {
+          let ebay_item = JSON.parse(JSON.stringify(field_id));
+          ebay_item.ebay_id = temp_id;
+          Ebay.findOneAndUpdate(
+            { ebay_id: temp_id },
+            { $set: ebay_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("etsy") !== -1) {
+          let etsy_item = JSON.parse(JSON.stringify(field_id));
+          etsy_item.etsy_id = temp_id;
+          Etsy.findOneAndUpdate(
+            { etsy_id: temp_id },
+            { $set: etsy_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+        if (types.indexOf("amazon") !== -1) {
+          let amazon_item = JSON.parse(JSON.stringify(field_id));
+          amazon_item.amazon_id = temp_id;
+          Amazon.findOneAndUpdate(
+            { amazon_id: temp_id },
+            { $set: amazon_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("shopee") !== -1) {
+          let shopee_item = JSON.parse(JSON.stringify(field_id));
+          shopee_item.shopee_id = temp_id;
+          Shopee.findOneAndUpdate(
+            { shopee_id: temp_id },
+            { $set: shopee_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+        if (types.indexOf("facebook") !== -1) {
+          let facebook_item = JSON.parse(JSON.stringify(field_id));
+          facebook_item.facebook_id = temp_id;
+          Facebook.findOneAndUpdate(
+            { facebook_id: temp_id },
+            { $set: facebook_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+
+        if (types.indexOf("tiktok") !== -1) {
+          let tiktok_item = JSON.parse(JSON.stringify(field_id));
+          tiktok_item.tiktok_id = temp_id;
+          Tiktok.findOneAndUpdate(
+            { tiktok_id: temp_id },
+            { $set: tiktok_item },
+            { useFindAndModify: false }
+          ).exec((err, item) => {
+            console.log(item);
+          });
+        }
+      }, 15000);
+    });
+  }
 };

@@ -42,6 +42,7 @@ const ebaySchema = mongoose.Schema(
     shopee_id: { type: ObjectId, ref: "Shopee"},
     facebook_id: { type: ObjectId, ref: "Facebook"},
     tiktok_id: { type: ObjectId, ref: "Tiktok"},
+    customer_id: { type: ObjectId, ref: "Customer"},
 
 
     ebay_image_url: { type: String },

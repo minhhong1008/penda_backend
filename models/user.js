@@ -43,7 +43,7 @@ const userSchema = mongoose.Schema(
     manage_view: { type: String },
     users_status: { type: String, default: "New" },
     users_salary: { type: String },
-    email: { type: String }
+    email: { type: String },
   },
   { timestamps: true }
 );
@@ -78,3 +78,5 @@ userSchema.methods = {
 };
 
 module.exports = mongoose.model("User", userSchema);
+
+

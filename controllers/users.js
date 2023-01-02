@@ -1,6 +1,24 @@
 // Import model
-import Users from '../models/user';
+import Users from "../models/user";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
+import crypto from "crypto";
+const { v1: uuidv1 } = require("uuid");
+
+
+export const hashPassword = (password) => {
+  if (!password) {
+    return "";
+  }
+  try {
+    let salt = uuidv1();
+    return {
+      pass: crypto.createHmac("sha1", salt).update(password).digest("hex"),
+      salt: salt,
+    };
+  } catch (error) {
+    return "";
+  }
+};
 
 export const create = (req, res) => {
   const users = new Users(req.body);
@@ -22,18 +40,18 @@ export const listusers = (req, res) => {
   var users_status = req.query.users_status;
 
   if (users_status) {
-   
-    Users.find({ users_status: users_status }).sort({users_sort: "ascending"}).exec((err, users) => {
-      console.log(users)
-      if (err || !users) {
-        res.status(400).json({
-          message: "Không tìm thấy users vcc",
-        });
-      }
-      
-      res.json(users);
-    });
-   
+    Users.find({ users_status: users_status })
+      .sort({ users_sort: "ascending" })
+      .exec((err, users) => {
+        console.log(users);
+        if (err || !users) {
+          res.status(400).json({
+            message: "Không tìm thấy users vcc",
+          });
+        }
+
+        res.json(users);
+      });
   }
 };
 
@@ -41,18 +59,18 @@ export const listusers_timesheets = (req, res) => {
   var users_status = "Active";
 
   if (users_status) {
-   
-    Users.find({ users_status: users_status }).sort({users_sort: "ascending"}).exec((err, users) => {
-      console.log(users)
-      if (err || !users) {
-        res.status(400).json({
-          message: "Không tìm thấy users vcc",
-        });
-      }
-      
-      res.json(users);
-    });
-   
+    Users.find({ users_status: users_status })
+      .sort({ users_sort: "ascending" })
+      .exec((err, users) => {
+        console.log(users);
+        if (err || !users) {
+          res.status(400).json({
+            message: "Không tìm thấy users vcc",
+          });
+        }
+
+        res.json(users);
+      });
   }
 };
 
@@ -64,17 +82,21 @@ export const usersByID = (req, res, next, id) => {
       });
       return;
     }
-    console.log("áddddd")
+    console.log("áddddd");
     req.users = users;
     next();
   });
 };
 
 export const update = (req, res) => {
+  let newUser = JSON.parse(JSON.stringify(req.body));
+  let { pass, salt } = hashPassword(req.body.users_passwords);
+  newUser.salt = salt;
+  newUser.hashed_password = pass;
   var users_id = req.query.id;
   Users.findOneAndUpdate(
     { users_id: users_id },
-    { $set: req.body },
+    { $set: newUser },
     { useFindAndModify: false },
     (err, users) => {
       if (err) {
@@ -103,14 +125,11 @@ export const canViewUsers = (req, res, next) => {
           error: "Bạn chưa đăng nhập",
         });
       }
-      if (
-        user.manage_view.indexOf("users_id") != -1 &&
-        user.users_owner.indexOf("Phòng sản xuất") != -1
-      ) {
+      if (user.users_owner.indexOf("Phòng hành chính nhân sự") != -1) {
         next();
       } else {
         res.status(403).json({
-          error: "Không có quyền truy cập users",
+          error: "Không có quyền truy cập user",
         });
       }
     });

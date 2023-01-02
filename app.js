@@ -103,7 +103,7 @@ app.use('/api', tooldataRouter);
 
 
 //MongoDB
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect(process.env.MONGO_USER + encodeURIComponent(process.env.MONGO_PASSWORD) + "@" + process.env.MONGO_HOST, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true

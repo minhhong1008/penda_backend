@@ -198,9 +198,7 @@ export const ebayByID = (req, res, next, id) => {
           "customer_phone1",
         ])
         .exec((err, ebay) => {
-          
           if (err || !ebay) {
-          
             return res.status(500);
           }
 
@@ -226,133 +224,132 @@ export const ebayByID = (req, res, next, id) => {
       };
 
       Ebay.findOne(filter_ebay)
-      .populate("device_id", [
-        "device_id",
-        "device_status",
-        "device_class",
-        "device_user",
-        "device_password",
-      ])
-      .populate("proxy_id", [
-        "proxy_id",
-        "proxy_status",
-        "proxy_class",
-        "proxy_user",
-        "proxy_password",
-      ])
-      .populate("info_id", [
-        "info_id",
-        "info_status",
-        "info_class",
-        "info_fullname",
-        "infodate_birthday",
-      ])
-      .populate("mail_id", [
-        "mail_id",
-        "mail_status",
-        "mail_class",
-        "mail_user",
-        "mail_password",
-      ])
-      .populate("sim_id", [
-        "sim_id",
-        "sim_status",
-        "sim_class",
-        "sim_user",
-        "sim_password",
-      ])
-      .populate("bank_id", [
-        "bank_id",
-        "bank_status",
-        "bank_class",
-        "bank_user",
-        "bank_password",
-      ])
-      .populate("payoneer_id", [
-        "payoneer_id",
-        "payoneer_status",
-        "payoneer_class",
-        "payoneer_user",
-        "payoneer_password",
-      ])
-      .populate("paypal_id", [
-        "paypal_id",
-        "paypal_status",
-        "paypal_class",
-        "paypal_user",
-        "paypal_password",
-      ])
-      .populate("pingpong_id", [
-        "pingpong_id",
-        "pingpong_status",
-        "pingpong_class",
-        "pingpong_user",
-        "pingpong_password",
-      ])
-      .populate("etsy_id", [
-        "etsy_id",
-        "etsy_status",
-        "etsy_class",
-        "etsy_user",
-        "etsy_password",
-      ])
-      .populate("amazon_id", [
-        "amazon_id",
-        "amazon_status",
-        "amazon_class",
-        "amazon_user",
-        "amazon_password",
-      ])
-      .populate("shopee_id", [
-        "shopee_id",
-        "shopee_status",
-        "shopee_class",
-        "shopee_user",
-        "shopee_password",
-      ])
-      .populate("facebook_id", [
-        "facebook_id",
-        "facebook_status",
-        "facebook_class",
-        "facebook_user",
-        "facebook_password",
-      ])
-      .populate("tiktok_id", [
-        "tiktok_id",
-        "tiktok_status",
-        "tiktok_class",
-        "tiktok_user",
-        "tiktok_password",
-      ])
-      .populate("customer_id", [
-        "customer_id",
-        "customer_status",
-        "customer_class",
-        "customer_user",
-        "customer_phone1",
-      ])
-      .exec((err, ebay) => {
-        if (err || !ebay) {
-          res.status(400).json({
-            message: "Không tìm thấy ebay",
-          });
-          return;
-        }
+        .populate("device_id", [
+          "device_id",
+          "device_status",
+          "device_class",
+          "device_user",
+          "device_password",
+        ])
+        .populate("proxy_id", [
+          "proxy_id",
+          "proxy_status",
+          "proxy_class",
+          "proxy_user",
+          "proxy_password",
+        ])
+        .populate("info_id", [
+          "info_id",
+          "info_status",
+          "info_class",
+          "info_fullname",
+          "infodate_birthday",
+        ])
+        .populate("mail_id", [
+          "mail_id",
+          "mail_status",
+          "mail_class",
+          "mail_user",
+          "mail_password",
+        ])
+        .populate("sim_id", [
+          "sim_id",
+          "sim_status",
+          "sim_class",
+          "sim_user",
+          "sim_password",
+        ])
+        .populate("bank_id", [
+          "bank_id",
+          "bank_status",
+          "bank_class",
+          "bank_user",
+          "bank_password",
+        ])
+        .populate("payoneer_id", [
+          "payoneer_id",
+          "payoneer_status",
+          "payoneer_class",
+          "payoneer_user",
+          "payoneer_password",
+        ])
+        .populate("paypal_id", [
+          "paypal_id",
+          "paypal_status",
+          "paypal_class",
+          "paypal_user",
+          "paypal_password",
+        ])
+        .populate("pingpong_id", [
+          "pingpong_id",
+          "pingpong_status",
+          "pingpong_class",
+          "pingpong_user",
+          "pingpong_password",
+        ])
+        .populate("etsy_id", [
+          "etsy_id",
+          "etsy_status",
+          "etsy_class",
+          "etsy_user",
+          "etsy_password",
+        ])
+        .populate("amazon_id", [
+          "amazon_id",
+          "amazon_status",
+          "amazon_class",
+          "amazon_user",
+          "amazon_password",
+        ])
+        .populate("shopee_id", [
+          "shopee_id",
+          "shopee_status",
+          "shopee_class",
+          "shopee_user",
+          "shopee_password",
+        ])
+        .populate("facebook_id", [
+          "facebook_id",
+          "facebook_status",
+          "facebook_class",
+          "facebook_user",
+          "facebook_password",
+        ])
+        .populate("tiktok_id", [
+          "tiktok_id",
+          "tiktok_status",
+          "tiktok_class",
+          "tiktok_user",
+          "tiktok_password",
+        ])
+        .populate("customer_id", [
+          "customer_id",
+          "customer_status",
+          "customer_class",
+          "customer_user",
+          "customer_phone1",
+        ])
+        .exec((err, ebay) => {
+          if (err || !ebay) {
+            res.status(400).json({
+              message: "Không tìm thấy ebay",
+            });
+            return;
+          }
 
-        // get list users_name từ db vào ebay_employee
-        Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
-          users.forEach((user) => {
-            userData.push(user.users_name);
+          // get list users_name từ db vào ebay_employee
+          Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            users.forEach((user) => {
+              userData.push(user.users_name);
+            });
           });
+          let newData = JSON.parse(JSON.stringify(ebay));
+          newData.listselect_ebay_employee = userData;
+          req.ebay = newData;
+          next();
         });
-        let newData = JSON.parse(JSON.stringify(ebay));
-        newData.listselect_ebay_employee = userData;
-        req.ebay = newData;
-        next();
-      });
     }
   });
-
 };
 // Update dữ liệu từ ebay_info ( đang gặp vấn đề quyền nhân viên update thì nhiều field bị rỗng)
 export const update = (req, res) => {
@@ -401,7 +398,7 @@ export const update = (req, res) => {
   });
 };
 
-// Copy dữ liệu từ ebay_info 
+// Copy dữ liệu từ ebay_info
 export const Copy_re = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
@@ -417,13 +414,8 @@ export const Copy_re = (req, res) => {
     users_name = user.users_name;
     var ebay_id = req.query.id;
     var dataEbay = req.body;
-    dataEbay.ebay_class =="Lớp 1";
+    dataEbay.ebay_class == "Lớp 1";
 
-
-
-
-
-    
     dataEbay.ebay_history =
       users_name +
       "|" +
@@ -463,6 +455,9 @@ export const getCountEbay_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return;
+    }
     if (!user) {
       users_name = "";
     }
@@ -485,6 +480,9 @@ export const getCountEbay_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return;
+        }
         res.json({
           status: "success",
           data: data,
@@ -507,6 +505,9 @@ export const getCountEbay_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if(err){
+          return;
+        }
         res.json({
           status: "success",
           data: data,
@@ -528,6 +529,11 @@ export const canViewEbay = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if(err){
+        return res.status(403).json({
+          error: "Lỗi rồi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

@@ -35,14 +35,14 @@ const userSchema = mongoose.Schema(
     users_mail: { type: String },
     users_bank: { type: String },
     users_banknumber: { type: String },
-    users_other: { type: String },
+    users_sort: { type: String },
     users_level: { type: String },
     users_major: { type: String },
     users_function: { type: String },
     users_owner: { type: String },
     manage_view: { type: String },
     users_status: { type: String, default: "New" },
-    users_class: { type: String },
+    users_salary: { type: String },
     email: { type: String }
   },
   { timestamps: true }

@@ -1,3 +1,4 @@
+
 import User from '../models/user';
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 
@@ -43,6 +44,7 @@ export const list = (req, res) => {
         if (err) {
             error: "Không tìm người dùng"
         }
+        console.log("áddddd")
         res.json({ data })
     })
 }

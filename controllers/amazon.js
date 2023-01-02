@@ -192,7 +192,7 @@ export const amazonByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, amazon) => {
-          console.log("aaaaaaa");
+          
           if (err || !amazon) {
             console.log("dddd");
             return res.status(500);

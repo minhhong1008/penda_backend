@@ -31,6 +31,11 @@ export const listebay = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -80,6 +85,11 @@ export const ebayByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -204,6 +214,11 @@ export const ebayByID = (req, res, next, id) => {
 
           // get list users_name từ db vào ebay_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã Lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -339,6 +354,11 @@ export const ebayByID = (req, res, next, id) => {
 
           // get list users_name từ db vào ebay_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã Lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -361,6 +381,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -370,7 +395,7 @@ export const update = (req, res) => {
     dataEbay.ebay_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataEbay.ebay_class +
       "," +
@@ -387,7 +412,7 @@ export const update = (req, res) => {
       { useFindAndModify: false },
       (err, ebay) => {
         if (err) {
-          console.log(err);
+          
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });
@@ -419,7 +444,7 @@ export const Copy_re = (req, res) => {
     dataEbay.ebay_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataEbay.ebay_class;
 
@@ -456,7 +481,9 @@ export const getCountEbay_class = (req, res) => {
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
-      return;
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
     }
     if (!user) {
       users_name = "";
@@ -481,7 +508,9 @@ export const getCountEbay_class = (req, res) => {
         },
       ]).exec((err, data) => {
         if (err) {
-          return;
+          return res.status(400).json({
+            error: "Đã Lỗi",
+          });
         }
         res.json({
           status: "success",
@@ -505,8 +534,10 @@ export const getCountEbay_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
-        if(err){
-          return;
+        if (err) {
+          return res.status(400).json({
+            error: "Đã Lỗi",
+          });
         }
         res.json({
           status: "success",
@@ -529,9 +560,9 @@ export const canViewEbay = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
-      if(err){
-        return res.status(403).json({
-          error: "Lỗi rồi",
+      if (err) {
+        return res.status(400).json({
+          error: "Đã Lỗi",
         });
       }
       if (!user) {

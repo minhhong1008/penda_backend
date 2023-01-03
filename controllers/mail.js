@@ -31,6 +31,11 @@ export const listmail = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -81,6 +86,11 @@ export const mailByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -328,6 +338,11 @@ export const mailByID = (req, res, next, id) => {
 
         // get list users_name từ db vào mail_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã Lỗi",
+            });
+          }
           users.forEach((user) => {
             userData.push(user.users_name);
           });
@@ -350,6 +365,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -359,7 +379,7 @@ export const update = (req, res) => {
     dataMail.mail_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataMail.mail_class +
       "," +
@@ -396,6 +416,11 @@ export const getCountMail_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -418,6 +443,11 @@ export const getCountMail_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -440,6 +470,11 @@ export const getCountMail_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã Lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -461,6 +496,11 @@ export const canViewMail = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

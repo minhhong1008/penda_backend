@@ -441,7 +441,7 @@ export const update = (req, res) => {
     dataTiktok.tiktok_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataTiktok.tiktok_class +
       "," +

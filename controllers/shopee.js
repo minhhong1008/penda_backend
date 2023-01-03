@@ -441,7 +441,7 @@ export const update = (req, res) => {
     dataShopee.shopee_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataShopee.shopee_class +
       "," +

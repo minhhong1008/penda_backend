@@ -368,7 +368,7 @@ export const update = (req, res) => {
     dataPerson.person_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataPerson.person_class +
       "," +

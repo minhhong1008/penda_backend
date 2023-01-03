@@ -20,8 +20,8 @@ const billSchema = mongoose.Schema(
     bill_number: { type: String },
     bill_price: { type: String },
     bill_total: { type: String },
-    //Liên kết field
-    
+    //upload ảnh
+    bill_image_url: { type: String },
   },
   { timeStamps: true }
 );

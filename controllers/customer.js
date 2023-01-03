@@ -360,7 +360,7 @@ export const update = (req, res) => {
     dataCustomer.customer_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataCustomer.customer_class +
       "," +

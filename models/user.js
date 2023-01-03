@@ -44,6 +44,7 @@ const userSchema = mongoose.Schema(
     users_status: { type: String, default: "New" },
     users_salary: { type: String },
     email: { type: String },
+    users_image_url: { type: String },
   },
   { timestamps: true }
 );

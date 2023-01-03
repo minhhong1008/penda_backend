@@ -38,8 +38,10 @@ export const getBill = (req, res) => {
 export const getBillTable = (req, res) => {
   let from = req.query.from;
   let to = req.query.to;
+  
   let match = {
-    bill_work: decodeURIComponent(req.query.status)
+    bill_work: decodeURIComponent(req.query.status).split('?action=')[0].trim(),
+    bill_action: decodeURIComponent(req.query.status).split('?action=')[1].trim(),
   };
   if(from && to){
     match.date = { $gte: new Date(from), $lte: new Date(to) }

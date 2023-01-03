@@ -31,6 +31,11 @@ export const listsim = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -81,6 +86,11 @@ export const simByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -92,7 +102,7 @@ export const simByID = (req, res, next, id) => {
         user.users_function
       ) != -1
     ) {
-      console.log(user.users_function)
+      console.log(user.users_function);
       Sim.findOne({ sim_id: id })
         .populate("device_id", [
           "device_id",
@@ -193,9 +203,9 @@ export const simByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, sim) => {
-          console.log("sim")
+          console.log("sim");
           if (err || !sim) {
-            console.log("Lỗi không truy vấn được Sim, kiểm tra populate")
+            console.log("Lỗi không truy vấn được Sim, kiểm tra populate");
             return res.status(500);
           }
 
@@ -221,122 +231,127 @@ export const simByID = (req, res, next, id) => {
       };
 
       Sim.findOne(filter_sim)
-      .populate("device_id", [
-        "device_id",
-        "device_status",
-        "device_class",
-        "device_user",
-        "device_password",
-      ])
-      .populate("proxy_id", [
-        "proxy_id",
-        "proxy_status",
-        "proxy_class",
-        "proxy_user",
-        "proxy_password",
-      ])
-      .populate("info_id", [
-        "info_id",
-        "info_status",
-        "info_class",
-        "info_fullname",
-        "infodate_birthday",
-      ])
-      .populate("mail_id", [
-        "mail_id",
-        "mail_status",
-        "mail_class",
-        "mail_user",
-        "mail_password",
-      ])
-      .populate("etsy_id", [
-        "etsy_id",
-        "etsy_status",
-        "etsy_class",
-        "etsy_user",
-        "etsy_password",
-      ])
-      .populate("bank_id", [
-        "bank_id",
-        "bank_status",
-        "bank_class",
-        "bank_user",
-        "bank_password",
-      ])
-      .populate("payoneer_id", [
-        "payoneer_id",
-        "payoneer_status",
-        "payoneer_class",
-        "payoneer_user",
-        "payoneer_password",
-      ])
-      .populate("paypal_id", [
-        "paypal_id",
-        "paypal_status",
-        "paypal_class",
-        "paypal_user",
-        "paypal_password",
-      ])
-      .populate("pingpong_id", [
-        "pingpong_id",
-        "pingpong_status",
-        "pingpong_class",
-        "pingpong_user",
-        "pingpong_password",
-      ])
-      .populate("ebay_id", [
-        "ebay_id",
-        "ebay_status",
-        "ebay_class",
-        "ebay_user",
-        "ebay_password",
-      ])
-      .populate("amazon_id", [
-        "amazon_id",
-        "amazon_status",
-        "amazon_class",
-        "amazon_user",
-        "amazon_password",
-      ])
-      .populate("shopee_id", [
-        "shopee_id",
-        "shopee_status",
-        "shopee_class",
-        "shopee_user",
-        "shopee_password",
-      ])
-      .populate("facebook_id", [
-        "facebook_id",
-        "facebook_status",
-        "facebook_class",
-        "facebook_user",
-        "facebook_password",
-      ])
-      .populate("tiktok_id", [
-        "tiktok_id",
-        "tiktok_status",
-        "tiktok_class",
-        "tiktok_user",
-        "tiktok_password",
-      ])
-      .exec((err, sim) => {
-        console.log(sim)
+        .populate("device_id", [
+          "device_id",
+          "device_status",
+          "device_class",
+          "device_user",
+          "device_password",
+        ])
+        .populate("proxy_id", [
+          "proxy_id",
+          "proxy_status",
+          "proxy_class",
+          "proxy_user",
+          "proxy_password",
+        ])
+        .populate("info_id", [
+          "info_id",
+          "info_status",
+          "info_class",
+          "info_fullname",
+          "infodate_birthday",
+        ])
+        .populate("mail_id", [
+          "mail_id",
+          "mail_status",
+          "mail_class",
+          "mail_user",
+          "mail_password",
+        ])
+        .populate("etsy_id", [
+          "etsy_id",
+          "etsy_status",
+          "etsy_class",
+          "etsy_user",
+          "etsy_password",
+        ])
+        .populate("bank_id", [
+          "bank_id",
+          "bank_status",
+          "bank_class",
+          "bank_user",
+          "bank_password",
+        ])
+        .populate("payoneer_id", [
+          "payoneer_id",
+          "payoneer_status",
+          "payoneer_class",
+          "payoneer_user",
+          "payoneer_password",
+        ])
+        .populate("paypal_id", [
+          "paypal_id",
+          "paypal_status",
+          "paypal_class",
+          "paypal_user",
+          "paypal_password",
+        ])
+        .populate("pingpong_id", [
+          "pingpong_id",
+          "pingpong_status",
+          "pingpong_class",
+          "pingpong_user",
+          "pingpong_password",
+        ])
+        .populate("ebay_id", [
+          "ebay_id",
+          "ebay_status",
+          "ebay_class",
+          "ebay_user",
+          "ebay_password",
+        ])
+        .populate("amazon_id", [
+          "amazon_id",
+          "amazon_status",
+          "amazon_class",
+          "amazon_user",
+          "amazon_password",
+        ])
+        .populate("shopee_id", [
+          "shopee_id",
+          "shopee_status",
+          "shopee_class",
+          "shopee_user",
+          "shopee_password",
+        ])
+        .populate("facebook_id", [
+          "facebook_id",
+          "facebook_status",
+          "facebook_class",
+          "facebook_user",
+          "facebook_password",
+        ])
+        .populate("tiktok_id", [
+          "tiktok_id",
+          "tiktok_status",
+          "tiktok_class",
+          "tiktok_user",
+          "tiktok_password",
+        ])
+        .exec((err, sim) => {
+          console.log(sim);
           if (err || !sim) {
-            console.log("Lỗi không truy vấn được Sim, kiểm tra populate")
+            console.log("Lỗi không truy vấn được Sim, kiểm tra populate");
             return res.status(500);
           }
 
-        // get list users_name từ db vào sim_employee
-        Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
-          users.forEach((user) => {
-            userData.push(user.users_name);
+          // get list users_name từ db vào sim_employee
+          Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
+            users.forEach((user) => {
+              userData.push(user.users_name);
+            });
           });
+          let newData = JSON.parse(JSON.stringify(sim));
+          newData.listselect_sim_employee = userData;
+          req.sim = newData;
+          next();
         });
-        let newData = JSON.parse(JSON.stringify(sim));
-        newData.listselect_sim_employee = userData;
-        req.sim = newData;
-        next();
-      });
     }
   });
 };
@@ -350,6 +365,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -359,7 +379,7 @@ export const update = (req, res) => {
     dataSim.sim_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataSim.sim_class +
       "," +
@@ -396,6 +416,11 @@ export const getCountSim_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -418,6 +443,11 @@ export const getCountSim_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -440,6 +470,11 @@ export const getCountSim_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -461,6 +496,11 @@ export const canViewSim = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

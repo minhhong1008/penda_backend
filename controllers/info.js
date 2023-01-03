@@ -31,6 +31,11 @@ export const listinfo = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -81,6 +86,11 @@ export const infoByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -201,6 +211,11 @@ export const infoByID = (req, res, next, id) => {
 
           // get list users_name từ db vào info_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã Lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -320,7 +335,7 @@ export const infoByID = (req, res, next, id) => {
         "tiktok_password",
       ])
       .exec((err, info) => {
-        console.log(info)
+        
           if (err || !info) {
             console.log("Lỗi không truy vấn được Info, kiểm tra populate")
             return res.status(500);
@@ -328,6 +343,11 @@ export const infoByID = (req, res, next, id) => {
 
         // get list users_name từ db vào info_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã Lỗi",
+            });
+          }
           users.forEach((user) => {
             userData.push(user.users_name);
           });
@@ -350,6 +370,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -359,7 +384,7 @@ export const update = (req, res) => {
     dataInfo.info_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataInfo.info_class +
       "," +
@@ -396,6 +421,11 @@ export const getCountInfo_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -418,6 +448,11 @@ export const getCountInfo_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -440,6 +475,11 @@ export const getCountInfo_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -461,6 +501,11 @@ export const canViewInfo = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

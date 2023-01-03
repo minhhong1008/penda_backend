@@ -9,7 +9,7 @@ export const create = (req, res) => {
   amazon.save((err, acc) => {
     if (err) {
       return res.status(400).json({
-        error: "Thêm amazon không thành công",
+        error: "Đã Lỗi",
       });
     }
     res.json(acc);
@@ -31,6 +31,11 @@ export const listamazon = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -81,6 +86,11 @@ export const amazonByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -192,7 +202,6 @@ export const amazonByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, amazon) => {
-          
           if (err || !amazon) {
             console.log("dddd");
             return res.status(500);
@@ -432,6 +441,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -441,7 +455,7 @@ export const update = (req, res) => {
     dataAmazon.amazon_history =
       users_name +
       "|" +
-      moment(now()).format("MM-DD-YYYY HH:mm") +
+      moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
       dataAmazon.amazon_class +
       "," +
@@ -478,6 +492,11 @@ export const getCountAmazon_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -522,6 +541,11 @@ export const getCountAmazon_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã Lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -543,6 +567,11 @@ export const canViewAmazon = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

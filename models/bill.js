@@ -7,6 +7,7 @@ const billSchema = mongoose.Schema(
     bill_type: { type: String },
     bill_action: { type: String },
     bill_owner: { type: String },
+    bill_employee: { type: String },
     bill_supplier: { type: String },
     bill_contact_phone: { type: String },
     bill_contact_social1: { type: String },

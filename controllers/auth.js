@@ -69,6 +69,7 @@ export const verify = (req, res) => {
             users_function: user.users_function,
             users_owner: user.users_owner,
             manage_view: user.manage_view,
+            users_id: user._id
           };
           res.json(data);
         }

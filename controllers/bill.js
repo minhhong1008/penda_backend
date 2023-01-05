@@ -1,10 +1,10 @@
 import Bill from "../models/bill";
-
+import Users from "../models/user";
 // Tạo hàm create
 export const create = (req, res) => {
   // bill => là 1 đối tượng được tạo ra từ model Bill -> gồm tất cả các fields như được khai báo trong model bill và gán giá trị
   // bằng giá trị của req.body gửi lên từ client
-  console.log(req.body);
+ 
   const bill = new Bill(req.body);
   // gọi phương thức save() của mongodb để lưu đối tượng này vào trong bảng bills trong database
   bill.save((err, bill) => {
@@ -20,14 +20,28 @@ export const create = (req, res) => {
 export const updatetest = (req, res) => {
   // bill => là 1 đối tượng được tạo ra từ model Bill -> gồm tất cả các fields như được khai báo trong model bill và gán giá trị
   // bằng giá trị của req.body gửi lên từ client
-  console.log(req.body);
+  
   res.json({
     message: "Test thành công",
   });
 };
 
 export const getBill = (req, res) => {
-  Bill.find({}).exec((err, bill) => {
+  let from = req.query.from;
+  let to = req.query.to;
+  let match = {
+   
+  };
+  if(from && to){
+    match.date = { $gte: new Date(from), $lte: new Date(to) }
+  }
+  Bill.aggregate([
+    { $addFields: { date: { $toDate: "$bill_date" } } },
+    {
+      $match: match,
+    },
+  ]).exec((err, bill) => {
+    console.log(bill)
     if (err) {
       return;
     }
@@ -38,7 +52,6 @@ export const getBill = (req, res) => {
 export const getBillTable = (req, res) => {
   let from = req.query.from;
   let to = req.query.to;
-  
   let match = {
     bill_work: decodeURIComponent(req.query.status).split('?action=')[0].trim(),
     bill_action: decodeURIComponent(req.query.status).split('?action=')[1].trim(),
@@ -75,4 +88,22 @@ export const update = (req, res) => {
       res.json(bill);
     }
   );
+};
+
+
+// get list users_name từ db vào ebay_employee
+export const getEmployee = (req, res, next) => {
+  let userData = [];
+  Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
+    users.forEach((user) => {
+      userData.push(user.users_name);
+    });
+    console.log(userData)
+    res.json(userData);
+  });
 };

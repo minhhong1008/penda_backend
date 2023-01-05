@@ -1,15 +1,89 @@
 import TimeSheet from "../models/timeSheet";
-
+import moment, { now } from "moment";
 export const create = (req, res) => {
-  const session = new TimeSheet(req.body);
-  session.save((err, session) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Thêm tiktok không thành công",
+  if (["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) != -1) {
+    if (req.body.working_session == "delete") {
+      TimeSheet.find({
+        users_name: req.body.users_name,
+        working_date: req.body.working_date,
+      })
+        .remove()
+        .exec((err, timeSheet) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã lỗi",
+            });
+          }
+          res.json(timeSheet);
+        });
+    } else {
+      TimeSheet.findOne({
+        users_name: req.body.users_name,
+        working_session: req.body.working_session,
+        working_date: req.body.working_date,
+      }).exec((err, timeSheet) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
+        if (!timeSheet) {
+          const session = new TimeSheet(req.body);
+          session.save((err, session) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
+            res.json(session);
+          });
+        }
       });
     }
-    res.json(session);
-  });
+  } else {
+    let date1 = moment(req.body.working_date).format("YYYY-MM-DD");
+    let date2 = moment(now()).format("YYYY-MM-DD");
+    if (date1 >= date2 + 2) {
+      if (req.body.working_session == "delete") {
+        TimeSheet.find({
+          users_name: req.body.users_name,
+          working_date: req.body.working_date,
+        })
+          .remove()
+          .exec((err, timeSheet) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
+            res.json(timeSheet);
+          });
+      } else {
+        TimeSheet.findOne({
+          users_name: req.body.users_name,
+          working_session: req.body.working_session,
+          working_date: req.body.working_date,
+        }).exec((err, timeSheet) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã lỗi",
+            });
+          }
+          if (!timeSheet) {
+            const session = new TimeSheet(req.body);
+            session.save((err, session) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
+              res.json(session);
+            });
+          }
+        });
+      }
+    }
+  }
 };
 
 export const list = (req, res) => {
@@ -21,7 +95,7 @@ export const list = (req, res) => {
         year: { $year: "$date" },
         day: { $dayOfMonth: "$date" },
         working_session: "$working_session",
-        user_id: "$user_id",
+        users_name: "$users_name",
         working_date: "$working_date",
       },
     },
@@ -33,14 +107,15 @@ export const list = (req, res) => {
     },
     {
       $group: {
-        _id: "$user_id",
+        _id: "$users_name",
         sessions: { $push: "$$ROOT" },
       },
     },
   ]).exec((err, sessions) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
     } else {
       res.json(sessions);
     }

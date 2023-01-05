@@ -4,7 +4,7 @@ import Users from "../models/user";
 export const create = (req, res) => {
   // bill => là 1 đối tượng được tạo ra từ model Bill -> gồm tất cả các fields như được khai báo trong model bill và gán giá trị
   // bằng giá trị của req.body gửi lên từ client
- 
+
   const bill = new Bill(req.body);
   // gọi phương thức save() của mongodb để lưu đối tượng này vào trong bảng bills trong database
   bill.save((err, bill) => {
@@ -20,7 +20,7 @@ export const create = (req, res) => {
 export const updatetest = (req, res) => {
   // bill => là 1 đối tượng được tạo ra từ model Bill -> gồm tất cả các fields như được khai báo trong model bill và gán giá trị
   // bằng giá trị của req.body gửi lên từ client
-  
+
   res.json({
     message: "Test thành công",
   });
@@ -29,11 +29,9 @@ export const updatetest = (req, res) => {
 export const getBill = (req, res) => {
   let from = req.query.from;
   let to = req.query.to;
-  let match = {
-   
-  };
-  if(from && to){
-    match.date = { $gte: new Date(from), $lte: new Date(to) }
+  let match = {};
+  if (from && to) {
+    match.date = { $gte: new Date(from), $lte: new Date(to) };
   }
   Bill.aggregate([
     { $addFields: { date: { $toDate: "$bill_date" } } },
@@ -41,9 +39,10 @@ export const getBill = (req, res) => {
       $match: match,
     },
   ]).exec((err, bill) => {
-    console.log(bill)
     if (err) {
-      return;
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
     }
     res.json(bill);
   });
@@ -53,24 +52,27 @@ export const getBillTable = (req, res) => {
   let from = req.query.from;
   let to = req.query.to;
   let match = {
-    bill_work: decodeURIComponent(req.query.status).split('?action=')[0].trim(),
-    bill_action: decodeURIComponent(req.query.status).split('?action=')[1].trim(),
+    bill_work: decodeURIComponent(req.query.status).split("?action=")[0].trim(),
+    bill_action: decodeURIComponent(req.query.status)
+      .split("?action=")[1]
+      .trim(),
   };
-  if(from && to){
-    match.date = { $gte: new Date(from), $lte: new Date(to) }
+  if (from && to) {
+    match.date = { $gte: new Date(from), $lte: new Date(to) };
   }
-    Bill.aggregate([
-      { $addFields: { date: { $toDate: "$bill_date" } } },
-      {
-        $match: match,
-      },
-    ]).exec((err, bill) => {
-      if(err){
-        return
-      } else {
-        res.json(bill);
-      }
-    });
+  Bill.aggregate([
+    { $addFields: { date: { $toDate: "$bill_date" } } },
+    {
+      $match: match,
+    },
+  ]).exec((err, bill) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    res.json(bill);
+  });
 };
 
 export const update = (req, res) => {
@@ -90,7 +92,6 @@ export const update = (req, res) => {
   );
 };
 
-
 // get list users_name từ db vào ebay_employee
 export const getEmployee = (req, res, next) => {
   let userData = [];
@@ -103,7 +104,7 @@ export const getEmployee = (req, res, next) => {
     users.forEach((user) => {
       userData.push(user.users_name);
     });
-    console.log(userData)
+    
     res.json(userData);
   });
 };

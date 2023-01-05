@@ -43,7 +43,7 @@ export const listusers = (req, res) => {
     Users.find({ users_status: users_status })
       .sort({ users_sort: "ascending" })
       .exec((err, users) => {
-        console.log(users);
+       
         if (err || !users) {
           res.status(400).json({
             message: "Không tìm thấy users vcc",
@@ -62,7 +62,7 @@ export const listusers_timesheets = (req, res) => {
     Users.find({ users_status: users_status })
       .sort({ users_sort: "ascending" })
       .exec((err, users) => {
-        console.log(users);
+        
         if (err || !users) {
           res.status(400).json({
             message: "Không tìm thấy users vcc",
@@ -82,7 +82,7 @@ export const usersByID = (req, res, next, id) => {
       });
       return;
     }
-    console.log("áddddd");
+    
     req.users = users;
     next();
   });
@@ -100,7 +100,7 @@ export const update = (req, res) => {
     { useFindAndModify: false },
     (err, users) => {
       if (err) {
-        console.log(err);
+       
         return res.status(400).json({
           error: "Bạn không được phép thực hiện hành động này",
         });
@@ -120,6 +120,11 @@ export const canViewUsers = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

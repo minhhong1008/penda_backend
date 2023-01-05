@@ -203,9 +203,8 @@ export const proxyByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, proxy) => {
-          console.log("proxy")
+         
           if (err || !proxy) {
-            console.log("Lỗi không truy vấn được Proxy, kiểm tra populate")
             return res.status(500);
           }
 
@@ -421,6 +420,11 @@ export const getCountProxy_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }

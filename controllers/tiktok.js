@@ -31,6 +31,11 @@ export const listtiktok = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -81,6 +86,11 @@ export const tiktokByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -200,6 +210,11 @@ export const tiktokByID = (req, res, next, id) => {
 
           // get list users_name từ db vào tiktok_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -328,6 +343,11 @@ export const tiktokByID = (req, res, next, id) => {
 
         // get list users_name từ db vào tiktok_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã lỗi",
+            });
+          }
           users.forEach((user) => {
             userData.push(user.users_name);
           });
@@ -340,87 +360,7 @@ export const tiktokByID = (req, res, next, id) => {
     }
   });
 
-  /*  // get thông tin tài nguyên
-   let sim_id = "", mail_id = "",device_id="",info_id="";
-    if (tiktok.list_view) {
-      let list_view = tiktok.list_view.split(",");
-      list_view.forEach((view) => {
-        switch (view) {
-          case "sim_id": {
-            Sim.findOne({ sim_id: tiktok.sim_id.split('|')[0] }).exec((err, item) => {
-              if (item) {
-                 sim_id =
-                  item.sim_id +
-                  "|" +
-                  item.sim_status +
-                  "|" +
-                  item.sim_user +
-                  "|" +
-                  item.sim_password;
-                tiktok.sim_id = sim_id;
-                req.tiktok = tiktok;
-              }
-            });
-          }
 
-          case "device_id": {
-            Device.findOne({ device_id: tiktok.device_id }).exec((err, item) => {
-              if (item) {
-                 device_id =
-                  item.device_id +
-                  "|" +
-                  item.device_status +
-                  "|" +
-                  item.device_user +
-                  "|" +
-                  item.device_password;
-                tiktok.device_id = device_id;
-                req.tiktok = tiktok;
-              }
-            });
-          }
-          case "info_ids": {
-            Info.findOne({ info_id: tiktok.info_id }).exec((err, item) => {
-              if (item) {
-                 info_id =
-                  item.info_id +
-                  "|" +
-                  item.info_status +
-                  "|" +
-                  item.info_fullname +
-                  "|" +
-                  item.info_passport;
-                tiktok.info_id = info_id;
-                req.tiktok = tiktok;
-              }
-            });
-          }
-          case "mail_id": {
-            Mail.findOne({ mail_id: tiktok.mail_id }).exec((err, item) => {
-              if (item) {
-                 mail_id =
-                  item.mail_id +
-                  "|" +
-                  item.mail_status +
-                  "|" +
-                  item.mail_user +
-                  "|" +
-                  item.mail_password;
-                tiktok.mail_id = mail_id;
-                req.tiktok = tiktok;
-                next();
-              }
-            });
-          }
-
-          req.tiktok = tiktok;
-          next();
-        }
-      });
-    } else {
-      req.tiktok = tiktok;
-      next();
-    } */
 };
 // Update dữ liệu từ tiktok_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {
@@ -432,6 +372,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -478,6 +423,11 @@ export const getCountTiktok_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -500,6 +450,11 @@ export const getCountTiktok_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -522,6 +477,11 @@ export const getCountTiktok_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -543,6 +503,11 @@ export const canViewTiktok = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

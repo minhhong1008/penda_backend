@@ -63,6 +63,11 @@ export const verify = (req, res) => {
     const decoded = jwt.verify(token, "duy");
     if (decoded && decoded._id) {
       User.findOne({ _id: decoded._id }).exec((err, user) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã Lỗi",
+          });
+        }
         if (user) {
           const data = {
             users_name: user.users_name,

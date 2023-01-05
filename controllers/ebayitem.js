@@ -84,6 +84,11 @@ export const canViewEbayitem = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

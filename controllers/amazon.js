@@ -209,6 +209,11 @@ export const amazonByID = (req, res, next, id) => {
 
           // get list users_name từ db vào amazon_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã Lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -337,6 +342,11 @@ export const amazonByID = (req, res, next, id) => {
 
           // get list users_name từ db vào amazon_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã Lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -348,88 +358,6 @@ export const amazonByID = (req, res, next, id) => {
         });
     }
   });
-
-  /*  // get thông tin tài nguyên
-   let sim_id = "", mail_id = "",device_id="",info_id="";
-    if (amazon.list_view) {
-      let list_view = amazon.list_view.split(",");
-      list_view.forEach((view) => {
-        switch (view) {
-          case "sim_id": {
-            Sim.findOne({ sim_id: amazon.sim_id.split('|')[0] }).exec((err, item) => {
-              if (item) {
-                 sim_id =
-                  item.sim_id +
-                  "|" +
-                  item.sim_status +
-                  "|" +
-                  item.sim_user +
-                  "|" +
-                  item.sim_password;
-                amazon.sim_id = sim_id;
-                req.amazon = amazon;
-              }
-            });
-          }
-
-          case "device_id": {
-            Device.findOne({ device_id: amazon.device_id }).exec((err, item) => {
-              if (item) {
-                 device_id =
-                  item.device_id +
-                  "|" +
-                  item.device_status +
-                  "|" +
-                  item.device_user +
-                  "|" +
-                  item.device_password;
-                amazon.device_id = device_id;
-                req.amazon = amazon;
-              }
-            });
-          }
-          case "info_ids": {
-            Info.findOne({ info_id: amazon.info_id }).exec((err, item) => {
-              if (item) {
-                 info_id =
-                  item.info_id +
-                  "|" +
-                  item.info_status +
-                  "|" +
-                  item.info_fullname +
-                  "|" +
-                  item.info_passport;
-                amazon.info_id = info_id;
-                req.amazon = amazon;
-              }
-            });
-          }
-          case "mail_id": {
-            Mail.findOne({ mail_id: amazon.mail_id }).exec((err, item) => {
-              if (item) {
-                 mail_id =
-                  item.mail_id +
-                  "|" +
-                  item.mail_status +
-                  "|" +
-                  item.mail_user +
-                  "|" +
-                  item.mail_password;
-                amazon.mail_id = mail_id;
-                req.amazon = amazon;
-                next();
-              }
-            });
-          }
-
-          req.amazon = amazon;
-          next();
-        }
-      });
-    } else {
-      req.amazon = amazon;
-      next();
-    } */
 };
 // Update dữ liệu từ amazon_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {

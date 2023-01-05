@@ -31,6 +31,11 @@ export const listshopee = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -81,6 +86,11 @@ export const shopeeByID = (req, res, next, id) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -200,6 +210,11 @@ export const shopeeByID = (req, res, next, id) => {
 
           // get list users_name từ db vào shopee_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });
@@ -328,6 +343,11 @@ export const shopeeByID = (req, res, next, id) => {
 
         // get list users_name từ db vào shopee_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã lỗi",
+            });
+          }
           users.forEach((user) => {
             userData.push(user.users_name);
           });
@@ -340,87 +360,6 @@ export const shopeeByID = (req, res, next, id) => {
     }
   });
 
-  /*  // get thông tin tài nguyên
-   let sim_id = "", mail_id = "",device_id="",info_id="";
-    if (shopee.list_view) {
-      let list_view = shopee.list_view.split(",");
-      list_view.forEach((view) => {
-        switch (view) {
-          case "sim_id": {
-            Sim.findOne({ sim_id: shopee.sim_id.split('|')[0] }).exec((err, item) => {
-              if (item) {
-                 sim_id =
-                  item.sim_id +
-                  "|" +
-                  item.sim_status +
-                  "|" +
-                  item.sim_user +
-                  "|" +
-                  item.sim_password;
-                shopee.sim_id = sim_id;
-                req.shopee = shopee;
-              }
-            });
-          }
-
-          case "device_id": {
-            Device.findOne({ device_id: shopee.device_id }).exec((err, item) => {
-              if (item) {
-                 device_id =
-                  item.device_id +
-                  "|" +
-                  item.device_status +
-                  "|" +
-                  item.device_user +
-                  "|" +
-                  item.device_password;
-                shopee.device_id = device_id;
-                req.shopee = shopee;
-              }
-            });
-          }
-          case "info_ids": {
-            Info.findOne({ info_id: shopee.info_id }).exec((err, item) => {
-              if (item) {
-                 info_id =
-                  item.info_id +
-                  "|" +
-                  item.info_status +
-                  "|" +
-                  item.info_fullname +
-                  "|" +
-                  item.info_passport;
-                shopee.info_id = info_id;
-                req.shopee = shopee;
-              }
-            });
-          }
-          case "mail_id": {
-            Mail.findOne({ mail_id: shopee.mail_id }).exec((err, item) => {
-              if (item) {
-                 mail_id =
-                  item.mail_id +
-                  "|" +
-                  item.mail_status +
-                  "|" +
-                  item.mail_user +
-                  "|" +
-                  item.mail_password;
-                shopee.mail_id = mail_id;
-                req.shopee = shopee;
-                next();
-              }
-            });
-          }
-
-          req.shopee = shopee;
-          next();
-        }
-      });
-    } else {
-      req.shopee = shopee;
-      next();
-    } */
 };
 // Update dữ liệu từ shopee_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {
@@ -432,6 +371,11 @@ export const update = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -478,6 +422,11 @@ export const getCountShopee_class = (req, res) => {
   }
   const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
     if (!user) {
       users_name = "";
     }
@@ -500,6 +449,11 @@ export const getCountShopee_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -522,6 +476,11 @@ export const getCountShopee_class = (req, res) => {
           },
         },
       ]).exec((err, data) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
         res.json({
           status: "success",
           data: data,
@@ -543,6 +502,11 @@ export const canViewShopee = (req, res, next) => {
   try {
     const decoded = jwt.verify(token[1], "duy");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã lỗi",
+        });
+      }
       if (!user) {
         return res.status(403).json({
           error: "Bạn chưa đăng nhập",

@@ -211,6 +211,11 @@ export const mailByID = (req, res, next, id) => {
 
           // get list users_name từ db vào mail_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
             users.forEach((user) => {
               userData.push(user.users_name);
             });

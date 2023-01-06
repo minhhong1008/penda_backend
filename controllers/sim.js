@@ -102,7 +102,7 @@ export const simByID = (req, res, next, id) => {
         user.users_function
       ) != -1
     ) {
-      console.log(user.users_function);
+     
       Sim.findOne({ sim_id: id })
         .populate("device_id", [
           "device_id",
@@ -203,7 +203,7 @@ export const simByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, sim) => {
-          console.log("sim");
+          
           if (err || !sim) {
             console.log("Lỗi không truy vấn được Sim, kiểm tra populate");
             return res.status(500);
@@ -335,7 +335,7 @@ export const simByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, sim) => {
-          console.log(sim);
+        
           if (err || !sim) {
             console.log("Lỗi không truy vấn được Sim, kiểm tra populate");
             return res.status(500);
@@ -401,7 +401,7 @@ export const update = (req, res) => {
       { useFindAndModify: false },
       (err, sim) => {
         if (err) {
-          console.log(err);
+      
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });

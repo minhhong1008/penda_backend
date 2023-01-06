@@ -1233,6 +1233,48 @@ export const Create_newdata = (req, res) => {
         });
       });
     }
+
+    if (types.indexOf("customer") !== -1) {
+      data.forEach((item, index) => {
+        let value = item.split("|");
+        let temp_id = value[0];
+        var customer_data = {
+          customer_id: temp_id,
+          customer_user: value[1],
+          customer_password: value[2],
+          customer_phone2: value[3],
+          customer_facebook: value[4],
+          customer_website: value[5],
+          customer_address: value[6],
+          customer_payment: value[7],
+          customer_processing: body.processing,
+
+          customer_error: body.error,
+          customer_class: body.class,
+          customer_employee: body.employee,
+          customer_owner: body.owner,
+          customer_status: body.status,
+          customer_type: body.type,
+        };
+        for (const key in customer_data) {
+          if (
+            customer_data[key] == "" ||
+            typeof customer_data[key] === "undefined"
+          ) {
+            delete customer_data[key];
+          }
+        }
+        Customer.findOneAndUpdate(
+          { customer_id: temp_id },
+          { $set: customer_data },
+          { useFindAndModify: false }
+        ).exec((err, item) => {
+          if (err) {
+            return res.status(400).json({ error: "Đã Lỗi" });
+          }
+        });
+      });
+    }
   }
 
   if (types.indexOf("link") !== -1) {

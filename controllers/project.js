@@ -1,29 +1,29 @@
 // Import model
-import Person from "../models/person";
+import project from "../models/project";
 import Info from "../models/info";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
 import moment, { now } from "moment";
 
 export const create = (req, res) => {
-  const person = new Person(req.body);
-  person.save((err, acc) => {
+  const project = new project(req.body);
+  project.save((err, acc) => {
     if (err) {
       return res.status(400).json({
-        error: "Thêm person không thành công",
+        error: "Thêm project không thành công",
       });
     }
     res.json(acc);
   });
 };
 
-export const getperson = (req, res) => {
-  return res.json(req.person);
+export const getproject = (req, res) => {
+  return res.json(req.project);
 };
 
-// View bảng person_table
-export const listperson = (req, res) => {
-  var class_name = req.query.person_class;
+// View bảng project_table
+export const listproject = (req, res) => {
+  var class_name = req.query.project_class;
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -42,7 +42,7 @@ export const listperson = (req, res) => {
     }
 
     users_name = user.users_name;
-    let filter_person = "";
+    let filter_project = "";
     if (class_name) {
       // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
       if (
@@ -50,34 +50,34 @@ export const listperson = (req, res) => {
           user.users_function
         ) != -1
       ) {
-        filter_person = {
-          person_class: class_name,
+        filter_project = {
+          project_class: class_name,
         };
       } else {
         // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
         var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
-        filter_person = {
-          person_class: class_name,
-          person_employee: users_name_re,
-          //person_status: "Live"
+        filter_project = {
+          project_class: class_name,
+          project_employee: users_name_re,
+          //project_status: "Live"
         };
       }
 
-      Person.find(filter_person).exec((err, person) => {
-        if (err || !person) {
+      project.find(filter_project).exec((err, project) => {
+        if (err || !project) {
           res.status(400).json({
-            message: "Không tìm thấy person",
+            message: "Không tìm thấy project",
           });
         }
-        // Reverse sắp xếp các person theo thứ tự tạo mới nhất
-        res.json(person.reverse());
+        // Reverse sắp xếp các project theo thứ tự tạo mới nhất
+        res.json(project.reverse());
       });
     }
   });
 };
 
-// View bảng person_info
-export const personByID = (req, res, next, id) => {
+// View bảng project_info
+export const projectByID = (req, res, next, id) => {
   let userData = [];
  
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -92,7 +92,7 @@ export const personByID = (req, res, next, id) => {
       users_name = "";
     }
     users_name = user.users_name;
-    let filter_person = "";
+    let filter_project = "";
     // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
     if (
       ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
@@ -100,7 +100,7 @@ export const personByID = (req, res, next, id) => {
       ) != -1
     ) {
 
-      Person.findOne({ person_id: id })
+      project.findOne({ project_id: id })
         .populate("device_id", [
           "device_id",
           "device_status",
@@ -192,14 +192,14 @@ export const personByID = (req, res, next, id) => {
           "tiktok_user",
           "tiktok_password",
         ])
-        .exec((err, person) => {
-          console.log("person")
-          if (err || !person) {
-            console.log("Lỗi không truy vấn được Person, kiểm tra populate")
+        .exec((err, project) => {
+          console.log("project")
+          if (err || !project) {
+            console.log("Lỗi không truy vấn được project, kiểm tra populate")
             return res.status(500);
           }
 
-          // get list users_name từ db vào person_employee
+          // get list users_name từ db vào project_employee
           Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
             if (err) {
               return res.status(400).json({
@@ -211,21 +211,21 @@ export const personByID = (req, res, next, id) => {
             });
           });
 
-          let newData = JSON.parse(JSON.stringify(person));
-          newData.listselect_person_employee = userData;
-          req.person = newData;
+          let newData = JSON.parse(JSON.stringify(project));
+          newData.listselect_project_employee = userData;
+          req.project = newData;
           next();
         });
     } else {
       // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
       var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
-      filter_person = {
-        person_id: id,
-        person_employee: users_name_re,
-        //person_status: "Live"
+      filter_project = {
+        project_id: id,
+        project_employee: users_name_re,
+        //project_status: "Live"
       };
 
-      Person.findOne(filter_person)
+      project.findOne(filter_project)
       .populate("device_id", [
         "device_id",
         "device_status",
@@ -324,14 +324,14 @@ export const personByID = (req, res, next, id) => {
         "tiktok_user",
         "tiktok_password",
       ])
-      .exec((err, person) => {
-        console.log(person)
-          if (err || !person) {
-            console.log("Lỗi không truy vấn được Person, kiểm tra populate")
+      .exec((err, project) => {
+        console.log(project)
+          if (err || !project) {
+            console.log("Lỗi không truy vấn được project, kiểm tra populate")
             return res.status(500);
           }
 
-        // get list users_name từ db vào person_employee
+        // get list users_name từ db vào project_employee
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
           if (err) {
             return res.status(400).json({
@@ -342,15 +342,15 @@ export const personByID = (req, res, next, id) => {
             userData.push(user.users_name);
           });
         });
-        let newData = JSON.parse(JSON.stringify(person));
-        newData.listselect_person_employee = userData;
-        req.person = newData;
+        let newData = JSON.parse(JSON.stringify(project));
+        newData.listselect_project_employee = userData;
+        req.project = newData;
         next();
       });
     }
   });
 };
-// Update dữ liệu từ person_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
+// Update dữ liệu từ project_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
@@ -369,40 +369,40 @@ export const update = (req, res) => {
       users_name = "";
     }
     users_name = user.users_name;
-    var person_id = req.query.id;
-    var dataPerson = req.body;
-    dataPerson.person_history =
+    var project_id = req.query.id;
+    var dataproject = req.body;
+    dataproject.project_history =
       users_name +
       "|" +
       moment(now()).format("YYYY-MM-DD HH:mm") +
       "|" +
-      dataPerson.person_class +
+      dataproject.project_class +
       "," +
-      dataPerson.person_history;
+      dataproject.project_history;
 
-    for (const key in dataPerson) {
-      if (dataPerson[key] == "") {
-        delete dataPerson[key];
+    for (const key in dataproject) {
+      if (dataproject[key] == "") {
+        delete dataproject[key];
       }
     }
-    Person.findOneAndUpdate(
-      { person_id: person_id },
-      { $set: dataPerson },
+    project.findOneAndUpdate(
+      { project_id: project_id },
+      { $set: dataproject },
       { useFindAndModify: false },
-      (err, person) => {
+      (err, project) => {
         if (err) {
           console.log(err);
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });
         }
-        res.json(person);
+        res.json(project);
       }
     );
   });
 };
-// Get count ra bảng person_class
-export const getCountPerson_class = (req, res) => {
+// Get count ra bảng project_class
+export const getCountproject_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -428,10 +428,10 @@ export const getCountPerson_class = (req, res) => {
         user.users_function
       ) != -1
     ) {
-      Person.aggregate([
+      project.aggregate([
         {
           $group: {
-            _id: "$person_class",
+            _id: "$project_class",
             count: {
               $count: {},
             },
@@ -450,15 +450,15 @@ export const getCountPerson_class = (req, res) => {
       });
     } else {
       // Nhân viên chỉ xem được tổng tài khoản nhân viên đó quản lý
-      Person.aggregate([
+      project.aggregate([
         {
           $match: {
-            person_employee: users_name_re,
+            project_employee: users_name_re,
           },
         },
         {
           $group: {
-            _id: "$person_class",
+            _id: "$project_class",
             count: {
               $count: {},
             },
@@ -480,9 +480,9 @@ export const getCountPerson_class = (req, res) => {
 };
 
 // ================ Middle ware====================
-// hàm phân quyền trong Person, user phải trong phòng sản xuất và quản lý Person mới view đc Person
+// hàm phân quyền trong project, user phải trong phòng sản xuất và quản lý project mới view đc project
 
-export const canViewPerson = (req, res, next) => {
+export const canViewproject = (req, res, next) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   const token = data.split(" ");
   if (!token) {
@@ -502,14 +502,14 @@ export const canViewPerson = (req, res, next) => {
         });
       }
       if (
-        user.manage_view.indexOf("person_id") != -1 &&
+        user.manage_view.indexOf("project_id") != -1 &&
         user.users_owner.indexOf("Phòng sản xuất") != -1 &&
         user.users_status.indexOf("Active") != -1
       ) {
         next();
       } else {
         res.status(403).json({
-          error: "Không có quyền truy cập person",
+          error: "Không có quyền truy cập project",
         });
       }
     });

@@ -14,6 +14,7 @@ const billSchema = mongoose.Schema(
     bill_contact_social2: { type: String },
     bill_payment: { type: String },
     bill_debt: { type: String },
+    bill_expiry_date: { type: String },
     bill_note: { type: String },
     // 
     bill_work: { type: String },

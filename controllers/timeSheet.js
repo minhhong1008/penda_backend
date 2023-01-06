@@ -43,7 +43,7 @@ export const create = (req, res) => {
   } else {
     let date1 = moment(req.body.working_date).format("YYYY-MM-DD");
     let date2 = moment(now()).format("YYYY-MM-DD");
-    if (date1 >= date2 + 2) {
+    if (date1 >= date2 + 5) {
       if (req.body.working_session == "delete") {
         TimeSheet.find({
           users_name: req.body.users_name,

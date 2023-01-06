@@ -4,7 +4,6 @@ import Users from "../models/user";
 export const create = (req, res) => {
   // bill => là 1 đối tượng được tạo ra từ model Bill -> gồm tất cả các fields như được khai báo trong model bill và gán giá trị
   // bằng giá trị của req.body gửi lên từ client
-
   const bill = new Bill(req.body);
   // gọi phương thức save() của mongodb để lưu đối tượng này vào trong bảng bills trong database
   bill.save((err, bill) => {
@@ -104,7 +103,7 @@ export const getEmployee = (req, res, next) => {
     users.forEach((user) => {
       userData.push(user.users_name);
     });
-    
+
     res.json(userData);
   });
 };

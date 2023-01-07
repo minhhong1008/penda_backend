@@ -65,7 +65,7 @@ export const listusers_timesheets = (req, res) => {
         
         if (err || !users) {
           res.status(400).json({
-            message: "Không tìm thấy users vcc",
+            message: "Không tìm thấy users",
           });
         }
 
@@ -94,6 +94,11 @@ export const update = (req, res) => {
   newUser.salt = salt;
   newUser.hashed_password = pass;
   var users_id = req.query.id;
+  for (const key in newUser) {
+    if (newUser[key] == "") {
+      delete newUser[key];
+    }
+  }
   Users.findOneAndUpdate(
     { users_id: users_id },
     { $set: newUser },

@@ -76,9 +76,15 @@ export const getBillTable = (req, res) => {
 
 export const update = (req, res) => {
   let id = req.body._id;
+  var dataBill = req.body;
+  for (const key in dataBill) {
+    if (dataBill[key] == "") {
+      delete dataBill[key];
+    }
+  }
   Bill.findOneAndUpdate(
     { _id: id },
-    { $set: req.body },
+    { $set: dataBill },
     { useFindAndModify: false },
     (err, bill) => {
       if (err) {

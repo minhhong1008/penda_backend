@@ -79,6 +79,7 @@ export const listproject = (req, res) => {
               {
                 $or: [
                   { project_status: "Bắt đầu" },
+                  { project_status: "Đang thực hiện" },
                   { project_status: "Chưa hoàn thành" },
                   { project_status: "Đang vướng mắc" },
                   { project_status: "Không cần làm" },

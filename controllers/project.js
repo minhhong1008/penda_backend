@@ -11,12 +11,12 @@ export const create = (req, res) => {
       project_id: req.body.project_id,
       project_employee: req.body.project_employee,
       project_date_start: req.body.project_date_start,
-      project_date_end:req.body.project_date_end,
-      project_processing:req.body.project_processing,
-      project_owner:req.body.project_owner,
-      project_work_item:req.body.project_work_item,
-      project_work:req.body.project_work,
-      project_status:req.body.project_status,
+      project_date_end: req.body.project_date_end,
+      project_processing: req.body.project_processing,
+      project_owner: req.body.project_owner,
+      project_work_item: req.body.project_work_item,
+      project_work: req.body.project_work,
+      project_status: req.body.project_status,
     });
     projet.save((err, projet) => {
       if (err) {
@@ -108,20 +108,20 @@ export const projectByID = (req, res, next, id) => {
     }
     users_name = user.users_name;
     let filter_project = "";
-    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
+    /* "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản */
     if (
       ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
         user.users_function
       ) != -1
     ) {
-      project.findOne({ project_id: id }).exec((err, project) => {
-        console.log("project");
+      project.findOne({ _id: id }).exec((err, project) => {
         if (err || !project) {
-          console.log("Lỗi không truy vấn được project");
-          return res.status(500);
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
         }
-
-        // get list users_name từ db vào project_employee
+        
+        // get list users_name từ db vào project_employee ,"Giám đốc", "Phó Giám đốc", "Trưởng phòng" có thể thay đổi nhân viên
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
           if (err) {
             return res.status(400).json({
@@ -142,37 +142,26 @@ export const projectByID = (req, res, next, id) => {
       // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
       var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
       filter_project = {
-        project_id: id,
+        _id: id,
         project_employee: users_name_re,
         //project_status: "Live"
       };
 
       project.findOne(filter_project).exec((err, project) => {
-        console.log(project);
-        if (err || !project) {
-          console.log("Lỗi không truy vấn được project");
-          return res.status(500);
-        }
-
-        // get list users_name từ db vào project_employee
-        Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
-          if (err) {
-            return res.status(400).json({
-              error: "Đã lỗi",
-            });
-          }
-          users.forEach((user) => {
-            userData.push(user.users_name);
+        if (err) {
+          return res.status(400).json({
+            error: "Đã lỗi",
           });
-        });
+        }
+        
         let newData = JSON.parse(JSON.stringify(project));
-        newData.listselect_project_employee = userData;
         req.project = newData;
         next();
       });
     }
   });
 };
+
 // Update dữ liệu từ project_info ( đang gặp vấn đề quyền nhân viên uodate thì nhiều field bị rỗng)
 export const update = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -192,29 +181,20 @@ export const update = (req, res) => {
       users_name = "";
     }
     users_name = user.users_name;
-    var project_id = req.query.id;
-    var dataproject = req.body;
-    dataproject.project_history =
-      users_name +
-      "|" +
-      moment(now()).format("YYYY-MM-DD HH:mm") +
-      "|" +
-      dataproject.project_class +
-      "," +
-      dataproject.project_history;
 
+    var dataproject = req.body;
     for (const key in dataproject) {
       if (dataproject[key] == "") {
         delete dataproject[key];
       }
     }
+
     project.findOneAndUpdate(
-      { project_id: project_id },
+      { _id: req.query.id },
       { $set: dataproject },
       { useFindAndModify: false },
       (err, project) => {
         if (err) {
-          console.log(err);
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });
@@ -224,6 +204,7 @@ export const update = (req, res) => {
     );
   });
 };
+
 // Get count ra bảng project_class
 export const getCountproject_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -255,7 +236,7 @@ export const getCountproject_class = (req, res) => {
         .aggregate([
           {
             $group: {
-              _id: "$project_class",
+              _id: "$project_employee",
               count: {
                 $count: {},
               },
@@ -284,7 +265,7 @@ export const getCountproject_class = (req, res) => {
           },
           {
             $group: {
-              _id: "$project_class",
+              _id: "$project_employee",
               count: {
                 $count: {},
               },

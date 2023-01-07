@@ -23,6 +23,8 @@ export const getebay = (req, res) => {
 // View bảng ebay_table
 export const listebay = (req, res) => {
   var class_name = req.query.ebay_class;
+  var query = req.query.query;
+
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -412,7 +414,6 @@ export const update = (req, res) => {
       { useFindAndModify: false },
       (err, ebay) => {
         if (err) {
-          
           return res.status(400).json({
             error: "Bạn không được phép thực hiện hành động này",
           });
@@ -558,6 +559,11 @@ export const getCountEbay_class = (req, res) => {
 
 export const canViewEbay = (req, res, next) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
+  if (!data) {
+    return res.status(400).json({
+      error: "Chưa login",
+    });
+  }
   const token = data.split(" ");
   if (!token) {
     return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");

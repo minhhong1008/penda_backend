@@ -37,6 +37,10 @@ export const create = (req, res) => {
             }
             res.json(session);
           });
+        } else {
+          return res.status(400).json({
+            err: "Đã đăng ký ca này rồi"
+          })
         }
       });
     }

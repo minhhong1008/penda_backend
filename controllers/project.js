@@ -36,6 +36,10 @@ export const getproject = (req, res) => {
 // View bảng project_table
 export const listproject = (req, res) => {
   var project_employee = req.query.project_employee;
+  var project_status = req.query.project_status;
+  let from = req.query.from;
+  let to = req.query.to;
+
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
   const token = data.split(" ");
@@ -62,12 +66,33 @@ export const listproject = (req, res) => {
           user.users_function
         ) != -1
       ) {
-        filter_project = {
-          project_employee: project_employee,
-        };
+        if (project_status) {
+
+          filter_project = {
+            project_status: project_status,
+            project_employee: project_employee,
+          };
+
+        } else {
+          filter_project = {
+            $and: [
+              {
+                $or: [
+                  { project_status: "Bắt đầu" },
+                  { project_status: "Chưa hoàn thành" },
+                  { project_status: "Đang vướng mắc" },
+                  { project_status: "Không cần làm" },
+                ],
+              },
+              {
+                project_employee: project_employee,
+              },
+            ],
+          };
+        }
       } else {
         // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
-        var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+        var users_name_re = new RegExp("(.*)" + users_name + "(.*)"); // dùng để tìm users_name trong 1 chuỗi chứa users_name
         filter_project = {
           project_employee: project_employee,
           project_employee: users_name_re,
@@ -75,17 +100,21 @@ export const listproject = (req, res) => {
         };
       }
 
-      project
-        .find(filter_project)
-        .sort({ project_date_start: "descending" })
-        .exec((err, project) => {
-          if (err || !project) {
-            res.status(400).json({
-              message: "Không tìm thấy project",
+        if (from && to) {
+          filter_project.date = { $gte: new Date(from), $lte: new Date(to) };
+        }
+        project.aggregate([
+          { $addFields: { date: { $toDate: "$project_date_start" } } },
+          {
+            $match: filter_project,
+          },
+        ]).exec((err, project) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã Lỗi",
             });
           }
-          // Reverse sắp xếp các project theo thứ tự tạo mới nhất
-          res.json(project.reverse());
+          res.json(project);
         });
     }
   });
@@ -120,7 +149,7 @@ export const projectByID = (req, res, next, id) => {
             error: "Đã lỗi",
           });
         }
-        
+
         // get list users_name từ db vào project_employee ,"Giám đốc", "Phó Giám đốc", "Trưởng phòng" có thể thay đổi nhân viên
         Users.find({}, { users_name: 1, _id: 0 }).exec((err, users) => {
           if (err) {
@@ -153,7 +182,7 @@ export const projectByID = (req, res, next, id) => {
             error: "Đã lỗi",
           });
         }
-        
+
         let newData = JSON.parse(JSON.stringify(project));
         req.project = newData;
         next();

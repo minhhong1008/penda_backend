@@ -19,6 +19,7 @@ export const create = (req, res) => {
       project_work: req.body.project_work,
       project_status: req.body.project_status,
     });
+
     projet.save((err, projet) => {
       if (err) {
         return res.status(400).json({
@@ -68,22 +69,19 @@ export const listproject = (req, res) => {
         ) != -1
       ) {
         if (project_status) {
-
           filter_project = {
             project_status: project_status,
             project_employee: project_employee,
           };
-
         } else {
           filter_project = {
             $and: [
               {
                 $or: [
                   { project_status: "Bắt đầu" },
-                  { project_status: "Đang thực hiện" },
-                  { project_status: "Chưa hoàn thành" },
-                  { project_status: "Đang vướng mắc" },
-                  { project_status: "Không cần làm" },
+                  { project_status: "Thực hiện" },
+                  { project_status: "Chưa xong" },
+                  { project_status: "Vướng mắc" },
                 ],
               },
               {
@@ -102,15 +100,17 @@ export const listproject = (req, res) => {
         };
       }
 
-        if (from && to) {
-          filter_project.date = { $gte: new Date(from), $lte: new Date(to) };
-        }
-        project.aggregate([
+      if (from && to) {
+        filter_project.date = { $gte: new Date(from), $lte: new Date(to) };
+      }
+      project
+        .aggregate([
           { $addFields: { date: { $toDate: "$project_date_start" } } },
           {
             $match: filter_project,
           },
-        ]).exec((err, project) => {
+        ])
+        .exec((err, project) => {
           if (err) {
             return res.status(400).json({
               error: "Đã Lỗi",
@@ -215,7 +215,7 @@ export const update = (req, res) => {
 
     var dataproject = req.body;
     for (const key in dataproject) {
-      if (dataproject[key] == "") {
+      if (dataproject[key] == "" || dataproject[key] == "undefinded") {
         delete dataproject[key];
       }
     }
@@ -265,14 +265,16 @@ export const getCountproject_class = (req, res) => {
     ) {
       project
         .aggregate([
+          /* {$match: {project_status: "Bắt đầu"}}, */
           {
             $group: {
-              _id: "$project_employee",
-              count: {
-                $count: {},
+              _id: {
+                users_name: "$project_employee",
               },
+              count: { $sum: 1 },
             },
           },
+          { $sort: { "count": -1 } },
         ])
         .exec((err, data) => {
           if (err) {
@@ -280,6 +282,7 @@ export const getCountproject_class = (req, res) => {
               error: "Đã lỗi",
             });
           }
+          console.log(data)
           res.json({
             status: "success",
             data: data,
@@ -296,12 +299,13 @@ export const getCountproject_class = (req, res) => {
           },
           {
             $group: {
-              _id: "$project_employee",
-              count: {
-                $count: {},
+              _id: {
+                users_name: "$project_employee",
               },
+              count: { $sum: 1 },
             },
           },
+          { $sort: { "count": -1 } },
         ])
         .exec((err, data) => {
           if (err) {

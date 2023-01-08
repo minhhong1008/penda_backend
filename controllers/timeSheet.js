@@ -1,7 +1,11 @@
 import TimeSheet from "../models/timeSheet";
 import moment, { now } from "moment";
 export const create = (req, res) => {
-  if (["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) != -1) {
+  if (
+    ["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) !== -1 &&
+    ["Minh Hồng", "Nguyễn Hoài"].indexOf(req.body.users_name) !== -1
+  ) {
+    // Đăng ký của leader chấm công
     if (req.body.working_session == "delete") {
       TimeSheet.find({
         users_name: req.body.users_name,
@@ -39,15 +43,16 @@ export const create = (req, res) => {
           });
         } else {
           return res.status(400).json({
-            err: "Đã đăng ký ca này rồi"
-          })
+            err: "Đã đăng ký ca này rồi",
+          });
         }
       });
     }
   } else {
+    // Đăng ký của nhân viên
     let date1 = moment(req.body.working_date).format("YYYY-MM-DD");
-    let date2 = moment(now()).format("YYYY-MM-DD");
-    if (date1 >= date2 + 5) {
+    let date2 = moment(now()).add(3, 'd').format("YYYY-MM-DD");
+    if (date1 >= date2) {
       if (req.body.working_session == "delete") {
         TimeSheet.find({
           users_name: req.body.users_name,

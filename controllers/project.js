@@ -9,6 +9,7 @@ export const create = (req, res) => {
   if (req.body) {
     let projet = new project({
       project_id: req.body.project_id,
+      project_employee_request: req.body.project_employee_request,
       project_employee: req.body.project_employee,
       project_date_start: req.body.project_date_start,
       project_date_end: req.body.project_date_end,

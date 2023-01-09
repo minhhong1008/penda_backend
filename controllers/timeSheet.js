@@ -2,8 +2,7 @@ import TimeSheet from "../models/timeSheet";
 import moment, { now } from "moment";
 export const create = (req, res) => {
   if (
-    ["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) !== -1 &&
-    ["Minh Hồng", "Nguyễn Hoài"].indexOf(req.body.users_name) !== -1
+    ["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) !== -1
   ) {
     // Đăng ký của leader chấm công
     if (req.body.working_session == "delete") {

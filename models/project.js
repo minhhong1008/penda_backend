@@ -12,13 +12,14 @@ const projectSchema = mongoose.Schema(
     project_employee: { type: String },
     project_employee_request: { type: String },
     project_status: { type: String },
-    project_note: { type: String },
     project_work: { type: String },
     project_review: { type: String },
     project_error: { type: String },
     project_processing: { type: String },
     project_type: { type: String },
     project_work_item: { type: String },
+    project_note: { type: String },
+    project_note_active: { type: String },
    
     project_image_url: { type: String },
    

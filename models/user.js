@@ -38,11 +38,11 @@ const userSchema = mongoose.Schema(
     users_sort: { type: String },
     users_level: { type: String },
     users_major: { type: String },
-    users_function: { type: String },
-    users_owner: { type: String },
-    manage_view: { type: String },
+    users_function: { type: String, default: "Thử việc" },
+    users_owner: { type: String, default: "Phòng sản xuất" },
+    manage_view: { type: String, default: "0" },
     users_status: { type: String, default: "New" },
-    users_salary: { type: String },
+    users_salary: { type: String, default: "6000000" },
     email: { type: String },
     users_image_url: { type: String },
   },
@@ -79,5 +79,3 @@ userSchema.methods = {
 };
 
 module.exports = mongoose.model("User", userSchema);
-
-

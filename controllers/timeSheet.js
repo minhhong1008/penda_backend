@@ -1,9 +1,13 @@
 import TimeSheet from "../models/timeSheet";
 import moment, { now } from "moment";
+
 export const create = (req, res) => {
-  if (
-    ["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) !== -1
-  ) {
+  if (req.body.working_date == "Invalid Date" || req.body.users_name == "") {
+    return res.status(400).json({
+      error: "Đã lỗi",
+    });
+  }
+  if (["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) !== -1) {
     // Đăng ký của leader chấm công
     if (req.body.working_session == "delete") {
       TimeSheet.find({
@@ -50,7 +54,7 @@ export const create = (req, res) => {
   } else {
     // Đăng ký của nhân viên
     let date1 = moment(req.body.working_date).format("YYYY-MM-DD");
-    let date2 = moment(now()).add(3, 'd').format("YYYY-MM-DD");
+    let date2 = moment(now()).add(3, "d").format("YYYY-MM-DD");
     if (date1 >= date2) {
       if (req.body.working_session == "delete") {
         TimeSheet.find({
@@ -127,5 +131,64 @@ export const list = (req, res) => {
     } else {
       res.json(sessions);
     }
+  });
+};
+
+export const createVerify = (req, res) => {
+  // Kiểm tra đã đăng ký lịch chấm công chưa
+  TimeSheet.findOne({
+    users_name: req.body.users_name,
+    working_date: req.body.working_date,
+    working_session: req.body.working_check,
+    working_verify: "unverify",
+  }).exec((err, data) => {
+    if (err || !data) {
+      return res.status(400).json({
+        error: "Đã lỗi",
+      });
+    }
+    // nếu đã đăng ký rồi thì update verify, khi update verify sẽ không chấm công nữa
+    data.working_verify = "verify";
+    TimeSheet.findOneAndUpdate(
+      { _id: data._id },
+      { $set: data },
+      { useFindAndModify: false },
+      (err, newdata) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Đã Lỗi",
+          });
+        }
+        res.json(newdata);
+      }
+    );
+    //
+    if (req.body.working_session == req.body.working_check) {
+      return;
+    }
+
+    TimeSheet.findOne({
+      users_name: req.body.users_name,
+      working_date: req.body.working_date,
+      working_session: req.body.working_session,
+      working_verify: "verify",
+    }).exec((err, datas) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Đã lỗi",
+        });
+      }
+
+      if (!datas) {
+        const timeSheet = new TimeSheet(req.body);
+        timeSheet.save((err, info) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã lỗi",
+            });
+          }
+        });
+      }
+    });
   });
 };

@@ -8,9 +8,16 @@ const timeSheetSchema = mongoose.Schema(
     working_session: {
       type: String,
     },
+    working_verify: {
+      type: String,
+    },
     working_date: {
       type: String,
     },
+    working_check: {
+      type: String,
+    },
+
   },
   { timeStamps: true }
 );

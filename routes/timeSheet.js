@@ -1,10 +1,10 @@
 import express from "express";
-import { create, list } from "../controllers/timeSheet";
+import { create, createVerify, list } from "../controllers/timeSheet";
 
 
 const router = express.Router();
 
 router.post("/timeSheet/create", create);
 router.get("/timeSheet/list", list);
-
+router.post("/timeSheet/createverify", createVerify);
 module.exports = router;

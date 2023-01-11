@@ -6,8 +6,8 @@ import {
   getebay,
   listebay,
   update,
-  canViewEbay
 } from "../controllers/ebay";
+import { canViewEbay } from "../controllers/ebay";
 
 const router = express.Router();
 // Lấy ebay_id từ url

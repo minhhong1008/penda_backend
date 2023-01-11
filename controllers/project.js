@@ -35,20 +35,9 @@ export const getproject = (req, res) => {
   return res.json(req.project);
 };
 
-
 // View bảng project_table
 export const listproject = (req, res) => {
- 
   var project_employee = req.query.project_employee;
- 
-  if (!project_employee) {
-
-   
-    return res.status(400).json({
-      error: "Đã lỗi",
-    });
-   
-  }
   var project_status = req.query.project_status;
   let from = req.query.from;
   let to = req.query.to;
@@ -60,10 +49,8 @@ export const listproject = (req, res) => {
     users_name = "";
   }
   const decoded = jwt.verify(token[1], "duy");
-  
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
-      
       return res.status(400).json({
         error: "Đã lỗi",
       });
@@ -71,72 +58,67 @@ export const listproject = (req, res) => {
     if (!user) {
       users_name = "";
     }
-    
 
-    // Bắt đầu tạo filter để query
     users_name = user.users_name;
     let filter_project = "";
-    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
-    if (
-      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
-        user.users_function
-      ) != -1
-    ) {
-
-      if (project_status) {
-        filter_project = {
-          project_status: project_status,
-          project_employee: project_employee,
-        };
+    if (project_employee) {
+      // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
+      if (
+        ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+          user.users_function
+        ) != -1
+      ) {
+        if (project_status) {
+          filter_project = {
+            project_status: project_status,
+            project_employee: project_employee,
+          };
+        } else {
+          filter_project = {
+            $and: [
+              {
+                $or: [
+                  { project_status: "Bắt đầu" },
+                  { project_status: "Thực hiện" },
+                  { project_status: "Chưa xong" },
+                  { project_status: "Vướng mắc" },
+                ],
+              },
+              {
+                project_employee: project_employee,
+              },
+            ],
+          };
+        }
       } else {
+        // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
+        var users_name_re = new RegExp("(.*)" + users_name + "(.*)"); // dùng để tìm users_name trong 1 chuỗi chứa users_name
         filter_project = {
-          $and: [
-            {
-              $or: [
-                { project_status: "Bắt đầu" },
-                { project_status: "Không xong" },
-              ],
-            },
-            {
-              project_employee: project_employee,
-            },
-          ],
+          project_employee: project_employee,
+          project_employee: users_name_re,
+          //project_status: "Live"
         };
       }
 
-    } else {
-      // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
-      var users_name_re = new RegExp("(.*)" + users_name + "(.*)"); // dùng để tìm users_name trong 1 chuỗi chứa users_name
-      filter_project = {
-        project_employee: project_employee,
-        project_employee: users_name_re,
-        //project_status: "Live"
-      };
+      if (from && to) {
+        filter_project.date = { $gte: new Date(from), $lte: new Date(to) };
+      }
+      project
+        .aggregate([
+          { $addFields: { date: { $toDate: "$project_date_start" } } },
+          {
+            $match: filter_project,
+          },
+        ])
+        .exec((err, project) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã Lỗi",
+            });
+          }
+          res.json(project);
+        });
     }
-
-
-    // Lọc theo thời gian
-    if (from && to) {
-      filter_project.date = { $gte: new Date(from), $lte: new Date(to) };
-    }
-    
-    project
-      .aggregate([
-        { $addFields: { date: { $toDate: "$project_date_start" } } },
-        {
-          $match: filter_project,
-        },
-      ])
-      .exec((err, project) => {
-       
-        if (err) {
-          
-          return res.status(400).json({
-            error: "Đã Lỗi",
-          });
-        }
-        res.json(project);
-      });
   });
 };
 
@@ -292,7 +274,7 @@ export const getCountproject_class = (req, res) => {
               count: { $sum: 1 },
             },
           },
-          { $sort: { count: -1 } },
+          { $sort: { "count": -1 } },
         ])
         .exec((err, data) => {
           if (err) {
@@ -300,7 +282,7 @@ export const getCountproject_class = (req, res) => {
               error: "Đã lỗi",
             });
           }
-          console.log(data);
+          console.log(data)
           res.json({
             status: "success",
             data: data,
@@ -323,7 +305,7 @@ export const getCountproject_class = (req, res) => {
               count: { $sum: 1 },
             },
           },
-          { $sort: { count: -1 } },
+          { $sort: { "count": -1 } },
         ])
         .exec((err, data) => {
           if (err) {
@@ -363,9 +345,9 @@ export const canViewproject = (req, res, next) => {
         });
       }
       if (
-        user.manage_view.indexOf("project_id") !== -1 &&
-        user.users_owner.indexOf("Phòng sản xuất") !== -1 &&
-        user.users_status.indexOf("Active") !== -1
+        user.manage_view.indexOf("project_id") != -1 &&
+        user.users_owner.indexOf("Phòng sản xuất") != -1 &&
+        user.users_status.indexOf("Active") != -1
       ) {
         next();
       } else {

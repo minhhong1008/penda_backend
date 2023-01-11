@@ -4,9 +4,7 @@ import expressJwt from "express-jwt"; // Kiểm tra đăng nhập
 
 export const signup = (req, res) => {
   const user = new User(req.body);
-  console.log(user)
-  let id = user.users_name + "_" + Math.floor(Math.random() * 100);
-  user.users_name = id;
+  let id = user.users_name + "_" + Math.floor(Math.random() * 10);
   user.users_id = id;
   user.users_passwords = user.users_password;
   user.email = user.users_mail;

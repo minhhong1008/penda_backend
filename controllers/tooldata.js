@@ -82,7 +82,7 @@ export const Create_newdata = (req, res) => {
           if (!proxy) {
             let proxy = new Proxy({
               proxy_id: temp_id,
-              proxy_class: "Lớp 0",
+              proxy_class: "Lớp 1",
               list_view: body.view,
             });
             proxy.save((err, proxy) => {
@@ -102,7 +102,7 @@ export const Create_newdata = (req, res) => {
           if (!info) {
             let info = new Info({
               info_id: temp_id,
-              info_class: "Lớp 0",
+              info_class: "Lớp 1",
               list_view: body.view,
             });
             info.save((err, info) => {
@@ -122,7 +122,7 @@ export const Create_newdata = (req, res) => {
           if (!sim) {
             let sim = new Sim({
               sim_id: temp_id,
-              sim_class: "Lớp 0",
+              sim_class: "Lớp 1",
               list_view: body.view,
             });
             sim.save((err, sim) => {
@@ -142,7 +142,7 @@ export const Create_newdata = (req, res) => {
           if (!mail) {
             let mail = new Mail({
               mail_id: temp_id,
-              mail_class: "Lớp 0",
+              mail_class: "Lớp 1",
               list_view: body.view,
             });
             mail.save((err, mail) => {
@@ -162,7 +162,7 @@ export const Create_newdata = (req, res) => {
           if (!bank) {
             let bank = new Bank({
               bank_id: temp_id,
-              bank_class: "Lớp 0",
+              bank_class: "Lớp 1",
               list_view: body.view,
             });
             bank.save((err, bank) => {
@@ -182,7 +182,7 @@ export const Create_newdata = (req, res) => {
           if (!payoneer) {
             let payoneer = new Payoneer({
               payoneer_id: temp_id,
-              payoneer_class: "Lớp 0",
+              payoneer_class: "Lớp 1",
               list_view: body.view,
             });
             payoneer.save((err, payoneer) => {
@@ -202,7 +202,7 @@ export const Create_newdata = (req, res) => {
           if (!paypal) {
             let paypal = new Paypal({
               paypal_id: temp_id,
-              paypal_class: "Lớp 0",
+              paypal_class: "Lớp 1",
               list_view: body.view,
             });
             paypal.save((err, paypal) => {
@@ -222,7 +222,7 @@ export const Create_newdata = (req, res) => {
           if (!pingpong) {
             let pingpong = new Pingpong({
               pingpong_id: temp_id,
-              pingpong_class: "Lớp 0",
+              pingpong_class: "Lớp 1",
               list_view: body.view,
             });
             pingpong.save((err, pingpong) => {
@@ -242,7 +242,7 @@ export const Create_newdata = (req, res) => {
           if (!ebay) {
             let ebay = new Ebay({
               ebay_id: temp_id,
-              ebay_class: "Lớp 0",
+              ebay_class: "Lớp 1",
               list_view: body.view,
             });
             ebay.save((err, ebay) => {
@@ -262,7 +262,7 @@ export const Create_newdata = (req, res) => {
           if (!etsy) {
             let etsy = new Etsy({
               etsy_id: temp_id,
-              etsy_class: "Lớp 0",
+              etsy_class: "Lớp 1",
               list_view: body.view,
             });
             etsy.save((err, etsy) => {
@@ -280,7 +280,7 @@ export const Create_newdata = (req, res) => {
           if (!amazon) {
             let amazon = new Amazon({
               amazon_id: temp_id,
-              amazon_class: "Lớp 0",
+              amazon_class: "Lớp 1",
               list_view: body.view,
             });
             amazon.save((err, amazon) => {
@@ -298,7 +298,7 @@ export const Create_newdata = (req, res) => {
           if (!shopee) {
             let shopee = new Shopee({
               shopee_id: temp_id,
-              shopee_class: "Lớp 0",
+              shopee_class: "Lớp 1",
               list_view: body.view,
             });
             shopee.save((err, shopee) => {
@@ -316,7 +316,7 @@ export const Create_newdata = (req, res) => {
           if (!facebook) {
             let facebook = new Facebook({
               facebook_id: temp_id,
-              facebook_class: "Lớp 0",
+              facebook_class: "Lớp 1",
               list_view: body.view,
             });
             facebook.save((err, facebook) => {
@@ -334,7 +334,7 @@ export const Create_newdata = (req, res) => {
           if (!tiktok) {
             let tiktok = new Tiktok({
               tiktok_id: temp_id,
-              tiktok_class: "Lớp 0",
+              tiktok_class: "Lớp 1",
               list_view: body.view,
             });
             tiktok.save((err, tiktok) => {
@@ -352,7 +352,7 @@ export const Create_newdata = (req, res) => {
           if (!customer) {
             let customer = new Customer({
               customer_id: temp_id,
-              customer_class: "Lớp 0",
+              customer_class: "Lớp 1",
             });
             customer.save((err, customer) => {});
           }

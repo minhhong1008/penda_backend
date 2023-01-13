@@ -6,6 +6,7 @@ import {
   getmail,
   listmail,
   update,
+  searchMail,
 } from "../controllers/mail";
 import { canViewMail } from "../controllers/mail";
 
@@ -22,6 +23,7 @@ router.get("/mail/list", canViewMail, listmail);
 router.get("/mail/get/:mailId",canViewMail, getmail);
 // View count trong mail_class
 router.get("/getmail/count", getCountMail_class);
-
+// Hàm search
+router.get("/mail/search",canViewMail, searchMail);
 module.exports = router;
 

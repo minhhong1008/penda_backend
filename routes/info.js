@@ -6,6 +6,7 @@ import {
   getinfo,
   listinfo,
   update,
+  searchInfo,
 } from "../controllers/info";
 import { canViewInfo } from "../controllers/info";
 
@@ -22,5 +23,6 @@ router.get("/info/list", canViewInfo, listinfo);
 router.get("/info/get/:infoId",canViewInfo, getinfo);
 // View count trong info_class
 router.get("/getinfo/count", getCountInfo_class);
-
+// Hàm search
+router.get("/info/search",canViewInfo, searchInfo);
 module.exports = router;

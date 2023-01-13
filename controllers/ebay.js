@@ -557,7 +557,7 @@ export const getCountEbay_class = (req, res) => {
 
 export const searchEbay = (req, res) => {
   
-  var textand = req.query.query.split(",").trim();
+  var textand = req.query.query.split(",");
   var search = [];
   if (!textand) {
     return;
@@ -589,7 +589,7 @@ export const searchEbay = (req, res) => {
     ) {
       textand.map((item) => {
         search.push({
-          ebay_employee: new RegExp("(.*)" + item + "(.*)"),
+          ebay_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
         });
       });
       
@@ -605,44 +605,59 @@ export const searchEbay = (req, res) => {
 
     textand.map((item) => {
       search.push({
-        ebay_id: new RegExp("(.*)" + item + "(.*)"),
+        ebay_id: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_user: new RegExp("(.*)" + item + "(.*)"),
+        ebay_user: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_plan: new RegExp("(.*)" + item + "(.*)"),
+        ebay_detail: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_block: new RegExp("(.*)" + item + "(.*)"),
+        ebay_limit: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_error: new RegExp("(.*)" + item + "(.*)"),
+        ebay_item: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_processing: new RegExp("(.*)" + item + "(.*)"),
+        ebay_sold: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_type: new RegExp("(.*)" + item + "(.*)"),
+        ebay_feedback: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_sell_status: new RegExp("(.*)" + item + "(.*)"),
+        ebay_plan: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_owner: new RegExp("(.*)" + item + "(.*)"),
+        ebay_block: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        ebay_error: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        ebay_processing: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        ebay_type: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        ebay_sell_status: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        ebay_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       
       search.push({
-        ebay_outline: new RegExp("(.*)" + item + "(.*)"),
+        ebay_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_status: new RegExp("(.*)" + item + "(.*)"),
+        ebay_status: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_class: new RegExp("(.*)" + item + "(.*)"),
+        ebay_class: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        ebay_note: new RegExp("(.*)" + item + "(.*)"),
+        ebay_note: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
     });
   

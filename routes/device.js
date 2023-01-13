@@ -5,6 +5,7 @@ import {
   getCountDevice_class,
   getdevice,
   listdevice,
+  searchDevice,
   update,
 } from "../controllers/device";
 import { canViewDevice } from "../controllers/device";
@@ -22,6 +23,7 @@ router.get("/device/list", canViewDevice, listdevice);
 router.get("/device/get/:deviceId",canViewDevice, getdevice);
 // View count trong device_class
 router.get("/getdevice/count", getCountDevice_class);
-
+// Hàm search
+router.get("/device/search",canViewDevice, searchDevice);
 module.exports = router;
 

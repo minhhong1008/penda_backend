@@ -489,6 +489,137 @@ export const getCountMail_class = (req, res) => {
   });
 };
 
+export const searchMail = (req, res) => {
+  
+  var textand = req.query.query.split(",");
+  var search = [];
+  if (!textand) {
+    return;
+  }
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+
+    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
+    if (
+      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+        user.users_function
+      ) != -1
+    ) {
+      textand.map((item) => {
+        search.push({
+          mail_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
+        });
+      });
+      
+    } else {
+
+      textand.map((item) => {
+        search.push({
+          mail_employee: users_name_re,
+        });
+      });
+      
+    }
+
+    textand.map((item) => {
+      search.push({
+        mail_id: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_user: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_detail: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_limit: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_item: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_sold: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_feedback: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_plan: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_block: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_error: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_processing: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_type: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_sell_status: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      
+      search.push({
+        mail_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_status: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_class: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        mail_note: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+    });
+  
+    // Nhân viên chỉ search được tài khoản nhân viên đó
+  
+    Mail.aggregate([
+      {
+        $match: {
+          $or: search,
+        },
+      },
+    ]).exec((err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
+  
+      res.json(data);
+    });
+
+
+
+  });
+
+  
+};
 // ================ Middle ware====================
 // hàm phân quyền trong Mail, user phải trong phòng sản xuất và quản lý Mail mới view đc Mail
 

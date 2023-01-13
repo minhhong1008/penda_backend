@@ -491,7 +491,7 @@ export const getCountEtsy_class = (req, res) => {
 };
 
 export const searchEtsy = (req, res) => {
-  var text = req.query.query.split(",").trim();
+  var text = req.query.query.split(",");
   var search = [];
   if (!text) {
     return;
@@ -523,7 +523,7 @@ export const searchEtsy = (req, res) => {
     ) {
       text.map((item) => {
         search.push({
-          etsy_employee: new RegExp("(.*)" + item + "(.*)"),
+          etsy_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
         });
       });
       
@@ -539,44 +539,44 @@ export const searchEtsy = (req, res) => {
 
     text.map((item) => {
       search.push({
-        etsy_id: new RegExp("(.*)" + item + "(.*)"),
+        etsy_id: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_user: new RegExp("(.*)" + item + "(.*)"),
+        etsy_user: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_plan: new RegExp("(.*)" + item + "(.*)"),
+        etsy_plan: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_block: new RegExp("(.*)" + item + "(.*)"),
+        etsy_block: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_error: new RegExp("(.*)" + item + "(.*)"),
+        etsy_error: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_processing: new RegExp("(.*)" + item + "(.*)"),
+        etsy_processing: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_type: new RegExp("(.*)" + item + "(.*)"),
+        etsy_type: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_sell_status: new RegExp("(.*)" + item + "(.*)"),
+        etsy_sell_status: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_owner: new RegExp("(.*)" + item + "(.*)"),
+        etsy_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       
       search.push({
-        etsy_outline: new RegExp("(.*)" + item + "(.*)"),
+        etsy_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_status: new RegExp("(.*)" + item + "(.*)"),
+        etsy_status: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_class: new RegExp("(.*)" + item + "(.*)"),
+        etsy_class: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        etsy_note: new RegExp("(.*)" + item + "(.*)"),
+        etsy_note: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
     });
   

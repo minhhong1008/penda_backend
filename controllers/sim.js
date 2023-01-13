@@ -486,7 +486,7 @@ export const getCountSim_class = (req, res) => {
 };
 
 export const searchSim = (req, res) => {
-  var text = req.query.query.split(",").trim();
+  var text = req.query.query.split(",");
   var search = [];
   if (!text) {
     return;
@@ -518,7 +518,7 @@ export const searchSim = (req, res) => {
     ) {
       text.map((item) => {
         search.push({
-          sim_employee: new RegExp("(.*)" + item + "(.*)"),
+          sim_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
         });
       });
       
@@ -534,44 +534,44 @@ export const searchSim = (req, res) => {
 
     text.map((item) => {
       search.push({
-        sim_id: new RegExp("(.*)" + item + "(.*)"),
+        sim_id: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_user: new RegExp("(.*)" + item + "(.*)"),
+        sim_user: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_plan: new RegExp("(.*)" + item + "(.*)"),
+        sim_plan: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_block: new RegExp("(.*)" + item + "(.*)"),
+        sim_block: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_error: new RegExp("(.*)" + item + "(.*)"),
+        sim_error: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_processing: new RegExp("(.*)" + item + "(.*)"),
+        sim_processing: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_type: new RegExp("(.*)" + item + "(.*)"),
+        sim_type: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_sell_status: new RegExp("(.*)" + item + "(.*)"),
+        sim_sell_status: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_owner: new RegExp("(.*)" + item + "(.*)"),
+        sim_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       
       search.push({
-        sim_outline: new RegExp("(.*)" + item + "(.*)"),
+        sim_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_status: new RegExp("(.*)" + item + "(.*)"),
+        sim_status: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_class: new RegExp("(.*)" + item + "(.*)"),
+        sim_class: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
       search.push({
-        sim_note: new RegExp("(.*)" + item + "(.*)"),
+        sim_note: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
     });
   

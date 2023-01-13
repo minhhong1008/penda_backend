@@ -556,9 +556,10 @@ export const getCountEbay_class = (req, res) => {
 };
 
 export const searchEbay = (req, res) => {
-  var text = req.query.query.split(",");
+  var type =  req.query.type;
+  var textand = req.query.query.split(RegExp("(.*)" + type + "(.*)"));
   var search = [];
-  if (!text) {
+  if (!textand) {
     return;
   }
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -586,7 +587,7 @@ export const searchEbay = (req, res) => {
         user.users_function
       ) != -1
     ) {
-      text.map((item) => {
+      textand.map((item) => {
         search.push({
           ebay_employee: new RegExp("(.*)" + item + "(.*)"),
         });
@@ -594,7 +595,7 @@ export const searchEbay = (req, res) => {
       
     } else {
 
-      text.map((item) => {
+      textand.map((item) => {
         search.push({
           ebay_employee: users_name_re,
         });
@@ -602,7 +603,7 @@ export const searchEbay = (req, res) => {
       
     }
 
-    text.map((item) => {
+    textand.map((item) => {
       search.push({
         ebay_id: new RegExp("(.*)" + item + "(.*)"),
       });

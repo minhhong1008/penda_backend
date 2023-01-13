@@ -24,6 +24,6 @@ router.get("/ebay/get/:ebayId",canViewEbay, getebay);
 // View count trong ebay_class
 router.get("/getebay/count", getCountEbay_class);
 // Hàm search
-router.get("/ebay/search", searchEbay);
+router.get("/ebay/search",canViewEbay, searchEbay);
 
 module.exports = router;

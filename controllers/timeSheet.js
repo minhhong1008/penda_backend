@@ -72,10 +72,10 @@ export const create = (req, res) => {
             error: "Đã lỗi",
           });
         }
-        console.log(data);
+
         if (data) {
-          data.working_verify = "p";
-          console.log(data);
+          data.working_verify = "p" + data.working_session.toLowerCase();
+
           TimeSheet.findOneAndUpdate(
             { _id: data._id },
             { $set: data },
@@ -137,7 +137,7 @@ export const list = (req, res) => {
     }
   });
 };
-
+// nút chấm công trên header
 export const createVerify = (req, res) => {
   // Kiểm tra đã đăng ký lịch chấm công chưa\
 
@@ -152,8 +152,15 @@ export const createVerify = (req, res) => {
       });
     }
 
-    /*  if ((req.body.working_check = req.body.working_verify)) {} */
-    if (data.working_verify != req.body[0].working_verify) {
+    /* Loại bỏ chấm công lại khi đã chấm công */
+    if (data.working_verify != "" && data.working_check_late == "m") {
+      return;
+    }
+    /*  Chấm công khi hoàn thành ca */
+    if (
+      data.working_verify != req.body[0].working_verify &&
+      data.working_verify != ""
+    ) {
       TimeSheet.findOneAndUpdate(
         { _id: data._id },
         { $set: data },
@@ -167,6 +174,7 @@ export const createVerify = (req, res) => {
         }
       );
     }
+
     data.working_verify = req.body[0].working_verify;
     data.working_check_late = req.body[0].working_check_late;
     data.working_check_soon = req.body[0].working_check_soon;
@@ -175,10 +183,6 @@ export const createVerify = (req, res) => {
       if (data[key] == "") {
         delete data[key];
       }
-    }
-
-    if (data.working_verify != "" && data.working_check_late == "m") {
-      return;
     }
 
     TimeSheet.findOneAndUpdate(

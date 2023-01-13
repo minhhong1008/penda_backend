@@ -485,6 +485,121 @@ export const getCountSim_class = (req, res) => {
   });
 };
 
+export const searchSim = (req, res) => {
+  var text = req.query.query.split(",");
+  var search = [];
+  if (!text) {
+    return;
+  }
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+
+    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
+    if (
+      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+        user.users_function
+      ) != -1
+    ) {
+      text.map((item) => {
+        search.push({
+          sim_employee: new RegExp("(.*)" + item + "(.*)"),
+        });
+      });
+      
+    } else {
+
+      text.map((item) => {
+        search.push({
+          sim_employee: users_name_re,
+        });
+      });
+      
+    }
+
+    text.map((item) => {
+      search.push({
+        sim_id: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_user: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_plan: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_block: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_error: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_processing: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_type: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_sell_status: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_owner: new RegExp("(.*)" + item + "(.*)"),
+      });
+      
+      search.push({
+        sim_outline: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_status: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_class: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        sim_note: new RegExp("(.*)" + item + "(.*)"),
+      });
+    });
+  
+    // Nhân viên chỉ search được tài khoản nhân viên đó
+  
+    Sim.aggregate([
+      {
+        $match: {
+          $or: search,
+        },
+      },
+    ]).exec((err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
+  
+      res.json(data);
+    });
+
+
+
+  });
+
+  
+};
 // ================ Middle ware====================
 // hàm phân quyền trong Sim, user phải trong phòng sản xuất và quản lý Sim mới view đc Sim
 

@@ -5,6 +5,7 @@ import {
   getCountEtsy_class,
   getetsy,
   listetsy,
+  searchEtsy,
   update,
 } from "../controllers/etsy";
 import { canViewEtsy } from "../controllers/etsy";
@@ -22,6 +23,7 @@ router.get("/etsy/list", canViewEtsy, listetsy);
 router.get("/etsy/get/:etsyId",canViewEtsy, getetsy);
 // View count trong etsy_class
 router.get("/getetsy/count", getCountEtsy_class);
-
+// Search etsy
+router.get("/etsy/search",canViewEtsy, searchEtsy);
 module.exports = router;
 

@@ -6,6 +6,7 @@ import {
   getsim,
   listsim,
   update,
+  searchSim,
 } from "../controllers/sim";
 import { canViewSim } from "../controllers/sim";
 
@@ -22,6 +23,8 @@ router.get("/sim/list", canViewSim, listsim);
 router.get("/sim/get/:simId",canViewSim, getsim);
 // View count trong sim_class
 router.get("/getsim/count", getCountSim_class);
+// Hàm search
+router.get("/sim/search",canViewSim, searchSim);
 
 module.exports = router;
 

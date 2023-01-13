@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import crypto from "crypto";
 const { v1: uuidv1 } = require("uuid");
 
-
 export const hashPassword = (password) => {
   if (!password) {
     return "";
@@ -41,8 +40,8 @@ export const listusers = (req, res) => {
   if (users_status) {
     Users.find({ users_status: users_status })
       .sort({ users_sort: "ascending" })
+      .collation({ locale: "en_US", numericOrdering: true })
       .exec((err, users) => {
-       
         if (err || !users) {
           res.status(400).json({
             message: "Không tìm thấy users",
@@ -61,7 +60,6 @@ export const listusers_timesheets = (req, res) => {
     Users.find({ users_status: users_status })
       .sort({ users_sort: "ascending" })
       .exec((err, users) => {
-        
         if (err || !users) {
           res.status(400).json({
             message: "Không tìm thấy users",
@@ -81,7 +79,7 @@ export const usersByID = (req, res, next, id) => {
       });
       return;
     }
-    
+
     req.users = users;
     next();
   });
@@ -104,7 +102,6 @@ export const update = (req, res) => {
     { useFindAndModify: false },
     (err, users) => {
       if (err) {
-       
         return res.status(400).json({
           error: "Bạn không được phép thực hiện hành động này",
         });

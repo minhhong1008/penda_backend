@@ -373,6 +373,7 @@ export const ebayByID = (req, res, next, id) => {
     }
   });
 };
+
 // Update dữ liệu từ ebay_info
 export const update = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -476,7 +477,6 @@ export const Copy_re = (req, res) => {
   });
 };
 
-
 // Get count ra bảng ebay_class
 export const getCountEbay_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -556,91 +556,120 @@ export const getCountEbay_class = (req, res) => {
 };
 
 export const searchEbay = (req, res) => {
-  var text = req.query.query;
-
-  var re_search = new RegExp("(.*)" + text + "(.*)");
-  var search = [
-    {
-      ebay_id: re_search,
-    },
-    {
-      ebay_user: re_search,
-    },
-  ];
-
-  Ebay.aggregate([
-    {
-      $match: {
-        $or: search,
-      },
-    },
-  ]).exec((err, data) => {
+  var text = req.query.query.split(",");
+  var search = [];
+  if (!text) {
+    return;
+  }
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
-      console.log(err);
       return res.status(400).json({
         error: "Đã Lỗi",
       });
     }
-    res.json(data);
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+
+    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
+    if (
+      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+        user.users_function
+      ) != -1
+    ) {
+      text.map((item) => {
+        search.push({
+          ebay_employee: new RegExp("(.*)" + item + "(.*)"),
+        });
+      });
+      
+    } else {
+
+      text.map((item) => {
+        search.push({
+          ebay_employee: users_name_re,
+        });
+      });
+      
+    }
+
+    text.map((item) => {
+      search.push({
+        ebay_id: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_user: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_plan: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_block: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_error: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_processing: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_type: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_sell_status: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_owner: new RegExp("(.*)" + item + "(.*)"),
+      });
+      
+      search.push({
+        ebay_outline: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_status: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_class: new RegExp("(.*)" + item + "(.*)"),
+      });
+      search.push({
+        ebay_note: new RegExp("(.*)" + item + "(.*)"),
+      });
+    });
+  
+    // Nhân viên chỉ search được tài khoản nhân viên đó
+  
+    Ebay.aggregate([
+      {
+        $match: {
+          $or: search,
+        },
+      },
+    ]).exec((err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
+  
+      res.json(data);
+    });
+
+
+
   });
+
+  
 };
-
-
-const test = () => {
-  text = ["Nguyễn Hoài", "Khắc Liêm", "E_1", "E_2"];
-  let search = [
-    {
-      ebay_employee: "Nguyễn Hoài"
-    },
-    {
-      ebay_employee: "Khắc liêm"
-    },
-    {
-      ebay_id: "Nguyễn Hoài"
-    },
-    {
-      ebay_id: "Khắc liêm"
-    },
-    {
-      ebay_employee: "E_1"
-    },
-    {
-      ebay_id: "E_2"
-    },
-    {
-      ebay_employee: "E_1"
-    },
-    {
-      ebay_id: "E_2"
-    }
-  ];
-  text.map((item) => {
-    search.push({
-      ebay_employee: new RegExp("(.*)" + item + "(.*)")
-    })
-    search.push({
-      ebay_id: new RegExp("(.*)" + item + "(.*)")
-    })
-  })
-
-  Ebay.aggregate([
-    {
-      $match: {
-        $or: search,
-      },
-    },
-  ]).exec((err, data) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({
-        error: "Đã Lỗi",
-      });
-    }
-    res.json(data);
-  });
-
-
-}
 
 // ================ Middle ware====================
 // hàm phân quyền trong Ebay, user phải trong phòng sản xuất và quản lý Ebay mới view đc Ebay

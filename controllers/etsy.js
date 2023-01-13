@@ -491,7 +491,7 @@ export const getCountEtsy_class = (req, res) => {
 };
 
 export const searchEtsy = (req, res) => {
-  var text = req.query.query.split(",");
+  var text = req.query.query.split(",").trim();
   var search = [];
   if (!text) {
     return;

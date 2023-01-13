@@ -56,30 +56,26 @@ export const create = (req, res) => {
           }
           res.json("Xóa thành công");
         });
-    } 
+    }
     return;
   }
 
   if (req.body.working_edit == "Xin nghỉ") {
-   
     if (date1 >= date3 && date1 < date2) {
-     
       TimeSheet.findOne({
         users_name: req.body.users_name,
         working_session: req.body.working_session,
         working_date: req.body.working_date,
       }).exec((err, data) => {
         if (err) {
-         
           return res.status(400).json({
             error: "Đã lỗi",
           });
         }
-        console.log(data)
+        console.log(data);
         if (data) {
-         
           data.working_verify = "p";
-          console.log(data)
+          console.log(data);
           TimeSheet.findOneAndUpdate(
             { _id: data._id },
             { $set: data },
@@ -92,16 +88,12 @@ export const create = (req, res) => {
               } else {
                 res.json(newdata);
               }
-
             }
-            
           );
         }
-       
       });
     }
-    
-    
+
     return;
   }
   return;
@@ -201,5 +193,35 @@ export const createVerify = (req, res) => {
         }
       }
     );
+  });
+};
+
+export const xuly_data = (req, res) => {
+  let date1 = moment(now()).format("YYYY-MM-DD");
+  let date2 = moment(now()).add(3, "d").format("YYYY-MM-DD");
+  // let date3 = moment(now()).format("YYYY-MM-DD");
+  TimeSheet.find().exec((err, data) => {
+    console.log(data);
+    data.forEach((item) => {
+      if (item.working_date <= date1) {
+        item.working_verify = item.working_session;
+        console.log(item);
+        TimeSheet.findOneAndUpdate(
+          { _id: item._id },
+          { $set: item },
+          { useFindAndModify: false },
+          (err, newdata) => {}
+        );
+      } else {
+        item.working_verify = "";
+        console.log(item);
+        TimeSheet.findOneAndUpdate(
+          { _id: item._id },
+          { $set: item },
+          { useFindAndModify: false },
+          (err, newdata) => {}
+        );
+      }
+    });
   });
 };

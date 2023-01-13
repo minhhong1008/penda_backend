@@ -556,8 +556,8 @@ export const getCountEbay_class = (req, res) => {
 };
 
 export const searchEbay = (req, res) => {
-  var type =  req.query.type;
-  var textand = req.query.query.split(RegExp("(.*)" + type + "(.*)"));
+  
+  var textand = req.query.query.split(",");
   var search = [];
   if (!textand) {
     return;

@@ -110,6 +110,7 @@ export const listproject = (req, res) => {
             $match: filter_project,
           },
         ])
+        
         .exec((err, project) => {
           if (err) {
             return res.status(400).json({
@@ -274,7 +275,7 @@ export const getCountproject_class = (req, res) => {
               count: { $sum: 1 },
             },
           },
-          { $sort: { "count": -1 } },
+          { $sort: { count: -1 } },
         ])
         .exec((err, data) => {
           if (err) {
@@ -282,7 +283,7 @@ export const getCountproject_class = (req, res) => {
               error: "Đã lỗi",
             });
           }
-          console.log(data)
+
           res.json({
             status: "success",
             data: data,
@@ -305,7 +306,7 @@ export const getCountproject_class = (req, res) => {
               count: { $sum: 1 },
             },
           },
-          { $sort: { "count": -1 } },
+          { $sort: { count: -1 } },
         ])
         .exec((err, data) => {
           if (err) {

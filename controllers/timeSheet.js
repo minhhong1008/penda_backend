@@ -156,6 +156,9 @@ export const createVerify = (req, res) => {
     if (data.working_verify != "" && data.working_check_late == "m") {
       return;
     }
+    if (data.working_verify == "ps" && data.working_verify == "pc" && data.working_verify == "pt") {
+      return;
+    }
     /*  Chấm công khi hoàn thành ca */
     if (
       data.working_verify != req.body[0].working_verify &&

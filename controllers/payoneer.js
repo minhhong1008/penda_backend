@@ -291,13 +291,7 @@ export const payoneerByID = (req, res, next, id) => {
         "paypal_user",
         "paypal_password",
       ])
-      .populate("pingpong_id", [
-        "pingpong_id",
-        "pingpong_status",
-        "pingpong_class",
-        "pingpong_user",
-        "pingpong_password",
-      ])
+      
       .populate("etsy_id", [
         "etsy_id",
         "etsy_status",

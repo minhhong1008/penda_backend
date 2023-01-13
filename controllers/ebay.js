@@ -476,6 +476,7 @@ export const Copy_re = (req, res) => {
   });
 };
 
+
 // Get count ra bảng ebay_class
 export const getCountEbay_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
@@ -553,6 +554,93 @@ export const getCountEbay_class = (req, res) => {
     }
   });
 };
+
+export const searchEbay = (req, res) => {
+  var text = req.query.query;
+
+  var re_search = new RegExp("(.*)" + text + "(.*)");
+  var search = [
+    {
+      ebay_id: re_search,
+    },
+    {
+      ebay_user: re_search,
+    },
+  ];
+
+  Ebay.aggregate([
+    {
+      $match: {
+        $or: search,
+      },
+    },
+  ]).exec((err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    res.json(data);
+  });
+};
+
+
+const test = () => {
+  text = ["Nguyễn Hoài", "Khắc Liêm", "E_1", "E_2"];
+  let search = [
+    {
+      ebay_employee: "Nguyễn Hoài"
+    },
+    {
+      ebay_employee: "Khắc liêm"
+    },
+    {
+      ebay_id: "Nguyễn Hoài"
+    },
+    {
+      ebay_id: "Khắc liêm"
+    },
+    {
+      ebay_employee: "E_1"
+    },
+    {
+      ebay_id: "E_2"
+    },
+    {
+      ebay_employee: "E_1"
+    },
+    {
+      ebay_id: "E_2"
+    }
+  ];
+  text.map((item) => {
+    search.push({
+      ebay_employee: new RegExp("(.*)" + item + "(.*)")
+    })
+    search.push({
+      ebay_id: new RegExp("(.*)" + item + "(.*)")
+    })
+  })
+
+  Ebay.aggregate([
+    {
+      $match: {
+        $or: search,
+      },
+    },
+  ]).exec((err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    res.json(data);
+  });
+
+
+}
 
 // ================ Middle ware====================
 // hàm phân quyền trong Ebay, user phải trong phòng sản xuất và quản lý Ebay mới view đc Ebay

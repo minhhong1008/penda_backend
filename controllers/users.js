@@ -38,7 +38,6 @@ export const getusers = (req, res) => {
 
 export const listusers = (req, res) => {
   var users_status = req.query.users_status;
-
   if (users_status) {
     Users.find({ users_status: users_status })
       .sort({ users_sort: "ascending" })
@@ -46,7 +45,7 @@ export const listusers = (req, res) => {
        
         if (err || !users) {
           res.status(400).json({
-            message: "Không tìm thấy users vcc",
+            message: "Không tìm thấy users",
           });
         }
 

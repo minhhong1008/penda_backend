@@ -7,12 +7,45 @@ export const create = (req, res) => {
       error: "Đã lỗi",
     });
   }
-  if (["Giám đốc", "Trưởng phòng"].indexOf(req.body.users_function) !== -1) {
-    // Đăng ký của leader chấm công
-    if (req.body.working_session == "delete") {
+
+  let date1 = moment(req.body.working_date).format("YYYY-MM-DD");
+  let date2 = moment(now()).add(3, "d").format("YYYY-MM-DD");
+  let date3 = moment(now()).format("YYYY-MM-DD");
+
+  if (req.body.working_edit == "Tạo ca") {
+    if (date1 >= date2) {
+      TimeSheet.findOne({
+        users_name: req.body.users_name,
+        working_session: req.body.working_session,
+        working_date: req.body.working_date,
+      }).exec((err, timeSheet) => {
+        if (err || timeSheet) {
+          return res.status(400).json({
+            error: "Đã lỗi",
+          });
+        }
+        if (!timeSheet) {
+          const timeSheet = new TimeSheet(req.body);
+          timeSheet.save((err, data) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Đã lỗi",
+              });
+            }
+            res.json(data);
+          });
+        }
+      });
+    }
+    return;
+  }
+
+  if (req.body.working_edit == "Xóa ca") {
+    if (date1 >= date2) {
       TimeSheet.find({
         users_name: req.body.users_name,
         working_date: req.body.working_date,
+        working_session: req.body.working_session,
       })
         .remove()
         .exec((err, timeSheet) => {
@@ -21,81 +54,57 @@ export const create = (req, res) => {
               error: "Đã lỗi",
             });
           }
-          res.json(timeSheet);
+          res.json("Xóa thành công");
         });
-    } else {
+    } 
+    return;
+  }
+
+  if (req.body.working_edit == "Xin nghỉ") {
+   
+    if (date1 >= date3 && date1 < date2) {
+     
       TimeSheet.findOne({
         users_name: req.body.users_name,
         working_session: req.body.working_session,
         working_date: req.body.working_date,
-      }).exec((err, timeSheet) => {
+      }).exec((err, data) => {
         if (err) {
+         
           return res.status(400).json({
             error: "Đã lỗi",
           });
         }
-        if (!timeSheet) {
-          const session = new TimeSheet(req.body);
-          session.save((err, session) => {
-            if (err) {
-              return res.status(400).json({
-                error: "Đã lỗi",
-              });
-            }
-            res.json(session);
-          });
-        } else {
-          return res.status(400).json({
-            err: "Đã đăng ký ca này rồi",
-          });
-        }
-      });
-    }
-  } else {
-    // Đăng ký của nhân viên
-    let date1 = moment(req.body.working_date).format("YYYY-MM-DD");
-    let date2 = moment(now()).add(3, "d").format("YYYY-MM-DD");
-    if (date1 >= date2) {
-      if (req.body.working_session == "delete") {
-        TimeSheet.find({
-          users_name: req.body.users_name,
-          working_date: req.body.working_date,
-        })
-          .remove()
-          .exec((err, timeSheet) => {
-            if (err) {
-              return res.status(400).json({
-                error: "Đã lỗi",
-              });
-            }
-            res.json(timeSheet);
-          });
-      } else {
-        TimeSheet.findOne({
-          users_name: req.body.users_name,
-          working_session: req.body.working_session,
-          working_date: req.body.working_date,
-        }).exec((err, timeSheet) => {
-          if (err) {
-            return res.status(400).json({
-              error: "Đã lỗi",
-            });
-          }
-          if (!timeSheet) {
-            const session = new TimeSheet(req.body);
-            session.save((err, session) => {
+        console.log(data)
+        if (data) {
+         
+          data.working_verify = "p";
+          console.log(data)
+          TimeSheet.findOneAndUpdate(
+            { _id: data._id },
+            { $set: data },
+            { useFindAndModify: false },
+            (err, newdata) => {
               if (err) {
                 return res.status(400).json({
                   error: "Đã lỗi",
                 });
+              } else {
+                res.json(newdata);
               }
-              res.json(session);
-            });
-          }
-        });
-      }
+
+            }
+            
+          );
+        }
+       
+      });
     }
+    
+    
+    return;
   }
+  return;
 };
 
 export const list = (req, res) => {
@@ -109,6 +118,9 @@ export const list = (req, res) => {
         working_session: "$working_session",
         users_name: "$users_name",
         working_date: "$working_date",
+        working_verify: "$working_verify",
+        working_check_late: "$working_check_late",
+        working_check_soon: "$working_check_soon",
       },
     },
     {
@@ -135,20 +147,48 @@ export const list = (req, res) => {
 };
 
 export const createVerify = (req, res) => {
-  // Kiểm tra đã đăng ký lịch chấm công chưa
+  // Kiểm tra đã đăng ký lịch chấm công chưa\
+
   TimeSheet.findOne({
-    users_name: req.body.users_name,
-    working_date: req.body.working_date,
-    working_session: req.body.working_check,
-    working_verify: "unverify",
+    users_name: req.body[0].users_name,
+    working_date: req.body[0].working_date,
+    working_session: req.body[0].working_session,
   }).exec((err, data) => {
     if (err || !data) {
       return res.status(400).json({
         error: "Đã lỗi",
       });
     }
-    // nếu đã đăng ký rồi thì update verify, khi update verify sẽ không chấm công nữa
-    data.working_verify = "verify";
+
+    /*  if ((req.body.working_check = req.body.working_verify)) {} */
+    if (data.working_verify != req.body[0].working_verify) {
+      TimeSheet.findOneAndUpdate(
+        { _id: data._id },
+        { $set: data },
+        { useFindAndModify: false },
+        (err, newdata) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Đã Lỗi",
+            });
+          }
+        }
+      );
+    }
+    data.working_verify = req.body[0].working_verify;
+    data.working_check_late = req.body[0].working_check_late;
+    data.working_check_soon = req.body[0].working_check_soon;
+
+    for (const key in data) {
+      if (data[key] == "") {
+        delete data[key];
+      }
+    }
+
+    if (data.working_verify != "" && data.working_check_late == "m") {
+      return;
+    }
+
     TimeSheet.findOneAndUpdate(
       { _id: data._id },
       { $set: data },
@@ -159,38 +199,7 @@ export const createVerify = (req, res) => {
             error: "Đã Lỗi",
           });
         }
-        res.json(newdata);
       }
     );
-
-    
-    //
-    if (req.body.working_session == req.body.working_check) {
-      return;
-    }
-
-    TimeSheet.findOne({
-      users_name: req.body.users_name,
-      working_date: req.body.working_date,
-      working_session: req.body.working_session,
-      working_verify: "verify",
-    }).exec((err, datas) => {
-      if (err) {
-        return res.status(400).json({
-          error: "Đã lỗi",
-        });
-      }
-
-      if (!datas) {
-        const timeSheet = new TimeSheet(req.body);
-        timeSheet.save((err, info) => {
-          if (err) {
-            return res.status(400).json({
-              error: "Đã lỗi",
-            });
-          }
-        });
-      }
-    });
   });
 };

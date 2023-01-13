@@ -5,6 +5,7 @@ import {
   getCountEbay_class,
   getebay,
   listebay,
+  searchEbay,
   update,
 } from "../controllers/ebay";
 import { canViewEbay } from "../controllers/ebay";
@@ -22,5 +23,7 @@ router.get("/ebay/list", canViewEbay, listebay);
 router.get("/ebay/get/:ebayId",canViewEbay, getebay);
 // View count trong ebay_class
 router.get("/getebay/count", getCountEbay_class);
+// Hàm search
+router.get("/ebay/search", searchEbay);
 
 module.exports = router;

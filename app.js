@@ -1,4 +1,6 @@
 // Test deploy
+var CronJob = require('cron').CronJob;
+
 import express from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
@@ -47,6 +49,7 @@ import billRouter from './routes/bill.js';
 // time sheet router
 
 import timeSheetRouter from './routes/timeSheet';
+import moment from 'moment';
 
 
 //Config
@@ -116,6 +119,21 @@ mongoose.connection.on('error', err => {
 })
 
 //listen
+
+
+// 00 30 23 * * 0-6 => chạy lúc 23h30 hàng ngày
+// '*/5 * * * * *' =? 5s 1 lần
+// var job = new CronJob(
+// 	'* * * * * *',
+// 	function() {
+// 		console.log(moment().format("HH:mm:ss DD/MM/YYYY"));
+// 	},
+// 	null,
+// 	false,
+// 	'America/Los_Angeles'
+// );
+
+// job.start()
 
 app.listen(port, () => {
     console.log("Server is running in post ", port);

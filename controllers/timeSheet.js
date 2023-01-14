@@ -147,37 +147,55 @@ export const createVerify = (req, res) => {
     working_session: req.body[0].working_session,
   }).exec((err, data) => {
     if (err || !data) {
-      return res.status(400).json({
-        error: "Đã lỗi",
+      return res.status(200).json({
+        report: "Bạn chưa đăng ký lịch làm việc",
+      });
+    }
+    // Xin nghỉ thì không chấm công nữa
+    if (
+      data.working_verify == "ps" ||
+      data.working_verify == "pc" ||
+      data.working_verify == "pt"
+    ) {
+      return res.status(200).json({
+        report: "Bạn đã xin nghỉ ca này ",
+      });
+    }
+    // Hoàn thành ca rồi thì không chấm công nữa
+    if (
+      data.working_verify == "S" ||
+      data.working_verify == "C" ||
+      data.working_verify == "T"
+    ) {
+      return res.status(200).json({
+        report: "Bạn đã hoàn thành ca : " + data.working_verify,
+      });
+    }
+    // Đã chấm công rồi thì không chấm công nữa
+    if (data.working_verify == req.body[0].working_verify) {
+      if(data.working_check_late !=""){
+        return res.status(200).json({
+          report: "Bạn đã chấm công bắt đầu ca rồi! Bạn đi làm muộn, rút kinh nghiệm nhé",
+        });
+      }else{
+        return res.status(200).json({
+          report: "Bạn đã chấm công bắt đầu ca rồi! Bạn đi đúng giờ, phát huy nhé",
+        });
+      }
+      
+    }
+    // Không chấm công bắt đầu vào ca thì không chấm ra được
+    if (
+      (data.working_verify == "" && req.body[0].working_verify == "S") ||
+      (data.working_verify == "" && req.body[0].working_verify == "C") ||
+      (data.working_verify == "" && req.body[0].working_verify == "T")
+    ) {
+      return res.status(200).json({
+        report: "Bạn không chấm công bắt đầu vào ca",
       });
     }
 
-    /* Loại bỏ chấm công lại khi đã chấm công */
-    if (data.working_verify != "" && data.working_check_late == "m") {
-      return;
-    }
-    if (data.working_verify == "ps" && data.working_verify == "pc" && data.working_verify == "pt") {
-      return;
-    }
-    /*  Chấm công khi hoàn thành ca */
-    if (
-      data.working_verify != req.body[0].working_verify &&
-      data.working_verify != ""
-    ) {
-      TimeSheet.findOneAndUpdate(
-        { _id: data._id },
-        { $set: data },
-        { useFindAndModify: false },
-        (err, newdata) => {
-          if (err) {
-            return res.status(400).json({
-              error: "Đã Lỗi",
-            });
-          }
-        }
-      );
-    }
-
+    // update dữ liệu khi thỏa mãn điều kiện
     data.working_verify = req.body[0].working_verify;
     data.working_check_late = req.body[0].working_check_late;
     data.working_check_soon = req.body[0].working_check_soon;
@@ -195,8 +213,11 @@ export const createVerify = (req, res) => {
       (err, newdata) => {
         if (err) {
           return res.status(400).json({
-            error: "Đã Lỗi",
+            report: "Đã Lỗi",
           });
+        }
+        if(newdata){
+          return res.json(newdata);
         }
       }
     );

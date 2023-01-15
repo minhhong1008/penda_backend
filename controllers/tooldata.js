@@ -66,6 +66,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             device.save((err, device) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.device_id = device._id;
             });
           }
@@ -86,6 +91,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             proxy.save((err, proxy) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.proxy_id = proxy._id;
             });
           }
@@ -106,6 +116,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             info.save((err, info) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.info_id = info._id;
             });
           }
@@ -126,6 +141,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             sim.save((err, sim) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.sim_id = sim._id;
             });
           }
@@ -146,6 +166,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             mail.save((err, mail) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.mail_id = mail._id;
             });
           }
@@ -166,6 +191,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             bank.save((err, bank) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.bank_id = bank._id;
             });
           }
@@ -186,6 +216,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             payoneer.save((err, payoneer) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.payoneer_id = payoneer._id;
             });
           }
@@ -206,6 +241,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             paypal.save((err, paypal) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.paypal_id = paypal._id;
             });
           }
@@ -226,6 +266,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             pingpong.save((err, pingpong) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.pingpong_id = pingpong._id;
             });
           }
@@ -246,6 +291,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             ebay.save((err, ebay) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.ebay_id = ebay._id;
             });
           }
@@ -266,6 +316,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             etsy.save((err, etsy) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.etsy_id = etsy._id;
             });
           }
@@ -284,6 +339,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             amazon.save((err, amazon) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.amazon_id = amazon._id;
             });
           }
@@ -302,6 +362,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             shopee.save((err, shopee) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.shopee_id = shopee._id;
             });
           }
@@ -320,6 +385,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             facebook.save((err, facebook) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.facebook_id = facebook._id;
             });
           }
@@ -338,6 +408,11 @@ export const Create_newdata = (req, res) => {
               list_view: body.view,
             });
             tiktok.save((err, tiktok) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
               field_id.tiktok_id = tiktok._id;
             });
           }
@@ -354,7 +429,14 @@ export const Create_newdata = (req, res) => {
               customer_id: temp_id,
               customer_class: "Lớp 1",
             });
-            customer.save((err, customer) => {});
+            customer.save((err, customer) => {
+              if (err) {
+                return res.status(400).json({
+                  error: "Đã lỗi",
+                });
+              }
+
+            });
           }
         });
       }
@@ -1285,7 +1367,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("device") !== -1) {
         Device.findOne({ device_id: temp_id }).exec((err, device) => {
-          if (err) {
+          if (err || !device) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.device_id = device._id;
@@ -1294,7 +1376,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("proxy") !== -1) {
         Proxy.findOne({ proxy_id: temp_id }).exec((err, proxy) => {
-          if (err) {
+          if (err || !proxy) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.proxy_id = proxy._id;
@@ -1303,7 +1385,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("info") !== -1) {
         Info.findOne({ info_id: temp_id }).exec((err, info) => {
-          if (err) {
+          if (err || !info) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.info_id = info._id;
@@ -1313,7 +1395,7 @@ export const Create_newdata = (req, res) => {
       if (types.indexOf("mail") !== -1) {
         Mail.findOne({ mail_id: temp_id }).exec((err, mail) => {
           field_id.mail_id = mail._id;
-          if (err) {
+          if (err || !mail) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
         });
@@ -1321,7 +1403,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("sim") !== -1) {
         Sim.findOne({ sim_id: temp_id }).exec((err, sim) => {
-          if (err) {
+          if (err || !sim) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.sim_id = sim._id;
@@ -1330,7 +1412,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("bank") !== -1) {
         Bank.findOne({ bank_id: temp_id }).exec((err, bank) => {
-          if (err) {
+          if (err || !bank) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.bank_id = bank._id;
@@ -1339,7 +1421,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("payoneer") !== -1) {
         Payoneer.findOne({ payoneer_id: temp_id }).exec((err, payoneer) => {
-          if (err) {
+          if (err || !payoneer) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.payoneer_id = payoneer._id;
@@ -1348,7 +1430,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("paypal") !== -1) {
         Paypal.findOne({ paypal_id: temp_id }).exec((err, paypal) => {
-          if (err) {
+          if (err || !paypal) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.paypal_id = paypal._id;
@@ -1357,7 +1439,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("pingpong") !== -1) {
         Pingpong.findOne({ pingpong_id: temp_id }).exec((err, pingpong) => {
-          if (err) {
+          if (err || !pingpong) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.pingpong_id = pingpong._id;
@@ -1366,7 +1448,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("ebay") !== -1) {
         Ebay.findOne({ ebay_id: temp_id }).exec((err, ebay) => {
-          if (err) {
+          if (err || !ebay) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.ebay_id = ebay._id;
@@ -1375,7 +1457,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("etsy") !== -1) {
         Etsy.findOne({ etsy_id: temp_id }).exec((err, etsy) => {
-          if (err) {
+          if (err || !etsy) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.etsy_id = etsy._id;
@@ -1384,7 +1466,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("amazon") !== -1) {
         Amazon.findOne({ amazon_id: temp_id }).exec((err, amazon) => {
-          if (err) {
+          if (err || !amazon) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.amazon_id = amazon._id;
@@ -1393,7 +1475,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("shopee") !== -1) {
         Shopee.findOne({ shopee_id: temp_id }).exec((err, shopee) => {
-          if (err) {
+          if (err || !shopee) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.shopee_id = shopee._id;
@@ -1402,7 +1484,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("facebook") !== -1) {
         Facebook.findOne({ facebook_id: temp_id }).exec((err, facebook) => {
-          if (err) {
+          if (err || !facebook) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.facebook_id = facebook._id;
@@ -1411,7 +1493,7 @@ export const Create_newdata = (req, res) => {
 
       if (types.indexOf("tiktok") !== -1) {
         Tiktok.findOne({ tiktok_id: temp_id }).exec((err, tiktok) => {
-          if (err) {
+          if (err || !tiktok) {
             return res.status(400).json({ error: "Đã Lỗi" });
           }
           field_id.tiktok_id = tiktok._id;

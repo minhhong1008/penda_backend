@@ -148,7 +148,7 @@ export const createVerify = (req, res) => {
   }).exec((err, data) => {
     if (err || !data) {
       return res.status(200).json({
-        report: "Bạn chưa đăng ký lịch làm việc",
+        report: "Bạn không đăng ký lịch làm việc ca này",
       });
     }
     // Xin nghỉ thì không chấm công nữa

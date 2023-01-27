@@ -655,7 +655,9 @@ export const Create_newdata = (req, res) => {
   }
 
   if (types.indexOf("update") !== -1) {
+    console.log("update")
     if (types.indexOf("device") !== -1) {
+      console.log("device")
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -674,12 +676,14 @@ export const Create_newdata = (req, res) => {
           device_processing: body.processing,
           device_sell_status: body.sell_status,
           device_error: body.error,
-          device_class: body.class.replace("Lớp", "PC"),
           device_employee: body.employee,
           device_owner: body.owner,
           device_status: body.status,
           device_type: body.type,
         };
+        if(body.class){
+          device_data.device_class = body.class.replace("Lớp", "PC");
+        }
         for (const key in device_data) {
           if (
             device_data[key] == "" ||

@@ -277,12 +277,12 @@ export const payoneerByID = (req, res, next, id) => {
         "bank_user",
         "bank_password",
       ])
-      .populate("payoneer_id", [
-        "payoneer_id",
-        "payoneer_status",
-        "payoneer_class",
-        "payoneer_user",
-        "payoneer_password",
+      .populate("pingpong_id", [
+        "pingpong_id",
+        "pingpong_status",
+        "pingpong_class",
+        "pingpong_user",
+        "pingpong_password",
       ])
       .populate("paypal_id", [
         "paypal_id",

@@ -37,6 +37,7 @@ import etsyorderRouter from "./routes/etsyorder.js";
 import ebayitemRouter from "./routes/ebayitem.js";
 import etsyitemRouter from "./routes/etsyitem.js";
 import customerRouter from "./routes/customer.js";
+import salaryRouter from "./routes/salary.js";
 //import reportRouter from './routes/report.js';
 // ********* ROute create *****************************
 
@@ -49,6 +50,7 @@ import billRouter from "./routes/bill.js";
 
 import timeSheetRouter from "./routes/timeSheet";
 import moment from "moment";
+import { time_sheet_cron } from "./cron/user_timesheet_cron.js";
 
 //Config
 const app = express();
@@ -100,6 +102,8 @@ app.use("/api", createRouter);
 app.use("/api", tooldataRouter);
 app.use("/api", timeSheetRouter);
 
+
+app.use("/api", salaryRouter);
 //app.use('/api', reportRouter);
 
 //MongoDB
@@ -168,6 +172,8 @@ const warning = (message) => {
 );
 
 job.start(); */
+
+time_sheet_cron.start();
 
 app.listen(port, () => {
   console.log("Server is running in post ", port);

@@ -60,7 +60,6 @@ export const listproject = (req, res) => {
     }
 
     users_name = user.users_name;
-    var users_name_re = new RegExp("(.*)" + users_name + "(.*)"); // dùng để tìm users_name trong 1 chuỗi chứa users_name
     let filter_project = "";
     if (project_employee) {
       // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
@@ -86,22 +85,19 @@ export const listproject = (req, res) => {
                 ],
               },
               {
-                $or: [
-                  { project_employee: project_employee },
-                  { project_employee_request: users_name_re },
-                ],
+                project_employee: project_employee,
               },
             ],
           };
         }
       } else {
         // Nhân viên chỉ vào được tài khoản nhân viên đó quản lý
-       
+        var users_name_re = new RegExp("(.*)" + users_name + "(.*)"); // dùng để tìm users_name trong 1 chuỗi chứa users_name
         filter_project = {
           $and: [
             {
               $or: [
-                { project_employee: users_name_re },
+                {  project_employee: users_name_re},
                 { project_employee_request: users_name_re },
               ],
             },
@@ -109,7 +105,9 @@ export const listproject = (req, res) => {
               project_employee: project_employee,
             },
           ],
-
+          
+        
+          //project_status: "Live"
         };
       }
 
@@ -123,7 +121,7 @@ export const listproject = (req, res) => {
             $match: filter_project,
           },
         ])
-
+        
         .exec((err, project) => {
           if (err) {
             return res.status(400).json({

@@ -197,7 +197,12 @@ export const createVerify = (req, res) => {
 
     // update dữ liệu khi thỏa mãn điều kiện
     data.working_verify = req.body[0].working_verify;
-    data.working_check_late = req.body[0].working_check_late;
+    if(data.working_check_late == "m"){
+      data.working_check_late == "m"
+    }else{
+      data.working_check_late = req.body[0].working_check_late;
+    }
+   
     data.working_check_soon = req.body[0].working_check_soon;
 
     for (const key in data) {

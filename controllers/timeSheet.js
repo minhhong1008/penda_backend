@@ -1,5 +1,6 @@
 import TimeSheet from "../models/timeSheet";
 import moment, { now } from "moment";
+const requestIp = require('request-ip');
 
 export const create = (req, res) => {
   if (req.body.working_date == "Invalid Date" || req.body.users_name == "") {
@@ -140,7 +141,12 @@ export const list = (req, res) => {
 // nút chấm công trên header
 export const createVerify = (req, res) => {
   // Kiểm tra đã đăng ký lịch chấm công chưa\
-
+  const clientIp = requestIp.getClientIp(req); 
+  if(clientIp !== process.env.IP_ADDRESS){
+    return res.status(200).json({
+      report: "Bạn đang không ở công ty",
+    });
+  }
   TimeSheet.findOne({
     users_name: req.body[0].users_name,
     working_date: req.body[0].working_date,
@@ -173,16 +179,17 @@ export const createVerify = (req, res) => {
     }
     // Đã chấm công rồi thì không chấm công nữa
     if (data.working_verify == req.body[0].working_verify) {
-      if(data.working_check_late !=""){
+      if (data.working_check_late != "") {
         return res.status(200).json({
-          report: "Bạn đã chấm công bắt đầu ca rồi! Bạn đi làm muộn, rút kinh nghiệm nhé",
+          report:
+            "Bạn đã chấm công bắt đầu ca rồi! Bạn đi làm muộn, rút kinh nghiệm nhé",
         });
-      }else{
+      } else {
         return res.status(200).json({
-          report: "Bạn đã chấm công bắt đầu ca rồi! Bạn đi đúng giờ, phát huy nhé",
+          report:
+            "Bạn đã chấm công bắt đầu ca rồi! Bạn đi đúng giờ, phát huy nhé",
         });
       }
-      
     }
     // Không chấm công bắt đầu vào ca thì không chấm ra được
     if (
@@ -197,12 +204,12 @@ export const createVerify = (req, res) => {
 
     // update dữ liệu khi thỏa mãn điều kiện
     data.working_verify = req.body[0].working_verify;
-    if(data.working_check_late == "m"){
-      data.working_check_late == "m"
-    }else{
+    if (data.working_check_late == "m") {
+      data.working_check_late == "m";
+    } else {
       data.working_check_late = req.body[0].working_check_late;
     }
-   
+
     data.working_check_soon = req.body[0].working_check_soon;
 
     for (const key in data) {
@@ -221,7 +228,7 @@ export const createVerify = (req, res) => {
             report: "Đã Lỗi",
           });
         }
-        if(newdata){
+        if (newdata) {
           return res.json(newdata);
         }
       }

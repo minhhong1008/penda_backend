@@ -20,7 +20,7 @@ export const upload = (req, res) => {
       }
       let fileData = fs.readFileSync(files.file.path);
       let fileName = files.file.name;
-      console.log(fileName);
+
       fs.writeFile("../Image/" + fileName, fileData, function (err) {
         if (err) {
           return console.log(err);

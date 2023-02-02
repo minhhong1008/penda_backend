@@ -141,12 +141,12 @@ export const list = (req, res) => {
 // nút chấm công trên header
 export const createVerify = (req, res) => {
   // Kiểm tra đã đăng ký lịch chấm công chưa\
-  const clientIp = requestIp.getClientIp(req); 
+  /* const clientIp = requestIp.getClientIp(req); 
   if(clientIp !== process.env.IP_ADDRESS){
     return res.status(200).json({
       report: "Bạn đang không ở công ty",
     });
-  }
+  } */
   TimeSheet.findOne({
     users_name: req.body[0].users_name,
     working_date: req.body[0].working_date,

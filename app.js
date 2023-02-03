@@ -13,6 +13,7 @@ import contactRouter from "./routes/contact.js";
 import departmentRouter from "./routes/department.js";
 
 //******* Thêm router **********************
+import blogRouter from "./routes/blog.js";
 import ebayRouter from "./routes/ebay.js";
 import etsyRouter from "./routes/etsy.js";
 import shopeeRouter from "./routes/shopee.js";
@@ -52,6 +53,7 @@ import billRouter from "./routes/bill.js";
 import timeSheetRouter from "./routes/timeSheet";
 import moment from "moment";
 import { time_sheet_cron } from "./cron/user_timesheet_cron.js";
+import { crawl_SKU_cron, update_SKU_cron } from "./controllers/crawl.js";
 
 //Config
 const app = express();
@@ -105,6 +107,9 @@ app.use("/api", createRouter);
 app.use("/api", tooldataRouter);
 app.use("/api", timeSheetRouter);
 app.use("/api", crawlRouter);
+
+app.use("/api", blogRouter);
+
 
 
 app.use("/api", salaryRouter);
@@ -178,6 +183,8 @@ const warning = (message) => {
 job.start(); */
 
 time_sheet_cron.start();
+// crawl_SKU_cron.start();
+update_SKU_cron.start();
 
 app.listen(port, () => {
   console.log("Server is running in post ", port);

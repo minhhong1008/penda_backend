@@ -241,7 +241,7 @@ export const xuly_data = (req, res) => {
   let date2 = moment(now()).add(3, "d").format("YYYY-MM-DD");
   // let date3 = moment(now()).format("YYYY-MM-DD");
   TimeSheet.find().exec((err, data) => {
-    console.log(data);
+    
     data.forEach((item) => {
       if (item.working_date <= date1) {
         item.working_verify = item.working_session;

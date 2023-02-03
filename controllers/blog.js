@@ -12,6 +12,30 @@ export const create = (req, res) => {
   });
 };
 
+export const update = (req, res) => {
+  var datablog = req.body.values;
+    for (const key in datablog) {
+      if (datablog[key] == "" || datablog[key] == "undefinded") {
+        delete datablog[key];
+      }
+    }
+  Blog.findOneAndUpdate(
+    { _id: req.body.id },
+    { $set: datablog },
+    { useFindAndModify: false },
+    (err, blog) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Bạn không được phép thực hiện hành động này",
+        });
+      }
+      
+      res.json(blog);
+    }
+  );
+};
+
+
 export const list = (req, res) => {
   Blog.find({ blog_page: req.query.blog_page })
     .sort({ blog_sort: "descending" })

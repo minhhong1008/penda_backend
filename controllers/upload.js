@@ -18,12 +18,17 @@ export const upload = (req, res) => {
           message: "Bạn nên Upload ảnh dưới 10MB",
         });
       }
-      let fileData = fs.readFileSync(files.file.path);
-      let fileName = files.file.name;
 
+      let fileData = "";
+      let fileName = "";
+      if (files.file.path && files.file.name) {
+        fileData = fs.readFileSync(files.file.path);
+        fileName = files.file.name;
+      }
       fs.writeFile("../Image/" + fileName, fileData, function (err) {
         if (err) {
-          return console.log(err);
+          console.log(err);
+          return;
         }
         res.json({
           status: "success",

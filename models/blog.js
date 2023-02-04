@@ -10,6 +10,7 @@ const blogSchema = mongoose.Schema(
     blog_date: { type: String },
     blog_employee: { type: String },
     blog_page: { type: String },
+    blog_type: { type: String },
     blog_star: { type: String },
     blog_sort: { type: String },
     blog_content: { type: String },

@@ -27,7 +27,7 @@ export const upload = (req, res) => {
         }
         res.json({
           status: "success",
-          url: "http://files.penda.vn/" + fileName,
+          url: "https://files.penda.vn/" + fileName,
         });
       });
     }

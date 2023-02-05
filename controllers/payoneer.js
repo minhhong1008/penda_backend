@@ -484,6 +484,137 @@ export const getCountPayoneer_class = (req, res) => {
   });
 };
 
+export const searchPayoneer = (req, res) => {
+  
+  var textand = req.query.query.split(",");
+  var search = [];
+  if (!textand) {
+    return;
+  }
+  const data = req.headers["x-access-token"] || req.headers["authorization"];
+  let users_name = "";
+  const token = data.split(" ");
+  if (!token) {
+    users_name = "";
+  }
+  const decoded = jwt.verify(token[1], "duy");
+  Users.findOne({ _id: decoded._id }).exec((err, user) => {
+    if (err) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    if (!user) {
+      users_name = "";
+    }
+    users_name = user.users_name;
+    var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
+
+    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
+    if (
+      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
+        user.users_function
+      ) != -1
+    ) {
+      textand.map((item) => {
+        search.push({
+          payoneer_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
+        });
+      });
+      
+    } else {
+
+      textand.map((item) => {
+        search.push({
+          payoneer_employee: users_name_re,
+        });
+      });
+      
+    }
+
+    textand.map((item) => {
+      search.push({
+        payoneer_id: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_user: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_detail: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_limit: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_item: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_sold: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_feedback: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_plan: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_block: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_error: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_processing: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_type: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_sell_status: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      
+      search.push({
+        payoneer_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_status: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_class: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+      search.push({
+        payoneer_note: new RegExp("(.*)" + item.trim() + "(.*)"),
+      });
+    });
+  
+    // Nhân viên chỉ search được tài khoản nhân viên đó
+  
+    Payoneer.aggregate([
+      {
+        $match: {
+          $or: search,
+        },
+      },
+    ]).exec((err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({
+          error: "Đã Lỗi",
+        });
+      }
+  
+      res.json(data);
+    });
+
+
+
+  });
+
+  
+};
 // ================ Middle ware====================
 // hàm phân quyền trong Payoneer, user phải trong phòng sản xuất và quản lý Payoneer mới view đc Payoneer
 

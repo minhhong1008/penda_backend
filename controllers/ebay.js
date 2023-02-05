@@ -686,7 +686,7 @@ export const searchEbay = (req, res) => {
 
   
 };
-
+// Chưa dùng
 export const searchEbay1 = (req, res) => {
   
   var textand = req.query.query.split(",");

@@ -6,6 +6,7 @@ import {
   getpayoneer,
   listpayoneer,
   update,
+  searchPayoneer,
 } from "../controllers/payoneer";
 import { canViewPayoneer } from "../controllers/payoneer";
 
@@ -22,5 +23,7 @@ router.get("/payoneer/list", canViewPayoneer, listpayoneer);
 router.get("/payoneer/get/:payoneerId",canViewPayoneer, getpayoneer);
 // View count trong payoneer_class
 router.get("/getpayoneer/count", getCountPayoneer_class);
+// Hàm search
+router.get("/payoneer/search",canViewPayoneer, searchPayoneer);
 
 module.exports = router;

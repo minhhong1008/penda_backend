@@ -1,6 +1,6 @@
 import TimeSheet from "../models/timeSheet";
 import moment, { now } from "moment";
-const requestIp = require('request-ip');
+const requestIp = require("request-ip");
 
 export const create = (req, res) => {
   if (req.body.working_date == "Invalid Date" || req.body.users_name == "") {
@@ -140,13 +140,16 @@ export const list = (req, res) => {
 };
 // nút chấm công trên header
 export const createVerify = (req, res) => {
+  // Chỉ cho phép chấm công khi sử dụng mạng của công ty
+  if (requestIp) {
+    const clientIp = requestIp.getClientIp(req);
+    if (clientIp !== process.env.IP_ADDRESS) {
+      return res.status(200).json({
+        report: "Bạn đang không ở công ty",
+      });
+    }
+  }
   // Kiểm tra đã đăng ký lịch chấm công chưa\
-  /* const clientIp = requestIp.getClientIp(req); 
-  if(clientIp !== process.env.IP_ADDRESS){
-    return res.status(200).json({
-      report: "Bạn đang không ở công ty",
-    });
-  } */
   TimeSheet.findOne({
     users_name: req.body[0].users_name,
     working_date: req.body[0].working_date,
@@ -192,14 +195,16 @@ export const createVerify = (req, res) => {
       }
     }
     // Không chấm công bắt đầu vào ca thì không chấm ra được
-    if (
-      (data.working_verify == "" && req.body[0].working_verify == "S") ||
-      (data.working_verify == "" && req.body[0].working_verify == "C") ||
-      (data.working_verify == "" && req.body[0].working_verify == "T")
-    ) {
-      return res.status(200).json({
-        report: "Bạn không chấm công bắt đầu vào ca",
-      });
+    if (!data.working_verify || data.working_verify == "") {
+      if (
+        req.body[0].working_verify == "S" ||
+        req.body[0].working_verify == "C" ||
+        req.body[0].working_verify == "T"
+      ) {
+        return res.status(200).json({
+          report: "Bạn không chấm công bắt đầu vào ca",
+        });
+      }
     }
 
     // update dữ liệu khi thỏa mãn điều kiện
@@ -241,7 +246,6 @@ export const xuly_data = (req, res) => {
   let date2 = moment(now()).add(3, "d").format("YYYY-MM-DD");
   // let date3 = moment(now()).format("YYYY-MM-DD");
   TimeSheet.find().exec((err, data) => {
-    
     data.forEach((item) => {
       if (item.working_date <= date1) {
         item.working_verify = item.working_session;

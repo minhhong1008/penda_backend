@@ -252,6 +252,7 @@ export const update = (req, res) => {
 export const getCountproject_class = (req, res) => {
   const data = req.headers["x-access-token"] || req.headers["authorization"];
   let users_name = "";
+  let users_fb = "";
   const token = data.split(" ");
   if (!token) {
     users_name = "";
@@ -266,7 +267,9 @@ export const getCountproject_class = (req, res) => {
     if (!user) {
       users_name = "";
     }
+    
     users_name = user.users_name;
+    users_fb = user.users_fb;
     var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
 
     // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
@@ -289,12 +292,12 @@ export const getCountproject_class = (req, res) => {
           { $sort: { count: -1 } },
         ])
         .exec((err, data) => {
-          if (err) {
+          if (err || !data) {
             return res.status(400).json({
               error: "Đã lỗi",
             });
           }
-
+          
           res.json({
             status: "success",
             data: data,

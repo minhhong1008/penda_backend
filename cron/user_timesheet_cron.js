@@ -115,16 +115,40 @@ const renderData = (timeSheet, userss) => {
 
   const salary = new Salary({
     time: moment().format("MM-YYYY"),
-    value: JSON.stringify(final_data)
-  })
-
-  salary.save((item, err) => {
-    if(err){
-        console.log(err)
-    };
-    console.log("Lưu thành công");
-  })
-
+    value: JSON.stringify(final_data),
+  });
+  Salary.findOne({ time: moment().format("MM-YYYY").toString() }).exec((err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if (data) {
+       
+        Salary.findOneAndUpdate(
+          { _id: Salary._id },
+          { $set: JSON.stringify(final_data) },
+          { useFindAndModify: false },
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              return console.log("Cron Update Salary Lỗi: " + moment().format("YYYY-MM-DD HH:mm") );
+            }
+            
+            console.log("Cron Update Salary thành công: " + moment().format("YYYY-MM-DD HH:mm") );
+          }
+        );
+      } else {
+        salary.save((item, err) => {
+          if (err) {
+            if (err) {
+              console.log(err);
+              return console.log("Cron Lưu  Salary Lỗi: " + moment().format("YYYY-MM-DD HH:mm") );
+            }
+          }
+          console.log("Cron Lưu  Salary thành công: " + moment().format("YYYY-MM-DD HH:mm") );
+        });
+      }
+    }
+  });
 };
 
 export const time_sheet_cron = new CronJob(
@@ -168,9 +192,7 @@ export const time_sheet_cron = new CronJob(
           },
         ]).exec((err, sessions) => {
           if (err) {
-            return res.status(400).json({
-              error: "Đã lỗi",
-            });
+            return console.log("Lỗi");
           } else {
             renderData(sessions, users);
           }

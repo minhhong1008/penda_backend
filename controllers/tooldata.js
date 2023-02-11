@@ -16,6 +16,7 @@ import Tiktok from "../models/tiktok";
 import Customer from "../models/customer";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
+import moment from "moment";
 
 // get list users_name từ db vào ebay_employee
 export const getEmployee = (req, res, next) => {
@@ -41,7 +42,7 @@ export const Create_newdata = (req, res) => {
     console.log("Không có dữ liệu");
     return;
   }
-
+  console.log("ToolData : " + moment().format("YYYY-MM-DD HH:mm"));
   let types = type.split(",");
 
   if (types.indexOf("create") !== -1) {
@@ -435,7 +436,6 @@ export const Create_newdata = (req, res) => {
                   error: "Đã lỗi",
                 });
               }
-
             });
           }
         });
@@ -655,9 +655,9 @@ export const Create_newdata = (req, res) => {
   }
 
   if (types.indexOf("update") !== -1) {
-    console.log("update")
+    console.log("update");
     if (types.indexOf("device") !== -1) {
-      console.log("device")
+      console.log("device");
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -681,7 +681,7 @@ export const Create_newdata = (req, res) => {
           device_status: body.status,
           device_type: body.type,
         };
-        if(body.class){
+        if (body.class) {
           device_data.device_class = body.class.replace("Lớp", "PC");
         }
         for (const key in device_data) {

@@ -1,4 +1,4 @@
-// Để nhân file ebay.js--> amazon.js: replate ebay,Ebay thành amazon, Amazon sau đó sửa amazon_id trong populate thành lại ebay, có 2 chỗ cần sửa
+// Để nhân file ebay.js--> amazon.js: p ebay,Ebay thành amazon, Amazon sau đó sửa amazon_id trong populate thành lại ebay, có 2 chỗ cần sửa
 import Amazon from "../models/amazon";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";

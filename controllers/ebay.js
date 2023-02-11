@@ -2,7 +2,7 @@
 import Ebay from "../models/ebay";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
-import moment, { now } from "moment";
+import moment from "moment";
 
 export const create = (req, res) => {
   const ebay = new Ebay(req.body);
@@ -43,6 +43,11 @@ export const listebay = (req, res) => {
     }
 
     users_name = user.users_name;
+    console.log(
+      user.users_name +
+        ": View bảng ebay_table : " +
+        moment().format("YYYY-MM-DD HH:mm")
+    );
     let filter_ebay = "";
     if (class_name) {
       // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
@@ -96,6 +101,11 @@ export const ebayByID = (req, res, next, id) => {
       users_name = "";
     }
     users_name = user.users_name;
+    console.log(
+      user.users_name +
+        ": View bảng ebay_info : " +
+        moment().format("YYYY-MM-DD HH:mm")
+    );
     let filter_ebay = "";
     // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" vào được tất cả các tài khoản
     if (
@@ -393,12 +403,19 @@ export const update = (req, res) => {
       users_name = "";
     }
     users_name = user.users_name;
+
     var ebay_id = req.query.id;
+    console.log(
+      user.users_name +
+        ": Update bảng ebay_info : " +
+        ebay_id +" : "+
+        moment().format("YYYY-MM-DD HH:mm")
+    );
     var dataEbay = req.body;
     dataEbay.ebay_history =
       users_name +
       "|" +
-      moment(now()).format("YYYY-MM-DD HH:mm") +
+      moment().format("YYYY-MM-DD HH:mm") +
       "|" +
       dataEbay.ebay_class +
       "," +
@@ -451,7 +468,7 @@ export const Copy_re = (req, res) => {
     dataEbay.ebay_history =
       users_name +
       "|" +
-      moment(now()).format("YYYY-MM-DD HH:mm") +
+      moment().format("YYYY-MM-DD HH:mm") +
       "|" +
       dataEbay.ebay_class;
 
@@ -556,7 +573,6 @@ export const getCountEbay_class = (req, res) => {
 };
 
 export const searchEbay = (req, res) => {
-  
   var textand = req.query.query.split(",");
   var search = [];
   if (!textand) {
@@ -579,6 +595,11 @@ export const searchEbay = (req, res) => {
       users_name = "";
     }
     users_name = user.users_name;
+    console.log(
+      user.users_name +
+        ": Search Ebay : " +
+        moment().format("YYYY-MM-DD HH:mm")
+    );
     var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
 
     // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
@@ -592,15 +613,12 @@ export const searchEbay = (req, res) => {
           ebay_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
         });
       });
-      
     } else {
-
       textand.map((item) => {
         search.push({
           ebay_employee: users_name_re,
         });
       });
-      
     }
 
     textand.map((item) => {
@@ -646,7 +664,7 @@ export const searchEbay = (req, res) => {
       search.push({
         ebay_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
-      
+
       search.push({
         ebay_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
@@ -660,9 +678,9 @@ export const searchEbay = (req, res) => {
         ebay_note: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
     });
-  
+
     // Nhân viên chỉ search được tài khoản nhân viên đó
-  
+
     Ebay.aggregate([
       {
         $match: {
@@ -676,19 +694,13 @@ export const searchEbay = (req, res) => {
           error: "Đã Lỗi",
         });
       }
-  
+
       res.json(data);
     });
-
-
-
   });
-
-  
 };
 // Chưa dùng
 export const searchEbay1 = (req, res) => {
-  
   var textand = req.query.query.split(",");
   var search = [];
   if (!textand) {
@@ -724,15 +736,12 @@ export const searchEbay1 = (req, res) => {
           ebay_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
         });
       });
-      
     } else {
-
       textand.map((item) => {
         search.push({
           ebay_employee: users_name_re,
         });
       });
-      
     }
 
     textand.map((item) => {
@@ -779,7 +788,7 @@ export const searchEbay1 = (req, res) => {
       search.push({
         ebay_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
-      
+
       search.push({
         ebay_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
@@ -793,9 +802,9 @@ export const searchEbay1 = (req, res) => {
         ebay_note: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
     });
-  
+
     // Nhân viên chỉ search được tài khoản nhân viên đó
-  
+
     Ebay.aggregate([
       {
         $match: {
@@ -809,15 +818,10 @@ export const searchEbay1 = (req, res) => {
           error: "Đã Lỗi",
         });
       }
-  
+
       res.json(data);
     });
-
-
-
   });
-
-  
 };
 
 // ================ Middle ware====================

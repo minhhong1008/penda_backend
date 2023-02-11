@@ -521,15 +521,10 @@ export const searchSim = (req, res) => {
           sim_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
         });
       });
-      
     } else {
-
-      text.map((item) => {
-        search.push({
-          sim_employee: users_name_re,
-        });
+      search.push({
+        sim_employee: users_name_re,
       });
-      
     }
 
     text.map((item) => {
@@ -560,7 +555,7 @@ export const searchSim = (req, res) => {
       search.push({
         sim_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
-      
+
       search.push({
         sim_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
@@ -574,9 +569,9 @@ export const searchSim = (req, res) => {
         sim_note: new RegExp("(.*)" + item.trim() + "(.*)"),
       });
     });
-  
+
     // Nhân viên chỉ search được tài khoản nhân viên đó
-  
+
     Sim.aggregate([
       {
         $match: {
@@ -590,15 +585,10 @@ export const searchSim = (req, res) => {
           error: "Đã Lỗi",
         });
       }
-  
+
       res.json(data);
     });
-
-
-
   });
-
-  
 };
 // ================ Middle ware====================
 // hàm phân quyền trong Sim, user phải trong phòng sản xuất và quản lý Sim mới view đc Sim

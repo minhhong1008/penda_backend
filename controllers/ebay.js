@@ -103,7 +103,7 @@ export const ebayByID = (req, res, next, id) => {
     users_name = user.users_name;
     console.log(
       user.users_name +
-        ": View bảng ebay_info : " +
+        ": View bảng ebay_info : " + id +" : "+
         moment().format("YYYY-MM-DD HH:mm")
     );
     let filter_ebay = "";

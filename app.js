@@ -40,6 +40,7 @@ import etsyitemRouter from "./routes/etsyitem.js";
 import customerRouter from "./routes/customer.js";
 import salaryRouter from "./routes/salary.js";
 import crawlRouter from "./routes/crawl.js";
+import workRouter from "./routes/work.js";
 //import reportRouter from './routes/report.js';
 // ********* ROute create *****************************
 
@@ -105,6 +106,7 @@ app.use("/api", createRouter);
 app.use("/api", tooldataRouter);
 app.use("/api", timeSheetRouter);
 app.use("/api", crawlRouter);
+app.use("/api", workRouter);
 
 app.use("/api", blogRouter);
 

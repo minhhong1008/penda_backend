@@ -149,6 +149,7 @@ export const createVerify = (req, res) => {
       });
     }
   }
+  console.log(req.body[0].users_name+ ":Chấm công: " + moment().format("YYYY-MM-DD HH:mm")+" :IP "+ clientIp );
   // Kiểm tra đã đăng ký lịch chấm công chưa\
   TimeSheet.findOne({
     users_name: req.body[0].users_name,

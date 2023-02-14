@@ -655,9 +655,7 @@ export const Create_newdata = (req, res) => {
   }
 
   if (types.indexOf("update") !== -1) {
-    console.log("update");
     if (types.indexOf("device") !== -1) {
-      console.log("device");
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
@@ -840,7 +838,6 @@ export const Create_newdata = (req, res) => {
       data.forEach((item, index) => {
         let value = item.split("|");
         let temp_id = value[0];
-        console.log(temp_id);
         var sim_data = {
           sim_id: temp_id,
           sim_user: value[1],

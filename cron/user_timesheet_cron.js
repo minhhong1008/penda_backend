@@ -152,16 +152,14 @@ const renderData = (timeSheet, userss) => {
 };
 
 export const time_sheet_cron = new CronJob(
-  "* * */8 * * 0-6",
+  "* 00 */2 * * 0-6",
   function () {
     Users.find({ users_status: "Active" })
       .sort({ users_sort: "ascending" })
       .collation({ locale: "en_US", numericOrdering: true })
       .exec((err, users) => {
         if (err || !users) {
-          res.status(400).json({
-            message: "Không tìm thấy users",
-          });
+          console.log("Lỗi");
         }
         TimeSheet.aggregate([
           { $addFields: { date: { $toDate: "$working_date" } } },

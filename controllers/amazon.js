@@ -203,7 +203,6 @@ export const amazonByID = (req, res, next, id) => {
         ])
         .exec((err, amazon) => {
           if (err || !amazon) {
-            console.log("dddd");
             return res.status(500);
           }
 

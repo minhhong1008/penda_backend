@@ -102,7 +102,6 @@ export const deviceByID = (req, res, next, id) => {
         user.users_function
       ) != -1
     ) {
-      console.log(user.users_function)
       Device.findOne({ device_id: id })
         .populate("etsy_id", [
           "etsy_id",
@@ -203,7 +202,6 @@ export const deviceByID = (req, res, next, id) => {
           "tiktok_password",
         ])
         .exec((err, device) => {
-          console.log("device")
           if (err || !device) {
             console.log("Lỗi không truy vấn được Device, kiểm tra populate")
             return res.status(500);
@@ -335,7 +333,6 @@ export const deviceByID = (req, res, next, id) => {
         "tiktok_password",
       ])
       .exec((err, device) => {
-        console.log(device)
           if (err || !device) {
             console.log("Lỗi không truy vấn được Device, kiểm tra populate")
             return res.status(500);

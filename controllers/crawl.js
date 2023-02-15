@@ -7,7 +7,6 @@ const cheerio = require("cheerio");
 
 // Tạo hàm create
 export const create = (req, res) => {
-  console.log(req.body);
   const crawl = new Crawl(req.body);
   crawl.save((err, crawl) => {
     if (err) {

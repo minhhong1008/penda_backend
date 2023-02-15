@@ -102,7 +102,7 @@ export const mailByID = (req, res, next, id) => {
         user.users_function
       ) != -1
     ) {
-      console.log(user.users_function)
+
       Mail.findOne({ mail_id: id })
         .populate("device_id", [
           "device_id",

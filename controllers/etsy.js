@@ -102,7 +102,7 @@ export const etsyByID = (req, res, next, id) => {
         user.users_function
       ) != -1
     ) {
-      console.log(user.users_function)
+
       Etsy.findOne({ etsy_id: id })
         .populate("device_id", [
           "device_id",

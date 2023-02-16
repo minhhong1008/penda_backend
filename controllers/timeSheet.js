@@ -142,14 +142,14 @@ export const list = (req, res) => {
 export const createVerify = (req, res) => {
   // Chỉ cho phép chấm công khi sử dụng mạng của công ty
   console.log(req.body[0].users_name+ ":Chấm công: " + moment().format("YYYY-MM-DD HH:mm") );
-  /* if (requestIp) {
+  if (requestIp) {
     const clientIp = requestIp.getClientIp(req);
     if (clientIp !== process.env.IP_ADDRESS) {
       return res.status(200).json({
         report: "Bạn đang không ở công ty",
       });
     }
-  } */
+  }
   
   // Kiểm tra đã đăng ký lịch chấm công chưa\
   TimeSheet.findOne({

@@ -152,7 +152,7 @@ const renderData = (timeSheet, userss) => {
 };
 
 export const time_sheet_cron = new CronJob(
-  "00 */30 * * * *",
+  "00 0/30 * * * *",
   function () {
     Users.find({ users_status: "Active" })
       .sort({ users_sort: "ascending" })

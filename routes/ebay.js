@@ -6,6 +6,7 @@ import {
   getebay,
   listebay,
   searchEbay,
+  Gologincare,
   update,
 } from "../controllers/ebay";
 import { canViewEbay } from "../controllers/ebay";
@@ -25,5 +26,7 @@ router.get("/ebay/get/:ebayId",canViewEbay, getebay);
 router.get("/getebay/count", getCountEbay_class);
 // Hàm search
 router.get("/ebay/search",canViewEbay, searchEbay);
+
+router.get("/ebay/Gologincare", Gologincare);
 
 module.exports = router;

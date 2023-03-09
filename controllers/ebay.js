@@ -1,5 +1,6 @@
 // Import model
 import Ebay from "../models/ebay";
+import Device from "../models/device";
 import jwt from "jsonwebtoken"; // Tạo ra mã JWT
 import Users from "../models/user";
 import moment from "moment";
@@ -103,7 +104,9 @@ export const ebayByID = (req, res, next, id) => {
     users_name = user.users_name;
     console.log(
       user.users_name +
-        ": View bảng ebay_info : " + id +" : "+
+        ": View bảng ebay_info : " +
+        id +
+        " : " +
         moment().format("YYYY-MM-DD HH:mm")
     );
     let filter_ebay = "";
@@ -408,7 +411,8 @@ export const update = (req, res) => {
     console.log(
       user.users_name +
         ": Update bảng ebay_info : " +
-        ebay_id +" : "+
+        ebay_id +
+        " : " +
         moment().format("YYYY-MM-DD HH:mm")
     );
     var dataEbay = req.body;
@@ -596,9 +600,7 @@ export const searchEbay = (req, res) => {
     }
     users_name = user.users_name;
     console.log(
-      user.users_name +
-        ": Search Ebay : " +
-        moment().format("YYYY-MM-DD HH:mm")
+      user.users_name + ": Search Ebay : " + moment().format("YYYY-MM-DD HH:mm")
     );
     var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
 
@@ -820,6 +822,51 @@ export const searchEbay1 = (req, res) => {
       }
 
       res.json(data);
+    });
+  });
+};
+
+//
+export const Gologincare = (req, res) => {
+  Ebay.aggregate([
+    { $project: { ebay_class: 1, ebay_user: 1, ebay_id: 1 } },
+    {
+      $match: {
+        ebay_class: {
+          $in: ["Lớp 4", "Lớp 5", "Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9"],
+        },
+      },
+    },
+    { $sample: { size: 1 } },
+  ]).exec((err, ebay) => {
+    if (err || !ebay) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
+    let device_id = ebay[0].ebay_id;
+    Device.findOne(
+      { device_id: device_id },
+      { device_class: 1, device_password: 1, device_user: 1 }
+    ).exec((err, device) => {
+      if (err || !device) {
+        return res.status(400).json({
+          error: "Đã Lỗi rồi",
+        });
+      }
+      console.log(device.device_user)
+      console.log(device.device_password)
+      if (device.device_user ==" " || device.device_password ==" ") {
+        console.log("device.device_password")
+        return res.status(400).json({
+          error: "Đã Lỗi rồi",
+        });
+        
+      }else{
+        res.json(device);
+      }
+      // Reverse sắp xếp các ebay theo thứ tự tạo mới nhất
+      
     });
   });
 };

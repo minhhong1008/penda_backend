@@ -42,6 +42,7 @@ import salaryRouter from "./routes/salary.js";
 import crawlRouter from "./routes/crawl.js";
 import workRouter from "./routes/work.js";
 //import reportRouter from './routes/report.js';
+import autoapiRouter from "./routes/autoapi.js";
 // ********* ROute create *****************************
 
 import createRouter from "./routes/create.js";
@@ -100,6 +101,7 @@ app.use("/api", usersRouter);
 app.use("/api", fileRouter);
 app.use("/api", billRouter);
 
+app.use("/api", autoapiRouter);
 //*************tooldata************************
 
 app.use("/api", createRouter);

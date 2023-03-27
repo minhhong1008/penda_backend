@@ -702,138 +702,16 @@ export const searchEbay = (req, res) => {
   });
 };
 // Chưa dùng
-export const searchEbay1 = (req, res) => {
-  var textand = req.query.query.split(",");
-  var search = [];
-  if (!textand) {
-    return;
-  }
-  const data = req.headers["x-access-token"] || req.headers["authorization"];
-  let users_name = "";
-  const token = data.split(" ");
-  if (!token) {
-    users_name = "";
-  }
-  const decoded = jwt.verify(token[1], "duy");
-  Users.findOne({ _id: decoded._id }).exec((err, user) => {
-    if (err) {
-      return res.status(400).json({
-        error: "Đã Lỗi",
-      });
-    }
-    if (!user) {
-      users_name = "";
-    }
-    users_name = user.users_name;
-    var users_name_re = new RegExp("(.*)" + users_name + "(.*)");
-
-    // "Giám đốc", "Phó Giám đốc", "Trưởng phòng" xem được tổng tài khoản
-    if (
-      ["Giám đốc", "Phó Giám đốc", "Trưởng phòng"].indexOf(
-        user.users_function
-      ) != -1
-    ) {
-      textand.map((item) => {
-        search.push({
-          ebay_employee: new RegExp("(.*)" + item.trim() + "(.*)"),
-        });
-      });
-    } else {
-      textand.map((item) => {
-        search.push({
-          ebay_employee: users_name_re,
-        });
-      });
-    }
-
-    textand.map((item) => {
-      search.push({
-        ebay_id: new RegExp("(.*)" + item.trim() + "(.*)"),
-        ebay_user: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_user: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_detail: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_limit: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_item: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_sold: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_feedback: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_plan: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_block: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_error: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_processing: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_type: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_sell_status: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_owner: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-
-      search.push({
-        ebay_outline: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_status: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_class: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-      search.push({
-        ebay_note: new RegExp("(.*)" + item.trim() + "(.*)"),
-      });
-    });
-
-    // Nhân viên chỉ search được tài khoản nhân viên đó
-
-    Ebay.aggregate([
-      {
-        $match: {
-          $or: search,
-        },
-      },
-    ]).exec((err, data) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).json({
-          error: "Đã Lỗi",
-        });
-      }
-
-      res.json(data);
-    });
-  });
-};
 
 //
 export const Gologincare = (req, res) => {
+
   Ebay.aggregate([
     { $project: { ebay_class: 1, ebay_user: 1, ebay_id: 1 } },
     {
       $match: {
         ebay_class: {
-          $in: ["Lớp 4", "Lớp 5", "Lớp 6", "Lớp 7", "Lớp 8", "Lớp 9"],
+          $in: ["Lớp 14", "Lớp 15"],
         },
       },
     },
@@ -854,10 +732,9 @@ export const Gologincare = (req, res) => {
           error: "Đã Lỗi rồi",
         });
       }
-      console.log(device.device_user)
-      console.log(device.device_password)
+     
       if (device.device_user ==" " || device.device_password ==" ") {
-        console.log("device.device_password")
+        
         return res.status(400).json({
           error: "Đã Lỗi rồi",
         });

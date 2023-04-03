@@ -706,7 +706,6 @@ export const searchEbay = (req, res) => {
 //
 export const Gologincare = (req, res) => {
 
-  return;
   Ebay.aggregate([
     { $project: { ebay_class: 1, ebay_user: 1, ebay_id: 1 } },
     {

@@ -67,6 +67,7 @@ const renderData = (timeSheet, userss) => {
   });
 
   time_sheet_data.forEach((user_time, index) => {
+    console.log(user_time);
     if (index % 2 == 0) {
       newData.push({
         user_index: user_time.index,
@@ -82,6 +83,10 @@ const renderData = (timeSheet, userss) => {
     }
   });
   const final_data = [];
+  let total_users_true_salary = "";
+    let total_users_expected_salary ="";
+    let total_users_now_salary ="";
+    let total_users_salary_advance ="";
   userss.forEach((user, index) => {
     newData.forEach((data) => {
       if (user.users_name == data.users_name) {
@@ -109,8 +114,34 @@ const renderData = (timeSheet, userss) => {
           users_advance: user.users_salary_advance,
           users_true_salary: users_true_salary,
         });
+
+        
       }
     });
+  });
+
+  final_data.forEach((item, index) => {
+    total_users_true_salary = Math.round(
+      total_users_true_salary + parseInt(item.users_true_salary)
+    );
+    total_users_expected_salary = Math.round(
+      total_users_expected_salary + parseInt(item.users_expected_salary)
+    );
+
+    total_users_now_salary = Math.round(
+      total_users_now_salary + parseInt(item.users_now_salary)
+    );
+    total_users_salary_advance = Math.round(
+      total_users_salary_advance + parseInt(item.users_advance)
+    );
+  });
+
+  final_data.push({
+    users_name: "Tổng",
+    users_true_salary: total_users_true_salary,
+    users_expected_salary: total_users_expected_salary,
+    users_now_salary: total_users_now_salary,
+    users_advance: total_users_salary_advance,
   });
 
   const salary = new Salary({
@@ -124,8 +155,8 @@ const renderData = (timeSheet, userss) => {
       if (data) {
        
         Salary.findOneAndUpdate(
-          { _id: Salary._id },
-          { $set: JSON.stringify(final_data) },
+          { _id: data._id },
+          { value: JSON.stringify(final_data) },
           { useFindAndModify: false },
           (err, result) => {
             if (err) {
@@ -152,7 +183,7 @@ const renderData = (timeSheet, userss) => {
 };
 
 export const time_sheet_cron = new CronJob(
-  "00 0/30 * * * *",
+  "00 00/01 * * * *",
   function () {
     Users.find({ users_status: "Active" })
       .sort({ users_sort: "ascending" })

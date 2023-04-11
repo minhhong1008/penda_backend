@@ -60,7 +60,7 @@ export const GologinAllcare = (req, res) => {
     {
       $match: {
         ebay_class: {
-          $in: ["Lớp 2", "Lớp 3","Lớp 4","Lớp 5","Lớp 6","Lớp 7","Lớp 8","Lớp 9","Lớp 10"],
+          $in: ["Lớp 2", "Lớp 3","Lớp 4","Lớp 5","Lớp 6","Lớp 7","Lớp 8","Lớp 9","Lớp 10","Lớp 11","Lớp 12","Lớp 13","Lớp 14","Lớp 15"],
         },
       },
     },
@@ -71,7 +71,11 @@ export const GologinAllcare = (req, res) => {
         error: "Đã Lỗi",
       });
     }
-    
+    if (!ebay[0].ebay_id) {
+      return res.status(400).json({
+        error: "Đã Lỗi",
+      });
+    }
     let device_id = ebay[0].ebay_id;
 
     Device.findOne(

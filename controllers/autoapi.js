@@ -8,9 +8,6 @@ import moment from "moment";
 //
 export const Gologincare = (req, res) => {
  
-  let ebay_class = [];
-  ebay_class = req.body.ebay_class.split(',');
-  console.log(ebay_class);
   Ebay.aggregate([
     { $project: { ebay_class: 1, ebay_user: 1, ebay_id: 1 } },
     {
@@ -23,12 +20,15 @@ export const Gologincare = (req, res) => {
     { $sample: { size: 1 } },
   ]).exec((err, ebay) => {
     if (err || !ebay || ebay.length == 0) {
-      console.log(ebay);
       return res.status(400).json({
         error: "Đã Lỗi",
       });
     }
-    console.log(ebay);
+    if(!ebay[0].ebay_id){
+      return res.status(400).json({
+        error: "Đã Lỗi ",
+      });
+    }
     let device_id = ebay[0].ebay_id;
     console.log(device_id);
     Device.findOne(

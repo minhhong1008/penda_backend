@@ -29,7 +29,7 @@ export const listdevice = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -84,7 +84,7 @@ export const deviceByID = (req, res, next, id) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -365,7 +365,7 @@ export const update = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -416,7 +416,7 @@ export const getCountDevice_class = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -499,7 +499,7 @@ export const searchDevice = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -627,7 +627,7 @@ export const canViewDevice = (req, res, next) => {
     return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");
   }
   try {
-    const decoded = jwt.verify(token[1], "duy");
+    const decoded = jwt.verify(token[1], "penda2024");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
       if (err) {
         return res.status(400).json({

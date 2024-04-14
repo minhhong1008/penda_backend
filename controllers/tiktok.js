@@ -29,7 +29,7 @@ export const listtiktok = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -84,7 +84,7 @@ export const tiktokByID = (req, res, next, id) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -370,7 +370,7 @@ export const update = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -421,7 +421,7 @@ export const getCountTiktok_class = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "duy");
+  const decoded = jwt.verify(token[1], "penda2024");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({
@@ -501,7 +501,7 @@ export const canViewTiktok = (req, res, next) => {
     return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");
   }
   try {
-    const decoded = jwt.verify(token[1], "duy");
+    const decoded = jwt.verify(token[1], "penda2024");
     Users.findOne({ _id: decoded._id }).exec((err, user) => {
       if (err) {
         return res.status(400).json({

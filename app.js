@@ -118,10 +118,7 @@ app.use("/api", salaryRouter);
 //MongoDB
 mongoose
   .connect(
-    process.env.MONGO_USER +
-      encodeURIComponent(process.env.MONGO_PASSWORD) +
-      "@" +
-      process.env.MONGO_HOST,
+    "mongodb://penda:pendadevteam2024@103.151.53.184:27017/penda?authMechanism=DEFAULT&authSource=admin",
     {
       useNewUrlParser: true,
       useCreateIndex: true,
@@ -182,7 +179,7 @@ const warning = (message) => {
 
 job.start(); */
 
-time_sheet_cron.start();
+// time_sheet_cron.start();
 // crawl_SKU_cron.start();
 //update_SKU_cron.start();
 

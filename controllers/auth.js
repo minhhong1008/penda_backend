@@ -60,7 +60,7 @@ export const verify = (req, res) => {
     return res.status(401).send("Bạn chưa đăng nhập");
   }
   try {
-    const decoded = jwt.verify(token, "penda2024");
+    const decoded = jwt.verify(token, "duy");
     if (decoded && decoded._id) {
       User.findOne({ _id: decoded._id }).exec((err, user) => {
         if (err) {
@@ -87,7 +87,7 @@ export const verify = (req, res) => {
 };
 
 export const requireSignin = expressJwt({
-  secret: "penda2024",
+  secret: "duy",
   algorithms: ["HS256"],
   userProperty: "auth",
 });
@@ -106,7 +106,7 @@ export const isAuth = (req, res, next) => {
     return res.status(401).send("Bạn chưa đăng nhập, không tồn tại token");
   }
   try {
-    const decoded = jwt.verify(token[1], "penda2024");
+    const decoded = jwt.verify(token[1], "duy");
     let user = req.profile && req.profile._id == decoded._id;
     if (!user) {
       return res.status(403).json({

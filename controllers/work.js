@@ -14,7 +14,7 @@ export const update = (req, res) => {
   if (!token) {
     users_name = "";
   }
-  const decoded = jwt.verify(token[1], "penda2024");
+  const decoded = jwt.verify(token[1], "duy");
   Users.findOne({ _id: decoded._id }).exec((err, user) => {
     if (err) {
       return res.status(400).json({

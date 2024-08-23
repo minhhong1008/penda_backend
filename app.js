@@ -62,7 +62,7 @@ const app = express();
 dotenv.config();
 app.use(morgan("dev"));
 const port = process.env.PORT || 8000;
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cors());
 
 //Middleware

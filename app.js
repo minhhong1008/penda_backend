@@ -118,7 +118,7 @@ app.use("/api", salaryRouter);
 //MongoDB
 mongoose
   .connect(
-    "mongodb://penda:pendadevteam2024@103.151.53.184:27017/penda?authMechanism=DEFAULT&authSource=admin",
+    process.env.MONGO_DB_URL,
     {
       useNewUrlParser: true,
       useCreateIndex: true,
